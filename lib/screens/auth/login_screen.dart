@@ -1,5 +1,8 @@
 import "package:flutter/material.dart";
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:notefynd/screens/auth/signup_screen.dart';
+import 'package:notefynd/universal_variables.dart';
 
 enum LoginType {
   email,
@@ -15,13 +18,10 @@ class _LoginScreenState extends State<LoginScreen> {
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
   var _isLoading = false;
 
-  final Color primaryColor = Color(0xff18203d);
-  final Color secondaryColor = Color(0xff232c51);
-  final Color logoGreen = Color(0xff25bcbb);
-
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   FocusNode myFocusNode;
+  UniversalVariables _universalVariables = UniversalVariables();
 
   @override
   void initState() {
@@ -39,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
      return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: primaryColor,
+      backgroundColor: _universalVariables.primaryColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -54,14 +54,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      'Login To Turn Pages and continue!',
+                      'Login To Notefynd and continue!',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.openSans(
                           color: Colors.white, fontSize: 28),
                     ),
                     SizedBox(height: 20),
                     Text(
-                      'Enter your email and password below to continue to Turn Pages and let the reading schedule begin!',
+                      'Share. View. Earn',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.openSans(
                           color: Colors.white, fontSize: 14),
@@ -73,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
-                          color: secondaryColor,
+                          color: _universalVariables.secondaryColor,
                           border: Border.all(color: Colors.blue)),
                       child: TextFormField(
                         controller: _emailController,
@@ -98,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
-                          color: secondaryColor,
+                          color: _universalVariables.secondaryColor,
                           border: Border.all(color: Colors.blue)),
                       child: TextFormField(
                         focusNode: myFocusNode,
@@ -123,13 +123,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       minWidth: double.maxFinite,
                       height: 50,
                       onPressed: () {
-                        _loginUser(
-                            type: LoginType.email,
-                            email: _emailController.text,
-                            password: _passwordController.text,
-                            context: context);
                       },
-                      color: logoGreen,
+                      color: _universalVariables.logoGreen,
                       child: Text('Login',
                           style: TextStyle(color: Colors.white, fontSize: 16)),
                       textColor: Colors.white,
@@ -147,7 +142,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       minWidth: double.maxFinite,
                       height: 50,
                       onPressed: () {
-                        _loginUser(type: LoginType.google, context: context);
                       },
                       color: Colors.blue,
                       child: Row(

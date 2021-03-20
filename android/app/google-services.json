@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "314223758554",
+    "project_id": "notefynd-2523c",
+    "storage_bucket": "notefynd-2523c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:314223758554:android:f32a2f2aaf810857a4e9e3",
+        "android_client_info": {
+          "package_name": "com.example.notefynd"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "314223758554-qsbgb7bppmicm73t5kavngo4pe8mk5cd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.notefynd",
+            "certificate_hash": "ca4166c164863cf073ed2b488384b52a47379e73"
+          }
+        },
+        {
+          "client_id": "314223758554-mvqmi5l4q7fv61th26rnd46fasbe5udd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDq-ad2mq-um2ZEi3SrJs4O82Ht3oXY8Ek"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "314223758554-mvqmi5l4q7fv61th26rnd46fasbe5udd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
