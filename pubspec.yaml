@@ -27,6 +27,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   firebase_auth: ^1.0.1
   firebase_core: ^1.0.1
+  flutter_custom_clippers: ^1.1.2
+  flutter_gradient_colors: ^1.0.0
   font_awesome_flutter: ^9.0.0
   google_fonts: ^2.0.0
   google_sign_in: ^5.0.1
