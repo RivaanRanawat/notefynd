@@ -2,12 +2,12 @@ import "package:flutter/material.dart";
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notefynd/screens/auth/signup_screen.dart';
+import 'package:notefynd/screens/home_screen.dart';
+import 'package:notefynd/services/AuthMethods.dart';
 import 'package:notefynd/universal_variables.dart';
+import 'package:provider/provider.dart';
 
-enum LoginType {
-  email,
-  google
-}
+enum LoginType { email, google }
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -35,9 +35,46 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  void _loginWithEmailAndPassword() async {
+    setState(() {
+      _isLoading = true;
+    });
+    if (_emailController.text.isNotEmpty &&
+        _passwordController.text.isNotEmpty) {
+      String result = await Provider.of<AuthMethods>(context, listen: false)
+          .loginWithEmailAndPassword(
+              _emailController.text, _passwordController.text);
+      if (result == "success") {
+        setState(() {
+          _isLoading = false;
+        });
+        Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: (ctx) => HomeScreen()));
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+        var snackbar = new SnackBar(
+          content: new Text(result),
+          duration: Duration(seconds: 2),
+        );
+        _scaffoldKey.currentState.showSnackBar(snackbar);
+      }
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      var snackbar = new SnackBar(
+        content: new Text("Please fill in all the fields"),
+        duration: Duration(seconds: 2),
+      );
+      _scaffoldKey.currentState.showSnackBar(snackbar);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-     return Scaffold(
+    return Scaffold(
       key: _scaffoldKey,
       backgroundColor: _universalVariables.primaryColor,
       appBar: AppBar(
@@ -122,8 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       elevation: 0,
                       minWidth: double.maxFinite,
                       height: 50,
-                      onPressed: () {
-                      },
+                      onPressed: _loginWithEmailAndPassword,
                       color: _universalVariables.logoGreen,
                       child: Text('Login',
                           style: TextStyle(color: Colors.white, fontSize: 16)),
@@ -141,8 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       elevation: 0,
                       minWidth: double.maxFinite,
                       height: 50,
-                      onPressed: () {
-                      },
+                      onPressed: () {},
                       color: Colors.blue,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
