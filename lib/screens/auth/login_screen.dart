@@ -72,6 +72,28 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  void signInWithGoogle() async {
+    setState(() {
+      _isLoading = true;
+    });
+    String result = await Provider.of<AuthMethods>(context, listen: false).loginUserWithGoogle();
+    if(result == "success") {
+      setState(() {
+        _isLoading = false;
+      });
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx) => HomeScreen()));
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      var snackbar = new SnackBar(
+          content: new Text(result),
+          duration: Duration(seconds: 2),
+        );
+      _scaffoldKey.currentState.showSnackBar(snackbar);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -177,7 +199,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       elevation: 0,
                       minWidth: double.maxFinite,
                       height: 50,
-                      onPressed: () {},
+                      onPressed: signInWithGoogle,
                       color: Colors.blue,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
