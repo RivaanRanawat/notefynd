@@ -1,5 +1,12 @@
+import 'dart:async';
+import 'dart:io' as io;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
+import 'package:image_picker/image_picker.dart';
+import 'package:notefynd/screens/home_screen.dart';
 import 'package:notefynd/universal_variables.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class DetailsScreen extends StatefulWidget {
   @override
@@ -9,6 +16,57 @@ class DetailsScreen extends StatefulWidget {
 class _DetailsScreenState extends State<DetailsScreen> {
   UniversalVariables _universalVariables = UniversalVariables();
   TextEditingController _descriptionController = TextEditingController();
+  io.File _image;
+  final picker = ImagePicker();
+  PickedFile pickedFile;
+  String downloadUrl;
+  Future getImage() async {
+    pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = io.File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future<firebase_storage.UploadTask> uploadImageToStorage(
+      PickedFile pickedFile) async {
+    firebase_storage.UploadTask uploadTask;
+    firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child('images')
+        .child(FirebaseAuth.instance.currentUser.uid);
+    ;
+    final metadata = firebase_storage.SettableMetadata(
+        contentType: 'image/jpeg',
+        customMetadata: {'picked-file-path': pickedFile.path});
+    uploadTask = ref.putFile(io.File(pickedFile.path), metadata);
+    downloadUrl = await ref.getDownloadURL();
+    return Future.value(uploadTask);
+  }
+
+  uploadDataToFirebase() async {
+    try {
+      if (_image != null && _descriptionController.text.isNotEmpty) {
+        firebase_storage.UploadTask task =
+            await uploadImageToStorage(pickedFile);
+        FirebaseFirestore.instance
+            .collection("users")
+            .doc(FirebaseAuth.instance.currentUser.uid)
+            .update({
+          "bio": _descriptionController.text,
+          "profilePhoto": downloadUrl
+        });
+        Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: (ctx) => HomeScreen()));
+      }
+    } catch (err) {
+      print(err);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,15 +79,17 @@ class _DetailsScreenState extends State<DetailsScreen> {
             child: Stack(children: [
               CircleAvatar(
                 radius: 64,
-                backgroundImage: NetworkImage(
-                  "https://i.stack.imgur.com/l60Hf.png",
-                ),
+                backgroundImage: _image == null
+                    ? NetworkImage(
+                        "https://i.stack.imgur.com/l60Hf.png",
+                      )
+                    : FileImage(_image),
               ),
               Positioned(
                 bottom: -10,
                 left: 80,
                 child: IconButton(
-                  onPressed: () {},
+                  onPressed: getImage,
                   icon: Icon(Icons.add_a_photo),
                   color: Colors.white,
                 ),
@@ -48,6 +108,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.symmetric(horizontal: 10),
                 labelText: "Description",
+                alignLabelWithHint: true,
                 labelStyle: TextStyle(color: Colors.white),
                 icon: Icon(
                   Icons.description,
@@ -65,7 +126,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
             minWidth: 150,
             elevation: 0,
             height: 50,
-            onPressed: () {},
+            onPressed: uploadDataToFirebase,
             color: UniversalVariables().logoGreen,
             child: Text("Done"),
             shape: RoundedRectangleBorder(

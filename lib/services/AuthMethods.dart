@@ -21,7 +21,8 @@ class AuthMethods with ChangeNotifier {
         "username": username.trim(),
         "email": email.trim(),
         "status": "user",
-        "bio": ""
+        "bio": "",
+        "profilePhoto": ""
       });
       returnValue = "success";
     } catch (err) {
@@ -64,7 +65,8 @@ class AuthMethods with ChangeNotifier {
         "username": user.email.split("@")[0],
         "email": user.email,
         "status": "user",
-        "bio": ""
+        "bio": "",
+        "profilePhoto": user.photoURL,
       });
       retVal = "success";
     } catch (err) {

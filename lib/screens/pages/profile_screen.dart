@@ -18,7 +18,8 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   String username = "";
   String creatorText;
-
+  String profileUrl = "";
+  String bio = "";
   void getUsername() async {
     DocumentSnapshot snapshot = await FirebaseFirestore.instance
         .collection("users")
@@ -26,6 +27,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         .get();
     setState(() {
       username = snapshot["username"];
+      profileUrl = snapshot["profilePhoto"];
+      bio = snapshot["bio"];
     });
   }
 
@@ -76,9 +79,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               child: CircleAvatar(
                 radius: 64,
-                backgroundImage: NetworkImage(
-                  "https://i.stack.imgur.com/l60Hf.png",
-                ),
+                backgroundImage: profileUrl == ""
+                    ? NetworkImage(
+                        "https://i.stack.imgur.com/l60Hf.png",
+                      )
+                    : NetworkImage(profileUrl),
               ),
             ),
             Column(
