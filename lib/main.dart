@@ -5,6 +5,7 @@ import 'package:notefynd/screens/auth/login_screen.dart';
 import 'package:notefynd/screens/home_screen.dart';
 import 'package:notefynd/screens/splash_screen.dart';
 import 'package:notefynd/services/AuthMethods.dart';
+import 'package:notefynd/services/Creator.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthMethods()),
+        ChangeNotifierProvider(create: (_) => Creator()),
       ],
       child: MaterialApp(
         title: 'Notefynd',

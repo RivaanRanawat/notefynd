@@ -84,9 +84,4 @@ class AuthMethods with ChangeNotifier {
     }
     return retVal;
   }
-
-  Future<User> getCurrentUser() async {
-    User user = FirebaseAuth.instance.currentUser;
-    return user;
-  }
 }

@@ -1,8 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:notefynd/screens/pages/notes_screen.dart';
 import 'package:notefynd/screens/pages/profile_screen.dart';
 import 'package:notefynd/screens/pages/videos_screen.dart';
+import 'package:notefynd/screens/splash_screen.dart';
+import 'package:notefynd/services/Creator.dart';
 import 'package:notefynd/universal_variables.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -11,20 +16,44 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   UniversalVariables universalVariables = UniversalVariables();
+  int pageIndex = 0;
+
+  String status;
+
+  getUserStatus() async {
+    String tempStatus = await Provider.of<Creator>(context).getCreatorStatus();
+    setState(() {
+      status = tempStatus;
+    });
+  }
+
   List pageOptions = [
     VideoScreen(),
     NotesScreen(),
-    ProfileScreen()
+    ProfileScreen(),
+  ];
+  List creatorPageOptions = [
+    VideoScreen(),
+    NotesScreen(),
+    SplashScreen(),
+    ProfileScreen(),
   ];
 
-  int pageIndex = 2;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    getUserStatus();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: universalVariables.secondaryColor,
-      body: pageOptions[pageIndex],
+      body: status == "creator"
+          ? creatorPageOptions[pageIndex]
+          : pageOptions[pageIndex],
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         onTap: (newIdx) {
           setState(() {
             pageIndex = newIdx;
@@ -36,8 +65,12 @@ class _HomeScreenState extends State<HomeScreen> {
         items: [
           BottomNavigationBarItem(
               icon: Icon(Icons.video_collection, size: 30), label: ""),
-          BottomNavigationBarItem(icon: Icon(Icons.picture_as_pdf, size: 30), label: ""),
-          BottomNavigationBarItem(icon: Icon(Icons.person, size: 30), label: ""),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.picture_as_pdf, size: 30), label: ""),
+          if (status == "creator")
+            BottomNavigationBarItem(icon: Icon(Icons.add, size: 30), label: ""),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person, size: 30), label: ""),
         ],
       ),
     );
