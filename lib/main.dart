@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:notefynd/screens/add_pdf_notes.dart';
 import 'package:notefynd/screens/auth/details_screen.dart';
 import 'package:notefynd/screens/auth/login_screen.dart';
 import 'package:notefynd/screens/home_screen.dart';

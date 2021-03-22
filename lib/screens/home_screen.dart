@@ -1,10 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
+import 'package:notefynd/screens/add_pdf_notes.dart';
 import 'package:notefynd/screens/pages/notes_screen.dart';
 import 'package:notefynd/screens/pages/profile_screen.dart';
 import 'package:notefynd/screens/pages/videos_screen.dart';
-import 'package:notefynd/screens/splash_screen.dart';
 import 'package:notefynd/services/Creator.dart';
 import 'package:notefynd/universal_variables.dart';
 import 'package:provider/provider.dart';
@@ -35,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List creatorPageOptions = [
     VideoScreen(),
     NotesScreen(),
-    SplashScreen(),
+    AddPdfNotes(),
     ProfileScreen(),
   ];
 
