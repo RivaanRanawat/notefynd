@@ -20,6 +20,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
   final picker = ImagePicker();
   PickedFile pickedFile;
   String downloadUrl;
+  var _isLoading = false;
   Future getImage() async {
     pickedFile = await picker.getImage(source: ImageSource.gallery);
 
@@ -49,6 +50,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
   }
 
   uploadDataToFirebase() async {
+    setState(() {
+      _isLoading = true;
+    });
     try {
       if (_image != null && _descriptionController.text.isNotEmpty) {
         firebase_storage.UploadTask task =
@@ -60,10 +64,22 @@ class _DetailsScreenState extends State<DetailsScreen> {
           "bio": _descriptionController.text,
           "profilePhoto": downloadUrl
         });
+        setState(() {
+          _isLoading = false;
+        });
         Navigator.of(context)
             .pushReplacement(MaterialPageRoute(builder: (ctx) => HomeScreen()));
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Please enter a title and an image")));
       }
     } catch (err) {
+      setState(() {
+        _isLoading = false;
+      });
       print(err);
     }
   }
@@ -72,70 +88,74 @@ class _DetailsScreenState extends State<DetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _universalVariables.secondaryColor,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            child: Stack(children: [
-              CircleAvatar(
-                radius: 64,
-                backgroundImage: _image == null
-                    ? NetworkImage(
-                        "https://i.stack.imgur.com/l60Hf.png",
-                      )
-                    : FileImage(_image),
-              ),
-              Positioned(
-                bottom: -10,
-                left: 80,
-                child: IconButton(
-                  onPressed: getImage,
-                  icon: Icon(Icons.add_a_photo),
-                  color: Colors.white,
+      body: _isLoading == false
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  child: Stack(children: [
+                    CircleAvatar(
+                      radius: 64,
+                      backgroundImage: _image == null
+                          ? NetworkImage(
+                              "https://i.stack.imgur.com/l60Hf.png",
+                            )
+                          : FileImage(_image),
+                    ),
+                    Positioned(
+                      bottom: -10,
+                      left: 80,
+                      child: IconButton(
+                        onPressed: getImage,
+                        icon: Icon(Icons.add_a_photo),
+                        color: Colors.white,
+                      ),
+                    )
+                  ]),
                 ),
-              )
-            ]),
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(vertical: 70, horizontal: 10),
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            decoration: BoxDecoration(
-                color: _universalVariables.secondaryColor,
-                border: Border.all(color: Colors.blue)),
-            child: TextFormField(
-              controller: _descriptionController,
-              style: TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                labelText: "Description",
-                alignLabelWithHint: true,
-                labelStyle: TextStyle(color: Colors.white),
-                icon: Icon(
-                  Icons.description,
-                  color: Colors.white,
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 70, horizontal: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                      color: _universalVariables.secondaryColor,
+                      border: Border.all(color: Colors.blue)),
+                  child: TextFormField(
+                    controller: _descriptionController,
+                    style: TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                      labelText: "Description",
+                      alignLabelWithHint: true,
+                      labelStyle: TextStyle(color: Colors.white),
+                      icon: Icon(
+                        Icons.description,
+                        color: Colors.white,
+                      ),
+                      border: InputBorder.none,
+                    ),
+                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.done,
+                    maxLines: 5,
+                    maxLength: 200,
+                  ),
                 ),
-                border: InputBorder.none,
-              ),
-              keyboardType: TextInputType.text,
-              textInputAction: TextInputAction.done,
-              maxLines: 5,
-              maxLength: 200,
+                MaterialButton(
+                  minWidth: 150,
+                  elevation: 0,
+                  height: 50,
+                  onPressed: uploadDataToFirebase,
+                  color: UniversalVariables().logoGreen,
+                  child: Text("Done"),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  textColor: Colors.white,
+                ),
+              ],
+            )
+          : Center(
+              child: CircularProgressIndicator(),
             ),
-          ),
-          MaterialButton(
-            minWidth: 150,
-            elevation: 0,
-            height: 50,
-            onPressed: uploadDataToFirebase,
-            color: UniversalVariables().logoGreen,
-            child: Text("Done"),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.0),
-            ),
-            textColor: Colors.white,
-          ),
-        ],
-      ),
     );
   }
 }

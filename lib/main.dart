@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +17,23 @@ void main() async {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  String bio = "";
+
+  getUserData() async {
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .get();
+    bio = snapshot["bio"];
+    print(bio);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -38,7 +54,12 @@ class MyApp extends StatelessWidget {
                 return SplashScreen();
               }
               if (userSnapshot.hasData) {
-                return HomeScreen();
+                getUserData();
+                if (bio == "") {
+                  return DetailsScreen();
+                } else {
+                  return HomeScreen();
+                }
               }
               return LoginScreen();
             }),
