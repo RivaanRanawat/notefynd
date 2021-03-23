@@ -17,7 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   UniversalVariables universalVariables = UniversalVariables();
-  int pageIndex = 0;
+  int pageIndex = 2;
 
   String status;
 

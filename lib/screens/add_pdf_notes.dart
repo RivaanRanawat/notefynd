@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import "package:flutter/material.dart";
 import 'package:notefynd/services/Creator.dart';
@@ -41,6 +42,7 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
       if (result == "success") {
         setState(() {
           _titleController.text = "";
+          _descriptionController.text = "";
           _file = null;
         });
         setState(() {
@@ -67,6 +69,11 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+  
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: UniversalVariables().secondaryColor,
@@ -75,7 +82,7 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.25),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.15),
                   _file != null
                       ? Center(child: Text(fileName))
                       : Text(
@@ -126,7 +133,58 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
                       ),
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.3),
+                  Container(
+                    margin: EdgeInsets.all(10),
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                        color: UniversalVariables().secondaryColor,
+                        border: Border.all(color: Colors.blue)),
+                    child: TextFormField(
+                      controller: _descriptionController,
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                        labelText: "Description",
+                        labelStyle: TextStyle(color: Colors.white),
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(10),
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                        color: UniversalVariables().secondaryColor,
+                        border: Border.all(color: Colors.blue)),
+                    child: TextFormField(
+                      controller: _subjectController,
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                        labelText: "Subject",
+                        labelStyle: TextStyle(color: Colors.white),
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(10),
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                        color: UniversalVariables().secondaryColor,
+                        border: Border.all(color: Colors.blue)),
+                    child: TextFormField(
+                      controller: _streamController,
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                        labelText: "Stream",
+                        labelStyle: TextStyle(color: Colors.white),
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.09),
                   MaterialButton(
                     minWidth: 150,
                     elevation: 0,
@@ -146,3 +204,4 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
     );
   }
 }
+//
