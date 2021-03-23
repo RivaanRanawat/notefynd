@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -35,8 +34,7 @@ class AuthMethods with ChangeNotifier {
       String email, String password) async {
     String returnValue = "error";
     try {
-      UserCredential _credential = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
       returnValue = "success";
     } catch (err) {
       returnValue = err.toString();

@@ -54,21 +54,19 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() {
           _isLoading = false;
         });
-        var snackbar = new SnackBar(
-          content: new Text(result),
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(result),
           duration: Duration(seconds: 2),
-        );
-        _scaffoldKey.currentState.showSnackBar(snackbar);
+        ));
       }
     } else {
       setState(() {
         _isLoading = false;
       });
-      var snackbar = new SnackBar(
-        content: new Text("Please fill in all the fields"),
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Please fill in all the fields"),
         duration: Duration(seconds: 2),
-      );
-      _scaffoldKey.currentState.showSnackBar(snackbar);
+      ));
     }
   }
 
@@ -76,21 +74,22 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _isLoading = true;
     });
-    String result = await Provider.of<AuthMethods>(context, listen: false).loginUserWithGoogle();
-    if(result == "success") {
+    String result = await Provider.of<AuthMethods>(context, listen: false)
+        .loginUserWithGoogle();
+    if (result == "success") {
       setState(() {
         _isLoading = false;
       });
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx) => HomeScreen()));
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (ctx) => HomeScreen()));
     } else {
       setState(() {
         _isLoading = false;
       });
-      var snackbar = new SnackBar(
-          content: new Text(result),
-          duration: Duration(seconds: 2),
-        );
-      _scaffoldKey.currentState.showSnackBar(snackbar);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(result),
+        duration: Duration(seconds: 2),
+      ));
     }
   }
 

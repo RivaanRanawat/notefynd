@@ -43,7 +43,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
         .ref()
         .child('images')
         .child(FirebaseAuth.instance.currentUser.uid);
-    ;
+
     final metadata = firebase_storage.SettableMetadata(
         contentType: 'image/jpeg',
         customMetadata: {'picked-file-path': pickedFile.path});
@@ -58,8 +58,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
     });
     try {
       if (_image != null && _descriptionController.text.isNotEmpty) {
-        firebase_storage.UploadTask task =
-            await uploadImageToStorage(pickedFile);
+        await uploadImageToStorage(pickedFile);
         FirebaseFirestore.instance
             .collection("users")
             .doc(FirebaseAuth.instance.currentUser.uid)
@@ -204,7 +203,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         Text("Select Class",
                             style: GoogleFonts.lato(
                                 color: Colors.white, fontSize: 14)),
-                                SizedBox(height: 10,),
+                        SizedBox(
+                          height: 10,
+                        ),
                         Row(
                           children: [
                             Padding(

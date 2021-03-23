@@ -1,9 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notefynd/screens/auth/details_screen.dart';
 import 'package:notefynd/screens/auth/login_screen.dart';
-import 'package:notefynd/screens/home_screen.dart';
 import 'package:notefynd/services/AuthMethods.dart';
 import 'package:notefynd/universal_variables.dart';
 import 'package:provider/provider.dart';
@@ -39,11 +37,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (ctx) => DetailsScreen()));
       } else {
-        var snackbar = new SnackBar(
-          content: new Text(result),
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(result),
           duration: Duration(seconds: 2),
-        );
-        _scaffoldKey.currentState.showSnackBar(snackbar);
+        ));
       }
       setState(() {
         _isLoading = false;
@@ -225,18 +222,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   context,
                                   _fullNameController.text);
                             } else {
-                              var snackbar = new SnackBar(
-                                content: new Text("Passwords Dont Match"),
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text("Passwords Don't Match"),
                                 duration: Duration(seconds: 2),
-                              );
-                              _scaffoldKey.currentState.showSnackBar(snackbar);
+                              ));
                             }
                           } else {
-                            var snackbar = new SnackBar(
-                              content: new Text("Please enter all the fields"),
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text("Please enter all the fields"),
                               duration: Duration(seconds: 2),
-                            );
-                            _scaffoldKey.currentState.showSnackBar(snackbar);
+                            ));
                           }
                         },
                         color: _universalVariables.logoGreen,
