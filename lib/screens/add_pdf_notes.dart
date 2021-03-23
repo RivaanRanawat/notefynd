@@ -1,11 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import "package:flutter/material.dart";
+import 'package:notefynd/services/Creator.dart';
 import 'dart:io';
 
 import 'package:notefynd/universal_variables.dart';
+import 'package:provider/provider.dart';
 
 class AddPdfNotes extends StatefulWidget {
   @override
@@ -16,9 +15,56 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
   File _file;
   String fileName;
   TextEditingController _titleController = TextEditingController();
+  TextEditingController _descriptionController = TextEditingController();
+  TextEditingController _subjectController = TextEditingController();
+  TextEditingController _streamController = TextEditingController();
   var _isLoading = false;
-  String subject = "Maths";
   String standard = "10";
+
+  uploadPdftoFirebase() async {
+    setState(() {
+      _isLoading = true;
+    });
+    if (_titleController.text.isNotEmpty && _file != null) {
+      var result = await Provider.of<Creator>(context, listen: false)
+          .storePdfNotes(
+              _file,
+              fileName,
+              standard,
+              _titleController.text,
+              _subjectController.text,
+              _descriptionController.text,
+              _streamController.text);
+      setState(() {
+        _isLoading = false;
+      });
+      if (result == "success") {
+        setState(() {
+          _titleController.text = "";
+          _file = null;
+        });
+        setState(() {
+          _isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Posted!"),
+          duration: Duration(seconds: 2),
+        ));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(result),
+          duration: Duration(seconds: 2),
+        ));
+      }
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Enter all the fields"),
+      ));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,72 +131,7 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
                     minWidth: 150,
                     elevation: 0,
                     height: 50,
-                    onPressed: () async {
-                      setState(() {
-                        _isLoading = true;
-                      });
-                      try {
-                        if (_titleController.text.isNotEmpty && _file != null) {
-                          var reference = firebase_storage
-                              .FirebaseStorage.instance
-                              .ref()
-                              .child("pdf-notes")
-                              .child(FirebaseAuth.instance.currentUser.uid)
-                              .child(fileName);
-
-                          firebase_storage.UploadTask uploadTask =
-                              reference.putFile(
-                                  _file,
-                                  firebase_storage.SettableMetadata(
-                                      contentType:
-                                          ContentType('application', 'pdf')
-                                              .toString()));
-                          firebase_storage.TaskSnapshot snapshot =
-                              await uploadTask;
-                          String url = await snapshot.ref.getDownloadURL();
-                          print("epic " + url);
-                          FirebaseFirestore.instance
-                              .collection("pdf-posts")
-                              .doc(standard)
-                              .collection(FirebaseAuth.instance.currentUser.uid)
-                              .doc(_titleController.text)
-                              .set({
-                            "uid": FirebaseAuth.instance.currentUser.uid,
-                            "datePublished": DateTime.now().toString(),
-                            "pdfUrl": url,
-                            "title": _titleController.text,
-                            "standard": standard,
-                            "subject": subject,
-                            "likes": [],
-                            "comments": [],
-                            "reports": [],
-                          });
-                          setState(() {
-                            _isLoading = false;
-                          });
-                          setState(() {
-                            _titleController.text = "";
-                            _file = null;
-                          });
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text("Posted!"),
-                            duration: Duration(seconds: 2),
-                          ));
-                        } else {
-                          setState(() {
-                            _isLoading = false;
-                          });
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text("Enter title and image"),
-                          ));
-                        }
-                      } catch (err) {
-                        print(err);
-                        setState(() {
-                          _isLoading = false;
-                        });
-                      }
-                    },
+                    onPressed: uploadPdftoFirebase,
                     color: UniversalVariables().logoGreen,
                     child: Text("Share"),
                     shape: RoundedRectangleBorder(
