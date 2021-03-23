@@ -3,6 +3,7 @@ import 'dart:io' as io;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:notefynd/screens/home_screen.dart';
 import 'package:notefynd/universal_variables.dart';
@@ -16,6 +17,8 @@ class DetailsScreen extends StatefulWidget {
 class _DetailsScreenState extends State<DetailsScreen> {
   UniversalVariables _universalVariables = UniversalVariables();
   TextEditingController _descriptionController = TextEditingController();
+  TextEditingController _schoolNameController = TextEditingController();
+  TextEditingController _subjectController = TextEditingController();
   io.File _image;
   final picker = ImagePicker();
   PickedFile pickedFile;
@@ -87,71 +90,277 @@ class _DetailsScreenState extends State<DetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _universalVariables.secondaryColor,
+      backgroundColor: _universalVariables.primaryColor,
       body: _isLoading == false
-          ? Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  child: Stack(children: [
-                    CircleAvatar(
-                      radius: 64,
-                      backgroundImage: _image == null
-                          ? NetworkImage(
-                              "https://i.stack.imgur.com/l60Hf.png",
-                            )
-                          : FileImage(_image),
-                    ),
-                    Positioned(
-                      bottom: -10,
-                      left: 80,
-                      child: IconButton(
-                        onPressed: getImage,
-                        icon: Icon(Icons.add_a_photo),
-                        color: Colors.white,
-                      ),
-                    )
-                  ]),
-                ),
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 70, horizontal: 10),
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                      color: _universalVariables.secondaryColor,
-                      border: Border.all(color: Colors.blue)),
-                  child: TextFormField(
-                    controller: _descriptionController,
-                    style: TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                      labelText: "Description",
-                      alignLabelWithHint: true,
-                      labelStyle: TextStyle(color: Colors.white),
-                      icon: Icon(
-                        Icons.description,
-                        color: Colors.white,
-                      ),
-                      border: InputBorder.none,
-                    ),
-                    keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.done,
-                    maxLines: 5,
-                    maxLength: 200,
+          ? SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.1,
                   ),
-                ),
-                MaterialButton(
-                  minWidth: 150,
-                  elevation: 0,
-                  height: 50,
-                  onPressed: uploadDataToFirebase,
-                  color: UniversalVariables().logoGreen,
-                  child: Text("Done"),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
+                  Container(
+                    child: Stack(children: [
+                      CircleAvatar(
+                        radius: 64,
+                        backgroundImage: _image == null
+                            ? NetworkImage(
+                                "https://i.stack.imgur.com/l60Hf.png",
+                              )
+                            : FileImage(_image),
+                      ),
+                      Positioned(
+                        bottom: -10,
+                        left: 80,
+                        child: IconButton(
+                          onPressed: getImage,
+                          icon: Icon(Icons.add_a_photo),
+                          color: Colors.white,
+                        ),
+                      )
+                    ]),
                   ),
-                  textColor: Colors.white,
-                ),
-              ],
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 15),
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                        color: _universalVariables.secondaryColor,
+                        border: Border.all(color: Colors.blue)),
+                    child: TextFormField(
+                      controller: _descriptionController,
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                        labelText: "Description",
+                        alignLabelWithHint: true,
+                        labelStyle: TextStyle(color: Colors.white),
+                        icon: Icon(
+                          Icons.description,
+                          color: Colors.white,
+                        ),
+                        border: InputBorder.none,
+                      ),
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.done,
+                      maxLines: 5,
+                      maxLength: 200,
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 15),
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                        color: _universalVariables.secondaryColor,
+                        border: Border.all(color: Colors.blue)),
+                    child: TextFormField(
+                      controller: _schoolNameController,
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                        labelText: "School Name",
+                        labelStyle: TextStyle(color: Colors.white),
+                        icon: Icon(
+                          Icons.school,
+                          color: Colors.white,
+                        ),
+                        border: InputBorder.none,
+                      ),
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.done,
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 15),
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                        color: _universalVariables.secondaryColor,
+                        border: Border.all(color: Colors.blue)),
+                    child: TextFormField(
+                      controller: _subjectController,
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                        labelText: "Stream",
+                        labelStyle: TextStyle(color: Colors.white),
+                        icon: Icon(
+                          Icons.stream,
+                          color: Colors.white,
+                        ),
+                        border: InputBorder.none,
+                      ),
+                      keyboardType: TextInputType.number,
+                      textInputAction: TextInputAction.done,
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 19.0, right: 19.0, bottom: 15),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Select Class",
+                            style: GoogleFonts.lato(
+                                color: Colors.white, fontSize: 14)),
+                                SizedBox(height: 10,),
+                        Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 10.0),
+                              child: MaterialButton(
+                                minWidth:
+                                    MediaQuery.of(context).size.width * 0.20,
+                                elevation: 0,
+                                height: 50,
+                                onPressed: uploadDataToFirebase,
+                                color: _universalVariables.secondaryColor,
+                                child: Text("5"),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                textColor: Colors.white,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 10.0),
+                              child: MaterialButton(
+                                minWidth:
+                                    MediaQuery.of(context).size.width * 0.20,
+                                elevation: 0,
+                                height: 50,
+                                onPressed: uploadDataToFirebase,
+                                color: _universalVariables.secondaryColor,
+                                child: Text("6"),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                textColor: Colors.white,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 10.0),
+                              child: MaterialButton(
+                                minWidth:
+                                    MediaQuery.of(context).size.width * 0.20,
+                                elevation: 0,
+                                height: 50,
+                                onPressed: uploadDataToFirebase,
+                                color: _universalVariables.secondaryColor,
+                                child: Text("7"),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                textColor: Colors.white,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 10.0),
+                              child: MaterialButton(
+                                minWidth:
+                                    MediaQuery.of(context).size.width * 0.20,
+                                elevation: 0,
+                                height: 50,
+                                onPressed: uploadDataToFirebase,
+                                color: _universalVariables.secondaryColor,
+                                child: Text("8"),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                textColor: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 10.0),
+                                child: MaterialButton(
+                                  minWidth:
+                                      MediaQuery.of(context).size.width * 0.20,
+                                  elevation: 0,
+                                  height: 50,
+                                  onPressed: uploadDataToFirebase,
+                                  color: _universalVariables.secondaryColor,
+                                  child: Text("9"),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  textColor: Colors.white,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 10.0),
+                                child: MaterialButton(
+                                  minWidth:
+                                      MediaQuery.of(context).size.width * 0.20,
+                                  elevation: 0,
+                                  height: 50,
+                                  onPressed: uploadDataToFirebase,
+                                  color: _universalVariables.secondaryColor,
+                                  child: Text("10"),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  textColor: Colors.white,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 10.0),
+                                child: MaterialButton(
+                                  minWidth:
+                                      MediaQuery.of(context).size.width * 0.20,
+                                  elevation: 0,
+                                  height: 50,
+                                  onPressed: uploadDataToFirebase,
+                                  color: _universalVariables.secondaryColor,
+                                  child: Text("11"),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  textColor: Colors.white,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 10.0),
+                                child: MaterialButton(
+                                  minWidth:
+                                      MediaQuery.of(context).size.width * 0.20,
+                                  elevation: 0,
+                                  height: 50,
+                                  onPressed: uploadDataToFirebase,
+                                  color: _universalVariables.secondaryColor,
+                                  child: Text("12"),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  textColor: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  MaterialButton(
+                    minWidth: 150,
+                    elevation: 0,
+                    height: 50,
+                    onPressed: uploadDataToFirebase,
+                    color: UniversalVariables().logoGreen,
+                    child: Text("Done"),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    textColor: Colors.white,
+                  ),
+                ],
+              ),
             )
           : Center(
               child: CircularProgressIndicator(),

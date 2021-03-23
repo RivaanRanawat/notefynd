@@ -44,7 +44,7 @@ class _MyAppState extends State<MyApp> {
                 return SplashScreen();
               }
               if (userSnapshot.hasData) {
-                return HomeScreen();
+                return DetailsScreen();
               }
               return LoginScreen();
             }),
