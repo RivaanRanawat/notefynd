@@ -25,6 +25,7 @@ dependencies:
     sdk: flutter
   cloud_firestore: ^1.0.1
   cupertino_icons: ^1.0.2
+  duration: ^3.0.6
   file_picker: ^3.0.0
   firebase_auth: ^1.0.1
   firebase_core: ^1.0.1
@@ -37,6 +38,7 @@ dependencies:
   google_sign_in: ^5.0.1
   image_picker: ^0.7.3
   provider: ^5.0.0
+  timeago: ^3.0.2
 
 dev_dependencies:
   flutter_test:

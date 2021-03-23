@@ -33,14 +33,20 @@ class Creator with ChangeNotifier {
       firebase_storage.TaskSnapshot snapshot = await uploadTask;
       String url = await snapshot.ref.getDownloadURL();
       print("epic " + url);
+      DocumentSnapshot snap = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(FirebaseAuth.instance.currentUser.uid)
+          .get();
+      var username = snap["username"];
       FirebaseFirestore.instance.collection("pdf-posts").add({
         "uid": FirebaseAuth.instance.currentUser.uid,
-        "datePublished": DateTime.now().toString(),
+        "datePublished": Timestamp.now(),
         "pdfUrl": url,
         "title": _title,
         "standard": standard,
         "description": description,
         "subject": subject,
+        "username": username,
         "stream": stream,
         "likes": [],
         "comments": [],
