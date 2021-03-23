@@ -36,8 +36,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       String result = await Provider.of<AuthMethods>(context, listen: false)
           .signUpUser(email, password, fullName);
       if (result == "success") {
-        Navigator.of(context)
-            .pushReplacement(MaterialPageRoute(builder: (ctx) => DetailsScreen()));
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (ctx) => DetailsScreen()));
       } else {
         var snackbar = new SnackBar(
           content: new Text(result),

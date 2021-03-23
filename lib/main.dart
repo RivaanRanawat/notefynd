@@ -23,16 +23,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String bio = "";
-
-  getUserData() async {
-    DocumentSnapshot snapshot = await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser.uid)
-        .get();
-    bio = snapshot["bio"];
-    print(bio);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,12 +44,7 @@ class _MyAppState extends State<MyApp> {
                 return SplashScreen();
               }
               if (userSnapshot.hasData) {
-                getUserData();
-                if (bio == "") {
-                  return DetailsScreen();
-                } else {
-                  return HomeScreen();
-                }
+                return HomeScreen();
               }
               return LoginScreen();
             }),

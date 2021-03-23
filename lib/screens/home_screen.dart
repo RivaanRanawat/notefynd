@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:notefynd/screens/add_pdf_notes.dart';
+import 'package:notefynd/screens/auth/details_screen.dart';
 import 'package:notefynd/screens/pages/notes_screen.dart';
 import 'package:notefynd/screens/pages/profile_screen.dart';
 import 'package:notefynd/screens/pages/videos_screen.dart';
@@ -41,6 +44,25 @@ class _HomeScreenState extends State<HomeScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     getUserStatus();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserData();
+  }
+
+  getUserData() async {
+    String bio;
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .get();
+    bio = snapshot["bio"];
+    if (bio == "") {
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (ctx) => DetailsScreen()));
+    }
   }
 
   @override
