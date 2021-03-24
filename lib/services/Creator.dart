@@ -16,8 +16,8 @@ class Creator with ChangeNotifier {
     return creator;
   }
 
-  Future<String> storePdfNotes(File _file, String _fileName, String standard,
-      String _title, String subject, String description, String stream) async {
+  Future<String> storePdfNotes(File _file, String _fileName, String _title,
+      String subject, String description, String school) async {
     String retValue = "";
     try {
       var reference = firebase_storage.FirebaseStorage.instance
@@ -43,14 +43,16 @@ class Creator with ChangeNotifier {
         "datePublished": Timestamp.now(),
         "pdfUrl": url,
         "title": _title,
-        "standard": standard,
+        "grade": snap["grade"],
         "description": description,
         "subject": subject,
         "username": username,
-        "stream": stream,
+        "schoolName": school,
         "likes": [],
         "comments": [],
         "reports": [],
+        "stream": snap["stream"],
+        "profilePic": snap["profilePhoto"]
       });
       retValue = "success";
     } catch (err) {

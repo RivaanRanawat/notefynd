@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:notefynd/services/Creator.dart';
 import 'dart:io';
@@ -17,9 +19,8 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
   TextEditingController _titleController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _subjectController = TextEditingController();
-  TextEditingController _streamController = TextEditingController();
+  TextEditingController _schoolController = TextEditingController();
   var _isLoading = false;
-  String standard = "10";
 
   uploadPdftoFirebase() async {
     setState(() {
@@ -30,11 +31,10 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
           .storePdfNotes(
               _file,
               fileName,
-              standard,
               _titleController.text,
               _subjectController.text,
               _descriptionController.text,
-              _streamController.text);
+              _schoolController.text);
       setState(() {
         _isLoading = false;
       });
@@ -42,6 +42,8 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
         setState(() {
           _titleController.text = "";
           _descriptionController.text = "";
+          _subjectController.text = "";
+          _schoolController.text = "";
           _file = null;
         });
         setState(() {
@@ -71,7 +73,7 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
   void initState() {
     super.initState();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -173,11 +175,11 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
                         color: UniversalVariables().secondaryColor,
                         border: Border.all(color: Colors.blue)),
                     child: TextFormField(
-                      controller: _streamController,
+                      controller: _schoolController,
                       style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                        labelText: "Stream",
+                        labelText: "School",
                         labelStyle: TextStyle(color: Colors.white),
                         border: InputBorder.none,
                       ),

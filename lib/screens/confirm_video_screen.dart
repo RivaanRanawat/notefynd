@@ -130,6 +130,7 @@ class _ConfirmVideoScreenState extends State<ConfirmVideoScreen> {
           "school": _schoolController.text,
           "stream": stream,
           "grade": grade,
+          "datePublished": Timestamp.now(),
         });
 
         Navigator.of(context).pop();
