@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:notefynd/screens/add_pdf_notes.dart';
+import 'package:notefynd/screens/confirm_video_screen.dart';
 import 'package:notefynd/universal_variables.dart';
+import "dart:io";
 
 class AddContent extends StatefulWidget {
   @override
@@ -13,6 +15,11 @@ class _AddContentState extends State<AddContent> {
   pickVideo(ImageSource src) async {
     Navigator.of(context).pop();
     final video = await ImagePicker().getVideo(source: src);
+    if (video != null) {
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (ctx) =>
+              ConfirmVideoScreen(File(video.path), video.path, src)));
+    }
   }
 
   showOptionsDialog(BuildContext context) {

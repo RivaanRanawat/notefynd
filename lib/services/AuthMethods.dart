@@ -21,7 +21,11 @@ class AuthMethods with ChangeNotifier {
         "email": email.trim(),
         "status": "user",
         "bio": "",
-        "profilePhoto": ""
+        "profilePhoto": "",
+        "schoolName": "",
+        "stream": "",
+        "subject": "",
+        "grade": ""
       });
       returnValue = "success";
     } catch (err) {
@@ -65,6 +69,10 @@ class AuthMethods with ChangeNotifier {
         "status": "user",
         "bio": "",
         "profilePhoto": user.photoURL,
+        "schoolName": "",
+        "stream": "",
+        "subject": "",
+        "grade": ""
       });
       retVal = "success";
     } catch (err) {

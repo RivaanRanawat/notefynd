@@ -3,6 +3,7 @@ import 'dart:io' as io;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:notefynd/screens/home_screen.dart';
@@ -19,11 +20,15 @@ class _DetailsScreenState extends State<DetailsScreen> {
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _schoolNameController = TextEditingController();
   TextEditingController _subjectController = TextEditingController();
+  TextEditingController _streamController = TextEditingController();
   io.File _image;
   final picker = ImagePicker();
   PickedFile pickedFile;
   String downloadUrl;
+  String _grade = "";
+  String _stream = "Science";
   var _isLoading = false;
+
   Future getImage() async {
     pickedFile = await picker.getImage(source: ImageSource.gallery);
 
@@ -52,19 +57,35 @@ class _DetailsScreenState extends State<DetailsScreen> {
     return Future.value(uploadTask);
   }
 
+  handleClassButtonClick(String grade) {
+    setState(() {
+      _grade = grade;
+    });
+    print(_grade);
+  }
+
   uploadDataToFirebase() async {
     setState(() {
       _isLoading = true;
     });
     try {
-      if (_image != null && _descriptionController.text.isNotEmpty) {
+      if (_image != null &&
+          _descriptionController.text.isNotEmpty &&
+          _schoolNameController.text.isNotEmpty &&
+          _stream != "" &&
+          _subjectController.text.isNotEmpty &&
+          _grade != "") {
         await uploadImageToStorage(pickedFile);
         FirebaseFirestore.instance
             .collection("users")
             .doc(FirebaseAuth.instance.currentUser.uid)
             .update({
           "bio": _descriptionController.text,
-          "profilePhoto": downloadUrl
+          "profilePhoto": downloadUrl,
+          "schoolName": _schoolNameController.text,
+          "stream": _stream,
+          "subject": _subjectController.text,
+          "grade": _grade,
         });
         setState(() {
           _isLoading = false;
@@ -75,8 +96,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
         setState(() {
           _isLoading = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Please enter a title and an image")));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Please enter all the fields with an image")));
       }
     } catch (err) {
       setState(() {
@@ -95,7 +116,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
               child: Column(
                 children: [
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.1,
+                    height: MediaQuery.of(context).size.height * 0.06,
                   ),
                   Container(
                     child: Stack(children: [
@@ -171,6 +192,36 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.015),
                   Container(
+                    width: MediaQuery.of(context).size.width,
+                    margin: EdgeInsets.symmetric(horizontal: 15),
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                        color: _universalVariables.secondaryColor,
+                        border: Border.all(color: Colors.blue)),
+                    child: DropdownButton<String>(
+                      value: _stream,
+                      icon: Icon(Icons.arrow_drop_down, color: Colors.white),
+                      dropdownColor: UniversalVariables().secondaryColor,
+                      style: GoogleFonts.lato(color: Colors.white),
+                      items: <String>['Commerce', 'Science', 'Arts']
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Padding(
+                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.1),
+                            child: Text(value),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (String newValue) {
+                        setState(() {
+                          _stream = newValue;
+                        });
+                      },
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.015),
+                  Container(
                     margin: EdgeInsets.symmetric(horizontal: 15),
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
@@ -181,15 +232,14 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                        labelText: "Stream",
+                        labelText: "Subject",
                         labelStyle: TextStyle(color: Colors.white),
                         icon: Icon(
-                          Icons.stream,
+                          Icons.book,
                           color: Colors.white,
                         ),
                         border: InputBorder.none,
                       ),
-                      keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.done,
                     ),
                   ),
@@ -215,39 +265,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                     MediaQuery.of(context).size.width * 0.20,
                                 elevation: 0,
                                 height: 50,
-                                onPressed: uploadDataToFirebase,
-                                color: _universalVariables.secondaryColor,
-                                child: Text("5"),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                textColor: Colors.white,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 10.0),
-                              child: MaterialButton(
-                                minWidth:
-                                    MediaQuery.of(context).size.width * 0.20,
-                                elevation: 0,
-                                height: 50,
-                                onPressed: uploadDataToFirebase,
-                                color: _universalVariables.secondaryColor,
-                                child: Text("6"),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                textColor: Colors.white,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 10.0),
-                              child: MaterialButton(
-                                minWidth:
-                                    MediaQuery.of(context).size.width * 0.20,
-                                elevation: 0,
-                                height: 50,
-                                onPressed: uploadDataToFirebase,
+                                onPressed: () => handleClassButtonClick("7"),
                                 color: _universalVariables.secondaryColor,
                                 child: Text("7"),
                                 shape: RoundedRectangleBorder(
@@ -263,9 +281,41 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                     MediaQuery.of(context).size.width * 0.20,
                                 elevation: 0,
                                 height: 50,
-                                onPressed: uploadDataToFirebase,
+                                onPressed: () => handleClassButtonClick("8"),
                                 color: _universalVariables.secondaryColor,
                                 child: Text("8"),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                textColor: Colors.white,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 10.0),
+                              child: MaterialButton(
+                                minWidth:
+                                    MediaQuery.of(context).size.width * 0.20,
+                                elevation: 0,
+                                height: 50,
+                                onPressed: () => handleClassButtonClick("9"),
+                                color: _universalVariables.secondaryColor,
+                                child: Text("9"),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                textColor: Colors.white,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 10.0),
+                              child: MaterialButton(
+                                minWidth:
+                                    MediaQuery.of(context).size.width * 0.20,
+                                elevation: 0,
+                                height: 50,
+                                onPressed: () => handleClassButtonClick("10"),
+                                color: _universalVariables.secondaryColor,
+                                child: Text("10"),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                 ),
@@ -285,39 +335,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                       MediaQuery.of(context).size.width * 0.20,
                                   elevation: 0,
                                   height: 50,
-                                  onPressed: uploadDataToFirebase,
-                                  color: _universalVariables.secondaryColor,
-                                  child: Text("9"),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  textColor: Colors.white,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 10.0),
-                                child: MaterialButton(
-                                  minWidth:
-                                      MediaQuery.of(context).size.width * 0.20,
-                                  elevation: 0,
-                                  height: 50,
-                                  onPressed: uploadDataToFirebase,
-                                  color: _universalVariables.secondaryColor,
-                                  child: Text("10"),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  textColor: Colors.white,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 10.0),
-                                child: MaterialButton(
-                                  minWidth:
-                                      MediaQuery.of(context).size.width * 0.20,
-                                  elevation: 0,
-                                  height: 50,
-                                  onPressed: uploadDataToFirebase,
+                                  onPressed: () => handleClassButtonClick("11"),
                                   color: _universalVariables.secondaryColor,
                                   child: Text("11"),
                                   shape: RoundedRectangleBorder(
@@ -333,9 +351,41 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                       MediaQuery.of(context).size.width * 0.20,
                                   elevation: 0,
                                   height: 50,
-                                  onPressed: uploadDataToFirebase,
+                                  onPressed: () => handleClassButtonClick("12"),
                                   color: _universalVariables.secondaryColor,
                                   child: Text("12"),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  textColor: Colors.white,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 10.0),
+                                child: MaterialButton(
+                                  minWidth:
+                                      MediaQuery.of(context).size.width * 0.20,
+                                  elevation: 0,
+                                  height: 50,
+                                  onPressed: () => handleClassButtonClick("UG"),
+                                  color: _universalVariables.secondaryColor,
+                                  child: Text("UG"),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  textColor: Colors.white,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 10.0),
+                                child: MaterialButton(
+                                  minWidth:
+                                      MediaQuery.of(context).size.width * 0.20,
+                                  elevation: 0,
+                                  height: 50,
+                                  onPressed: () => handleClassButtonClick("PG"),
+                                  color: _universalVariables.secondaryColor,
+                                  child: Text("PG"),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
