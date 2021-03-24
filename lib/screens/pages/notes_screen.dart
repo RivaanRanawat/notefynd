@@ -159,8 +159,18 @@ class _NotesScreenState extends State<NotesScreen> {
                                         padding:
                                             const EdgeInsets.only(bottom: 8.0),
                                         child: Text(
-                                          "Standard : " +
-                                              posts.data()["standard"],
+                                          "Grade : " + posts.data()["grade"],
+                                          style: GoogleFonts.lato(
+                                              color: Colors.white,
+                                              fontSize: 14),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 8.0),
+                                        child: Text(
+                                          "School : " +
+                                              posts.data()["schoolName"],
                                           style: GoogleFonts.lato(
                                               color: Colors.white,
                                               fontSize: 14),
@@ -172,7 +182,7 @@ class _NotesScreenState extends State<NotesScreen> {
                                         child: Text(
                                           "Notes for " +
                                               posts.data()["subject"] +
-                                              ", " +
+                                              " , " +
                                               posts.data()["stream"],
                                           style: GoogleFonts.lato(
                                               color: Colors.white,
