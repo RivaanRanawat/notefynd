@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
-import 'package:notefynd/screens/add_pdf_notes.dart';
+import 'package:notefynd/screens/add_content.dart';
 import 'package:notefynd/screens/auth/details_screen.dart';
 import 'package:notefynd/screens/pages/notes_screen.dart';
 import 'package:notefynd/screens/pages/profile_screen.dart';
@@ -17,7 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   UniversalVariables universalVariables = UniversalVariables();
-  int pageIndex = 1;
+  int pageIndex = 2;
 
   String status;
 
@@ -36,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List creatorPageOptions = [
     VideoScreen(),
     NotesScreen(),
-    AddPdfNotes(),
+    AddContent(),
     ProfileScreen(),
   ];
 
