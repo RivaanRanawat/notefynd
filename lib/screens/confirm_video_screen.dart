@@ -23,12 +23,10 @@ class ConfirmVideoScreen extends StatefulWidget {
 class _ConfirmVideoScreenState extends State<ConfirmVideoScreen> {
   VideoPlayerController controller;
   var isLoading = false;
-  String fileName;
   TextEditingController _titleController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _subjectController = TextEditingController();
-  TextEditingController _streamController = TextEditingController();
-  String standard = "10";
+  TextEditingController _schoolController = TextEditingController();
   FlutterVideoCompress flutterVideoCompress = FlutterVideoCompress();
 
   @override
@@ -40,7 +38,7 @@ class _ConfirmVideoScreenState extends State<ConfirmVideoScreen> {
     controller.initialize();
     controller.play();
     controller.setVolume(1);
-    controller.setLooping(true);
+    controller.setLooping(false);
   }
 
   @override
@@ -84,8 +82,9 @@ class _ConfirmVideoScreenState extends State<ConfirmVideoScreen> {
     UploadTask uploadTask;
     Reference ref = FirebaseStorage.instance
         .ref()
-        .child('images')
-        .child(FirebaseAuth.instance.currentUser.uid);
+        .child('video-images')
+        .child(FirebaseAuth.instance.currentUser.uid)
+        .child(id);
     uploadTask = ref.putFile(await getPreviewImage());
     downloadUrl = await ref.getDownloadURL();
     return downloadUrl;
@@ -97,24 +96,48 @@ class _ConfirmVideoScreenState extends State<ConfirmVideoScreen> {
     });
     try {
       var uid = FirebaseAuth.instance.currentUser.uid;
+      print("started");
       DocumentSnapshot userDoc =
           await FirebaseFirestore.instance.collection("users").doc(uid).get();
-      var allDocs = await FirebaseFirestore.instance.collection("videos").get();
-      int len = allDocs.docs.length;
-      String video = await uploadVideoToStorage("Video $len");
-      String previewImage = await uploadImageToStorage("Video $len");
-      FirebaseFirestore.instance.collection("videos").doc("Video $len").set({
-        "username": userDoc.data()["username"],
-        "uid": uid,
-        "profilePic": userDoc.data()["profilePic"],
-        "id": "Video $len",
-        "likes": [],
-        "commentCount": 0,
-        "shareCount": 0,
-        "videoUrl": video,
-        "previewImage": previewImage,
-      });
-      Navigator.of(context).pop();
+      print("goes");
+      print("hopefully");
+      String stream = userDoc["stream"];
+      String grade = userDoc["grade"];
+      print("works");
+      if (_descriptionController.text.isNotEmpty &&
+          _titleController.text.isNotEmpty &&
+          _subjectController.text.isNotEmpty &&
+          _schoolController.text.isNotEmpty) {
+        print("nice");
+        String video = await uploadVideoToStorage(_titleController.text);
+        print("maybe");
+        String previewImage = await uploadImageToStorage(_titleController.text);
+        print("idk");
+        FirebaseFirestore.instance
+            .collection("videos")
+            .doc(_titleController.text)
+            .set({
+          "username": userDoc.data()["username"],
+          "uid": uid,
+          "profilePic": userDoc.data()["profilePhoto"],
+          "likes": [],
+          "comments": [],
+          "videoUrl": video,
+          "previewImage": previewImage,
+          "description": _descriptionController.text,
+          "title": _titleController.text,
+          "subject": _subjectController.text,
+          "school": _schoolController.text,
+          "stream": stream,
+          "grade": grade,
+        });
+
+        Navigator.of(context).pop();
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+      }
     } catch (err) {
       setState(() {
         isLoading = false;
@@ -203,6 +226,9 @@ class _ConfirmVideoScreenState extends State<ConfirmVideoScreen> {
                             ),
                           ),
                         ),
+                        SizedBox(
+                          height: 10,
+                        ),
                         Container(
                           margin: EdgeInsets.all(10),
                           padding:
@@ -211,12 +237,12 @@ class _ConfirmVideoScreenState extends State<ConfirmVideoScreen> {
                               color: UniversalVariables().secondaryColor,
                               border: Border.all(color: Colors.blue)),
                           child: TextFormField(
-                            controller: _streamController,
+                            controller: _schoolController,
                             style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                               contentPadding:
                                   EdgeInsets.symmetric(horizontal: 10),
-                              labelText: "Stream",
+                              labelText: "School",
                               labelStyle: TextStyle(color: Colors.white),
                               border: InputBorder.none,
                             ),
@@ -228,29 +254,31 @@ class _ConfirmVideoScreenState extends State<ConfirmVideoScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            RaisedButton(
+                            MaterialButton(
+                              minWidth: 150,
+                              elevation: 0,
+                              height: 50,
                               onPressed: () => uploadVideo(),
-                              color: Colors.red,
-                              child: Padding(
-                                padding: EdgeInsets.all(10),
-                                child: Text(
-                                  "Share!",
-                                  style: GoogleFonts.lato(
-                                      fontSize: 20, color: Colors.white),
-                                ),
+                              color: Colors.blue,
+                              child: Text(
+                                "Share!",
+                                style: GoogleFonts.lato(
+                                    fontSize: 20, color: Colors.white),
                               ),
+                              textColor: Colors.white,
                             ),
-                            RaisedButton(
+                            MaterialButton(
+                              minWidth: 150,
+                              elevation: 0,
+                              height: 50,
                               onPressed: () => Navigator.of(context).pop(),
-                              color: Colors.lightBlue,
-                              child: Padding(
-                                padding: EdgeInsets.all(10),
-                                child: Text(
-                                  "Another Video",
-                                  style: GoogleFonts.raleway(
-                                      fontSize: 20, color: Colors.white),
-                                ),
+                              color: UniversalVariables().logoGreen,
+                              child: Text(
+                                "Another Video",
+                                style: GoogleFonts.lato(
+                                    fontSize: 20, color: Colors.white),
                               ),
+                              textColor: Colors.white,
                             ),
                           ],
                         ),
@@ -270,9 +298,7 @@ class _ConfirmVideoScreenState extends State<ConfirmVideoScreen> {
                         GoogleFonts.raleway(fontSize: 20, color: Colors.white),
                   ),
                   SizedBox(height: 30),
-                  CircularProgressIndicator(
-                    backgroundColor: Colors.red,
-                  ),
+                  CircularProgressIndicator(),
                 ],
               ),
             ),
