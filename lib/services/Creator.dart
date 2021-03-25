@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import "dart:io";
 import "package:firebase_storage/firebase_storage.dart" as firebase_storage;
+import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class Creator with ChangeNotifier {
   Future<String> getCreatorStatus() async {
@@ -38,7 +40,8 @@ class Creator with ChangeNotifier {
           .doc(FirebaseAuth.instance.currentUser.uid)
           .get();
       var username = snap["username"];
-      FirebaseFirestore.instance.collection("pdf-posts").add({
+      var uniqueId = Uuid().v1();
+      FirebaseFirestore.instance.collection("pdf-posts").doc(uniqueId).set({
         "uid": FirebaseAuth.instance.currentUser.uid,
         "datePublished": Timestamp.now(),
         "pdfUrl": url,
@@ -52,7 +55,8 @@ class Creator with ChangeNotifier {
         "comments": [],
         "reports": [],
         "stream": snap["stream"],
-        "profilePic": snap["profilePhoto"]
+        "profilePic": snap["profilePhoto"],
+        "id": uniqueId
       });
       retValue = "success";
     } catch (err) {

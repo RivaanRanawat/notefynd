@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -76,6 +77,7 @@ class _NotesScreenState extends State<NotesScreen> {
                 return Center(child: CircularProgressIndicator());
               }
               return ListView.builder(
+                shrinkWrap: true,
                 itemCount: snapshot.data.docs.length,
                 itemBuilder: (ctx, idx) {
                   DocumentSnapshot posts = snapshot.data.docs[idx];
@@ -100,15 +102,55 @@ class _NotesScreenState extends State<NotesScreen> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 ListTile(
-                                  leading: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                  leading: CircleAvatar(
+                                    backgroundImage: NetworkImage(
+                                      posts.data()["profilePic"],
+                                    ),
+                                  ),
+                                  trailing: Column(
                                     children: [
-                                      Icon(
-                                        Icons.favorite_border,
-                                        color: Colors.white,
-                                        size: 30,
+                                      Expanded(
+                                        child: IconButton(
+                                          onPressed: () {
+                                            if (posts
+                                                .data()["likes"]
+                                                .contains(posts.data()["uid"])) {
+                                              FirebaseFirestore.instance
+                                                  .collection("pdf-posts")
+                                                  .doc(posts.data()["id"])
+                                                  .update({
+                                                "likes":
+                                                    FieldValue.arrayRemove([
+                                                  FirebaseAuth
+                                                      .instance.currentUser.uid
+                                                ]),
+                                              });
+                                            } else {
+                                              FirebaseFirestore.instance
+                                                  .collection("pdf-posts")
+                                                  .doc(posts.data()["id"])
+                                                  .update({
+                                                "likes": FieldValue.arrayUnion([
+                                                  FirebaseAuth
+                                                      .instance.currentUser.uid
+                                                ]),
+                                              });
+                                            }
+                                          },
+                                          icon: posts.data()["likes"].contains(
+                                                  FirebaseAuth
+                                                      .instance.currentUser.uid)
+                                              ? Icon(
+                                                  Icons.favorite,
+                                                  color: Colors.red,
+                                                  size: 30,
+                                                )
+                                              : Icon(
+                                                  Icons.favorite_border,
+                                                  color: Colors.white,
+                                                  size: 30,
+                                                ),
+                                        ),
                                       ),
                                       Text(
                                         posts.data()["likes"].length.toString(),
