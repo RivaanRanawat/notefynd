@@ -52,7 +52,7 @@ class Creator with ChangeNotifier {
         "username": username,
         "schoolName": school,
         "likes": [],
-        "comments": [],
+        "commentCount": 0,
         "reports": [],
         "stream": snap["stream"],
         "profilePic": snap["profilePhoto"],

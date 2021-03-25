@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:notefynd/screens/auth/details_screen.dart';
 import 'package:notefynd/screens/auth/signup_screen.dart';
 import 'package:notefynd/screens/home_screen.dart';
 import 'package:notefynd/services/AuthMethods.dart';

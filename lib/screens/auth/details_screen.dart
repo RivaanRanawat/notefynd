@@ -3,7 +3,6 @@ import 'dart:io' as io;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:notefynd/screens/home_screen.dart';
@@ -208,7 +207,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Padding(
-                            padding: EdgeInsets.only(left: MediaQuery.of(context).size.width*0.1),
+                            padding: EdgeInsets.only(
+                                left: MediaQuery.of(context).size.width * 0.1),
                             child: Text(value),
                           ),
                         );
@@ -419,3 +419,4 @@ class _DetailsScreenState extends State<DetailsScreen> {
     );
   }
 }
+//

@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:notefynd/screens/comment_screen.dart';
 import 'package:notefynd/screens/pages/pdf_screen.dart';
 import 'package:notefynd/universal_variables.dart';
 import 'package:path_provider/path_provider.dart';
@@ -107,61 +108,8 @@ class _NotesScreenState extends State<NotesScreen> {
                                       posts.data()["profilePic"],
                                     ),
                                   ),
-                                  trailing: Column(
-                                    children: [
-                                      Expanded(
-                                        child: IconButton(
-                                          onPressed: () {
-                                            if (posts
-                                                .data()["likes"]
-                                                .contains(posts.data()["uid"])) {
-                                              FirebaseFirestore.instance
-                                                  .collection("pdf-posts")
-                                                  .doc(posts.data()["id"])
-                                                  .update({
-                                                "likes":
-                                                    FieldValue.arrayRemove([
-                                                  FirebaseAuth
-                                                      .instance.currentUser.uid
-                                                ]),
-                                              });
-                                            } else {
-                                              FirebaseFirestore.instance
-                                                  .collection("pdf-posts")
-                                                  .doc(posts.data()["id"])
-                                                  .update({
-                                                "likes": FieldValue.arrayUnion([
-                                                  FirebaseAuth
-                                                      .instance.currentUser.uid
-                                                ]),
-                                              });
-                                            }
-                                          },
-                                          icon: posts.data()["likes"].contains(
-                                                  FirebaseAuth
-                                                      .instance.currentUser.uid)
-                                              ? Icon(
-                                                  Icons.favorite,
-                                                  color: Colors.red,
-                                                  size: 30,
-                                                )
-                                              : Icon(
-                                                  Icons.favorite_border,
-                                                  color: Colors.white,
-                                                  size: 30,
-                                                ),
-                                        ),
-                                      ),
-                                      Text(
-                                        posts.data()["likes"].length.toString(),
-                                        style: GoogleFonts.lato(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                  trailing: const Icon(Icons.more_vert,
+                                      color: Colors.white),
                                   title: Padding(
                                     padding: const EdgeInsets.only(bottom: 8.0),
                                     child: Row(
@@ -253,6 +201,101 @@ class _NotesScreenState extends State<NotesScreen> {
                                               color: Colors.white,
                                               fontSize: 15),
                                         ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          IconButton(
+                                            onPressed: () {
+                                              if (posts
+                                                  .data()["likes"]
+                                                  .contains(
+                                                      posts.data()["uid"])) {
+                                                FirebaseFirestore.instance
+                                                    .collection("pdf-posts")
+                                                    .doc(posts.data()["id"])
+                                                    .update({
+                                                  "likes":
+                                                      FieldValue.arrayRemove([
+                                                    FirebaseAuth.instance
+                                                        .currentUser.uid
+                                                  ]),
+                                                });
+                                              } else {
+                                                FirebaseFirestore.instance
+                                                    .collection("pdf-posts")
+                                                    .doc(posts.data()["id"])
+                                                    .update({
+                                                  "likes":
+                                                      FieldValue.arrayUnion([
+                                                    FirebaseAuth.instance
+                                                        .currentUser.uid
+                                                  ]),
+                                                });
+                                              }
+                                            },
+                                            icon: posts
+                                                    .data()["likes"]
+                                                    .contains(FirebaseAuth
+                                                        .instance
+                                                        .currentUser
+                                                        .uid)
+                                                ? Icon(
+                                                    Icons.favorite,
+                                                    color: Colors.red,
+                                                    size: 30,
+                                                  )
+                                                : Icon(
+                                                    Icons.favorite_border,
+                                                    color: Colors.white,
+                                                    size: 30,
+                                                  ),
+                                          ),
+                                          Text(
+                                            posts
+                                                .data()["likes"]
+                                                .length
+                                                .toString(),
+                                            style: GoogleFonts.lato(
+                                              color: Colors.white,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.15,
+                                          ),
+                                          IconButton(
+                                            onPressed: () =>
+                                                Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (ctx) => CommentScreen(
+                                                  profilePic: posts.data()["profilePic"],
+                                                  id: posts.data()["id"],
+                                                ),
+                                              ),
+                                            ),
+                                            icon: Icon(
+                                              Icons.comment,
+                                              color: Colors.white,
+                                              size: 30,
+                                            ),
+                                          ),
+                                          Text(
+                                            posts
+                                                .data()["commentCount"]
+                                                .toString(),
+                                            style: GoogleFonts.lato(
+                                              color: Colors.white,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
