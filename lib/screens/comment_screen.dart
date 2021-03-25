@@ -6,9 +6,8 @@ import 'package:notefynd/universal_variables.dart';
 import "package:timeago/timeago.dart" as Tago;
 
 class CommentScreen extends StatefulWidget {
-  final String profilePic;
   final String id;
-  CommentScreen({@required this.profilePic, @required this.id});
+  CommentScreen(this.id);
   @override
   _CommentScreenState createState() => _CommentScreenState();
 }
@@ -38,7 +37,7 @@ class _CommentScreenState extends State<CommentScreen> {
           .set({
         "username": userDoc.data()["username"],
         "uid": uid,
-        "profilePic": widget.profilePic,
+        "profilePic": userDoc.data()["profilePhoto"],
         "comment": commentsController.text,
         "likes": [],
         "time": DateTime.now(),
@@ -99,61 +98,67 @@ class _CommentScreenState extends State<CommentScreen> {
                           itemBuilder: (BuildContext context, int index) {
                             DocumentSnapshot comment =
                                 snapshot.data.docs[index];
-                            return ListTile(
-                              leading: CircleAvatar(
-                                backgroundColor: Colors.black,
-                                backgroundImage:
-                                    NetworkImage(comment.data()["profilePic"]),
-                              ),
-                              title: Row(
-                                children: [
-                                  Text(
-                                    "${comment.data()["username"]}",
-                                    style: GoogleFonts.lato(
-                                        fontSize: 22,
-                                        color: UniversalVariables().logoGreen,
-                                        fontWeight: FontWeight.w700),
-                                  ),
-                                ],
-                              ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "${comment.data()["comment"]}",
-                                    style: GoogleFonts.lato(
-                                        fontSize: 18,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                  SizedBox(height: 10),
-                                  Row(
+                            return Container(
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.black,
+                                  backgroundImage: NetworkImage(
+                                      comment.data()["profilePic"]),
+                                ),
+                                title: Container(
+                                  margin: EdgeInsets.only(bottom: 10),
+                                  child: Wrap(
+                                    alignment: WrapAlignment.start,
                                     children: [
                                       Text(
-                                        "${Tago.format(comment.data()["time"].toDate())}",
+                                        "${comment.data()["username"]}",
                                         style: GoogleFonts.lato(
-                                            fontSize: 12, color: Colors.white),
+                                            fontSize: 16,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w700),
                                       ),
                                       SizedBox(
-                                        width: 10,
+                                        width: 5.0,
                                       ),
                                       Text(
-                                        "${comment.data()["likes"].length} likes",
-                                        style: GoogleFonts.lato(
-                                            fontSize: 12, color: Colors.white),
+                                        "${comment.data()["comment"]}",
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ],
                                   ),
-                                ],
-                              ),
-                              trailing: InkWell(
-                                onTap: () => likeComment(comment.data()["id"]),
-                                child: Icon(
-                                  comment.data()["likes"].contains(uid)
-                                      ? Icons.favorite
-                                      : Icons.favorite_border,
-                                  size: 25,
-                                  color: Colors.red,
+                                ),
+                                subtitle: Row(
+                                  children: [
+                                    Text(
+                                      "${Tago.format(comment.data()["time"].toDate())}",
+                                      style: TextStyle(
+                                          color: Colors.grey,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "${comment.data()["likes"].length} likes",
+                                      style: TextStyle(
+                                          color: Colors.grey,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                                trailing: InkWell(
+                                  onTap: () =>
+                                      likeComment(comment.data()["id"]),
+                                  child: Icon(
+                                    comment.data()["likes"].contains(uid)
+                                        ? Icons.favorite
+                                        : Icons.favorite_border,
+                                    size: 22,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                             );
@@ -161,17 +166,16 @@ class _CommentScreenState extends State<CommentScreen> {
                     },
                   ),
                 ),
+                SizedBox(height: 10),
                 Divider(),
                 ListTile(
                   title: TextFormField(
                     controller: commentsController,
                     style: GoogleFonts.lato(fontSize: 16, color: Colors.white),
                     decoration: InputDecoration(
-                      labelText: "Comment",
-                      labelStyle: GoogleFonts.lato(
-                          fontSize: 20,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700),
+                      hintText: "Comment",
+                      hintStyle: GoogleFonts.lato(
+                          color: Colors.white60, fontWeight: FontWeight.w700),
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.red),
                       ),
@@ -181,7 +185,7 @@ class _CommentScreenState extends State<CommentScreen> {
                     ),
                   ),
                   trailing: TextButton(
-                    onPressed: () => uploadComment(),
+                    onPressed: uploadComment,
                     child: Text(
                       "Send",
                       style:

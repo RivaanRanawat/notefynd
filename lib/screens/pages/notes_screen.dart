@@ -210,8 +210,10 @@ class _NotesScreenState extends State<NotesScreen> {
                                             onPressed: () {
                                               if (posts
                                                   .data()["likes"]
-                                                  .contains(
-                                                      posts.data()["uid"])) {
+                                                  .contains(FirebaseAuth
+                                                      .instance
+                                                      .currentUser
+                                                      .uid)) {
                                                 FirebaseFirestore.instance
                                                     .collection("pdf-posts")
                                                     .doc(posts.data()["id"])
@@ -274,8 +276,7 @@ class _NotesScreenState extends State<NotesScreen> {
                                                 Navigator.of(context).push(
                                               MaterialPageRoute(
                                                 builder: (ctx) => CommentScreen(
-                                                  profilePic: posts.data()["profilePic"],
-                                                  id: posts.data()["id"],
+                                                  posts.data()["id"],
                                                 ),
                                               ),
                                             ),
