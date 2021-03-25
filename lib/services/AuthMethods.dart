@@ -63,47 +63,24 @@ class AuthMethods with ChangeNotifier {
       final UserCredential userCredential =
           await _auth.signInWithCredential(credential);
       final User user = userCredential.user;
-
-      retVal = "success";
-    } catch (err) {
-      retVal = err.toString();
-    }
-    return retVal;
-  }
-
-  Future<String> signUpWithGoogle() async {
-    String retVal = "error";
-    try {
-      final GoogleSignIn googleSignIn = GoogleSignIn();
-      final GoogleSignInAccount googleSignInAccount =
-          await googleSignIn.signIn();
-      final GoogleSignInAuthentication googleSignInAuthentication =
-          await googleSignInAccount.authentication;
-
-      final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleSignInAuthentication.accessToken,
-        idToken: googleSignInAuthentication.idToken,
-      );
-
-      final UserCredential userCredential =
-          await _auth.signInWithCredential(credential);
-      final User user = userCredential.user;
       DocumentSnapshot snap = await FirebaseFirestore.instance
           .collection("users")
           .doc(user.uid)
           .get();
+      if (!snap.exists) {
+        _firestore.collection("users").doc(user.uid).set({
+          "username": user.email.split("@")[0],
+          "email": user.email,
+          "status": "user",
+          "bio": "",
+          "profilePhoto": user.photoURL,
+          "schoolName": "",
+          "stream": "",
+          "subject": "",
+          "grade": ""
+        });
+      }
 
-      _firestore.collection("users").doc(user.uid).set({
-        "username": user.email.split("@")[0],
-        "email": user.email,
-        "status": "user",
-        "bio": "",
-        "profilePhoto": user.photoURL,
-        "schoolName": "",
-        "stream": "",
-        "subject": "",
-        "grade": ""
-      });
       retVal = "success";
     } catch (err) {
       retVal = err.toString();

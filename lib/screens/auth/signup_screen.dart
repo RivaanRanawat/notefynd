@@ -68,29 +68,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.dispose();
   }
 
-  void signUpWithGoogle() async {
-    setState(() {
-      _isLoading = true;
-    });
-    String result = await Provider.of<AuthMethods>(context, listen: false)
-        .signUpWithGoogle();
-    if (result == "success") {
-      setState(() {
-        _isLoading = false;
-      });
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (ctx) => HomeScreen()));
-    } else {
-      setState(() {
-        _isLoading = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(result),
-        duration: Duration(seconds: 2),
-      ));
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -273,24 +250,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             bottomRight: Radius.circular(0),
                           ),
                         ),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    MaterialButton(
-                      elevation: 0,
-                      minWidth: double.maxFinite,
-                      height: 50,
-                      onPressed: signUpWithGoogle,
-                      color: Colors.blue,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Icon(FontAwesomeIcons.google, color: Colors.white),
-                          SizedBox(width: 10),
-                          Text('Sign Up using Google',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16)),
-                        ],
                       ),
                     ),
                     SizedBox(height: 100),

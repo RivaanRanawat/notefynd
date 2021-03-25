@@ -44,6 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     getUserStatus();
+    getUserData();
   }
 
   @override
