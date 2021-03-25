@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:notefynd/screens/auth/login_screen.dart';
+import 'package:notefynd/screens/auth/signup_screen.dart';
 import 'package:notefynd/screens/home_screen.dart';
 import 'package:notefynd/screens/splash_screen.dart';
 import 'package:notefynd/services/AuthMethods.dart';
@@ -43,7 +44,7 @@ class _MyAppState extends State<MyApp> {
               if (userSnapshot.hasData) {
                 return HomeScreen();
               }
-              return LoginScreen();
+              return SignUpScreen();
             }),
       ),
     );

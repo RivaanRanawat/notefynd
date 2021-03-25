@@ -53,12 +53,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   getUserData() async {
-    String bio = "";
+    String bio;
     DocumentSnapshot snapshot = await FirebaseFirestore.instance
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser.uid)
         .get();
-        
     bio = snapshot["bio"];
     if (bio == "") {
       Navigator.of(context).pushReplacement(

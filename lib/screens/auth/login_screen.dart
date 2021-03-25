@@ -206,7 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: <Widget>[
                           Icon(FontAwesomeIcons.google),
                           SizedBox(width: 10),
-                          Text('Sign In using Google',
+                          Text('Login using Google',
                               style:
                                   TextStyle(color: Colors.white, fontSize: 16)),
                         ],

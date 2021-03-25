@@ -1,7 +1,9 @@
 import "package:flutter/material.dart";
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notefynd/screens/auth/details_screen.dart';
 import 'package:notefynd/screens/auth/login_screen.dart';
+import 'package:notefynd/screens/home_screen.dart';
 import 'package:notefynd/services/AuthMethods.dart';
 import 'package:notefynd/universal_variables.dart';
 import 'package:provider/provider.dart';
@@ -64,6 +66,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _passwordFocusNode.dispose();
     _confirmPasswordFocusNode.dispose();
     super.dispose();
+  }
+
+  void signUpWithGoogle() async {
+    setState(() {
+      _isLoading = true;
+    });
+    String result = await Provider.of<AuthMethods>(context, listen: false)
+        .signUpWithGoogle();
+    if (result == "success") {
+      setState(() {
+        _isLoading = false;
+      });
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (ctx) => HomeScreen()));
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(result),
+        duration: Duration(seconds: 2),
+      ));
+    }
   }
 
   @override
@@ -248,6 +273,24 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             bottomRight: Radius.circular(0),
                           ),
                         ),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    MaterialButton(
+                      elevation: 0,
+                      minWidth: double.maxFinite,
+                      height: 50,
+                      onPressed: signUpWithGoogle,
+                      color: Colors.blue,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(FontAwesomeIcons.google, color: Colors.white),
+                          SizedBox(width: 10),
+                          Text('Sign Up using Google',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 16)),
+                        ],
                       ),
                     ),
                     SizedBox(height: 100),
