@@ -14,7 +14,10 @@ class _VideoThumbnailsState extends State<VideoThumbnails> {
   @override
   void initState() {
     super.initState();
-    _videoStream = FirebaseFirestore.instance.collection("videos").snapshots();
+    _videoStream = FirebaseFirestore.instance
+        .collection("videos")
+        .orderBy("datePublished", descending: true)
+        .snapshots();
   }
 
   @override
@@ -69,11 +72,16 @@ class _VideoThumbnailsState extends State<VideoThumbnails> {
                             ),
                           ),
                         ),
-                        subtitle:
-                            Text("${listData.data()["username"]} - $timePosted", style: TextStyle(color: Colors.white),),
+                        subtitle: Text(
+                          "${listData.data()["username"]} - $timePosted",
+                          style: TextStyle(color: Colors.white),
+                        ),
                         trailing: Container(
                             margin: const EdgeInsets.only(bottom: 20.0),
-                            child: Icon(Icons.more_vert, color: Colors.white,)),
+                            child: Icon(
+                              Icons.more_vert,
+                              color: Colors.white,
+                            )),
                       ),
                     ],
                   ),

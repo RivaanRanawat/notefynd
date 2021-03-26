@@ -65,7 +65,10 @@ class _NotesScreenState extends State<NotesScreen> {
   @override
   void initState() {
     super.initState();
-    fileStream = FirebaseFirestore.instance.collection("pdf-posts").snapshots();
+    fileStream = FirebaseFirestore.instance
+        .collection("pdf-posts")
+        .orderBy("datePublished", descending: true)
+        .snapshots();
   }
 
   @override
