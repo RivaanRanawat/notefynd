@@ -52,7 +52,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
         contentType: 'image/jpeg',
         customMetadata: {'picked-file-path': pickedFile.path});
     uploadTask = ref.putFile(io.File(pickedFile.path), metadata);
-    downloadUrl = await ref.getDownloadURL();
+    firebase_storage.TaskSnapshot snapshot = await uploadTask;
+    downloadUrl = await snapshot.ref.getDownloadURL();
     return Future.value(uploadTask);
   }
 

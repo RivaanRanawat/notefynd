@@ -44,21 +44,6 @@ class _AddContentState extends State<AddContent> {
                 ),
               ),
               SimpleDialogOption(
-                onPressed: () => pickVideo(ImageSource.camera),
-                child: Row(
-                  children: [
-                    Icon(Icons.camera_alt),
-                    Padding(
-                      padding: EdgeInsets.all(7),
-                      child: Text(
-                        "Camera",
-                        style: GoogleFonts.lato(fontSize: 20),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SimpleDialogOption(
                 onPressed: () => Navigator.of(context).pop(),
                 child: Row(
                   children: [

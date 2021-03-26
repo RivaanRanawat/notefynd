@@ -11,7 +11,6 @@ class VideoScreen extends StatelessWidget {
         title: Row(
           children: [
             Text("Videos"),
-            
             ],
         ),
       ),
