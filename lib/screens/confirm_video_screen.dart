@@ -8,6 +8,7 @@ import 'package:flutter_video_compress/flutter_video_compress.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:notefynd/universal_variables.dart';
+import 'package:uuid/uuid.dart';
 import 'package:video_player/video_player.dart';
 
 class ConfirmVideoScreen extends StatefulWidget {
@@ -86,7 +87,8 @@ class _ConfirmVideoScreenState extends State<ConfirmVideoScreen> {
         .child(FirebaseAuth.instance.currentUser.uid)
         .child(id);
     uploadTask = ref.putFile(await getPreviewImage());
-    downloadUrl = await ref.getDownloadURL();
+    TaskSnapshot snapshot = await uploadTask;
+    downloadUrl = await snapshot.ref.getDownloadURL();
     return downloadUrl;
   }
 
@@ -96,32 +98,22 @@ class _ConfirmVideoScreenState extends State<ConfirmVideoScreen> {
     });
     try {
       var uid = FirebaseAuth.instance.currentUser.uid;
-      print("started");
       DocumentSnapshot userDoc =
           await FirebaseFirestore.instance.collection("users").doc(uid).get();
-      print("goes");
-      print("hopefully");
       String stream = userDoc["stream"];
       String grade = userDoc["grade"];
-      print("works");
       if (_descriptionController.text.isNotEmpty &&
           _titleController.text.isNotEmpty &&
           _subjectController.text.isNotEmpty &&
           _schoolController.text.isNotEmpty) {
-        print("nice");
-        String video = await uploadVideoToStorage(_titleController.text);
-        print("maybe");
-        String previewImage = await uploadImageToStorage(_titleController.text);
-        print("idk");
-        FirebaseFirestore.instance
-            .collection("videos")
-            .doc(_titleController.text)
-            .set({
+        var randomId = Uuid().v1();
+        String video = await uploadVideoToStorage(randomId);
+        String previewImage = await uploadImageToStorage(randomId);
+        FirebaseFirestore.instance.collection("videos").doc(randomId).set({
           "username": userDoc.data()["username"],
           "uid": uid,
           "profilePic": userDoc.data()["profilePhoto"],
           "likes": [],
-          "comments": [],
           "videoUrl": video,
           "previewImage": previewImage,
           "description": _descriptionController.text,
@@ -131,6 +123,7 @@ class _ConfirmVideoScreenState extends State<ConfirmVideoScreen> {
           "stream": stream,
           "grade": grade,
           "datePublished": Timestamp.now(),
+          "id": randomId,
         });
 
         Navigator.of(context).pop();
