@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
+import 'package:notefynd/screens/video_details_screen.dart';
 import 'package:notefynd/universal_variables.dart';
 import "package:timeago/timeago.dart" as timeago;
 
@@ -41,7 +42,17 @@ class _VideoThumbnailsState extends State<VideoThumbnails> {
                 DateTime dateTime = timestamp.toDate();
                 String timePosted = timeago.format(dateTime);
                 return InkWell(
-                  onTap: () {},
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (ctx) => VideoDetailScreen(
+                        channelAvatar: listData.data()["profilePic"],
+                        channelName: listData.data()["username"],
+                        likeCount: listData.data()["likes"].length.toString(),
+                        thumbnail: listData.data()["previewImage"],
+                        title: listData.data()["title"],
+                      ),
+                    ),
+                  ),
                   child: Column(
                     children: <Widget>[
                       Container(
