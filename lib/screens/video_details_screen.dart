@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
+import 'package:google_fonts/google_fonts.dart';
 import 'package:notefynd/universal_variables.dart';
 import 'package:video_player/video_player.dart';
 import 'package:notefynd/widgets/controls_overlay.dart';
+import "package:timeago/timeago.dart" as Tago;
 
 class VideoDetailScreen extends StatefulWidget {
   final thumbnail;
@@ -29,6 +31,8 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
   VideoPlayerController _controller;
   bool doesLike;
   int likeCount;
+  String profilePic;
+  TextEditingController _commentController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -43,6 +47,7 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
     _controller.setLooping(false);
     _controller.initialize();
     isLiked();
+    getProfilePicOfUser();
   }
 
   isLiked() async {
@@ -62,6 +67,14 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
     }
   }
 
+  getProfilePicOfUser() async {
+    DocumentSnapshot snap = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .get();
+    profilePic = snap["profilePhoto"];
+  }
+
   likeVideo(String id) async {
     DocumentSnapshot doc =
         await FirebaseFirestore.instance.collection("videos").doc(id).get();
@@ -72,7 +85,7 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
       });
       setState(() {
         doesLike = false;
-        likeCount -=1;
+        likeCount -= 1;
       });
     } else {
       FirebaseFirestore.instance.collection("videos").doc(id).update({
@@ -104,7 +117,7 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
     }
 
     return Scaffold(
-        backgroundColor: UniversalVariables().secondaryColor,
+        backgroundColor: UniversalVariables().primaryColor,
         body: Column(
           children: <Widget>[
             _buildVideoPlayer(context),
@@ -189,24 +202,6 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
     );
   }
 
-  Widget _buildButtonColumn(IconData icon, String text) {
-    return Column(
-      children: <Widget>[
-        Container(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: Icon(
-            icon,
-            color: Colors.white,
-          ),
-        ),
-        Text(
-          text,
-          style: TextStyle(color: Colors.white),
-        ),
-      ],
-    );
-  }
-
   Widget _channelInfo() {
     return Container(
       decoration: BoxDecoration(
@@ -245,25 +240,274 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
     );
   }
 
+  Widget buildCommentLayout() {
+    return Column(
+      children: [
+        Expanded(
+          child: StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection("videos")
+                .doc(widget.id)
+                .collection("comments")
+                .snapshots(),
+            builder: (BuildContext context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+
+              return ListView.builder(
+                  itemCount: snapshot.data.docs.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    DocumentSnapshot comment = snapshot.data.docs[index];
+                    return Container(
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.black,
+                          backgroundImage:
+                              NetworkImage(comment.data()["profilePic"]),
+                        ),
+                        title: Container(
+                          margin: EdgeInsets.only(bottom: 10),
+                          child: Wrap(
+                            alignment: WrapAlignment.start,
+                            children: [
+                              Text(
+                                "${comment.data()["username"]}",
+                                style: GoogleFonts.lato(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700),
+                              ),
+                              SizedBox(
+                                width: 5.0,
+                              ),
+                              Text(
+                                "${comment.data()["comment"]}",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        subtitle: Row(
+                          children: [
+                            Text(
+                              "${Tago.format(comment.data()["time"].toDate())}",
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              "${comment.data()["likes"].length} likes",
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        // trailing: InkWell(
+                        //   onTap: () =>
+                        //       likeComment(comment.data()["id"]),
+                        //   child: Icon(
+                        //     comment.data()["likes"].contains(uid)
+                        //         ? Icons.favorite
+                        //         : Icons.favorite_border,
+                        //     size: 22,
+                        //     color: Colors.white,
+                        //   ),
+                        // ),
+                      ),
+                    );
+                  });
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _moreInfo() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Expanded(
-              child: Text(
-            "Up next",
-            style: TextStyle(color: Colors.white),
-          )),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
           Text(
-            "Autoplay",
+            "Comments",
             style: TextStyle(color: Colors.white),
           ),
-          Switch(
-            onChanged: (c) {},
-            value: true,
+          Container(
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: Colors.grey,
+                  width: 0.5,
+                ),
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                profilePic != null
+                    ? CircleAvatar(
+                        backgroundImage: NetworkImage(profilePic),
+                      )
+                    : Container(),
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.only(top: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    // decoration: BoxDecoration(
+                    //   color: UniversalVariables().secondaryColor,
+                    // ),
+                    child: TextFormField(
+                      controller: _commentController,
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                        labelText: "Add Public Comment",
+                        labelStyle: TextStyle(color: Colors.white60),
+                        border: InputBorder.none,
+                      ),
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.newline,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () async {
+                    if (_commentController.text.isNotEmpty) {
+                      DocumentSnapshot userDoc = await FirebaseFirestore
+                          .instance
+                          .collection("users")
+                          .doc(FirebaseAuth.instance.currentUser.uid)
+                          .get();
+                      var allDocs = await FirebaseFirestore.instance
+                          .collection("videos")
+                          .doc(widget.id)
+                          .collection("comments")
+                          .get();
+                      int len = allDocs.docs.length;
+                      FirebaseFirestore.instance
+                          .collection("videos")
+                          .doc(widget.id)
+                          .collection("comments")
+                          .doc("Comment $len")
+                          .set({
+                        "username": userDoc.data()["username"],
+                        "uid": FirebaseAuth.instance.currentUser.uid,
+                        "profilePic": userDoc.data()["profilePhoto"],
+                        "comment": _commentController.text,
+                        "likes": [],
+                        "time": DateTime.now(),
+                        "id": "Comment $len"
+                      });
+                      _commentController.clear();
+                    }
+                  },
+                  padding: EdgeInsets.only(left: 10),
+                  icon: Icon(Icons.send, color: Colors.blue),
+                ),
+              ],
+            ),
           ),
+
+          // Expanded(
+          //   child: StreamBuilder(
+          //     stream: FirebaseFirestore.instance
+          //         .collection("videos")
+          //         .doc(widget.id)
+          //         .collection("comments")
+          //         .snapshots(),
+          //     builder: (BuildContext context, snapshot) {
+          //       if (!snapshot.hasData) {
+          //         return Center(
+          //           child: CircularProgressIndicator(),
+          //         );
+          //       }
+
+          //       return Expanded(
+          //         child: ListView.builder(
+          //             itemCount: snapshot.data.docs.length,
+          //             itemBuilder: (BuildContext context, int index) {
+          //               DocumentSnapshot comment = snapshot.data.docs[index];
+          //               return Container(
+          //                 child: ListTile(
+          //                   leading: CircleAvatar(
+          //                     backgroundColor: Colors.black,
+          //                     backgroundImage:
+          //                         NetworkImage(comment.data()["profilePic"]),
+          //                   ),
+          //                   title: Container(
+          //                     margin: EdgeInsets.only(bottom: 10),
+          //                     child: Wrap(
+          //                       alignment: WrapAlignment.start,
+          //                       children: [
+          //                         Text(
+          //                           "${comment.data()["username"]}",
+          //                           style: GoogleFonts.lato(
+          //                               fontSize: 16,
+          //                               color: Colors.white,
+          //                               fontWeight: FontWeight.w700),
+          //                         ),
+          //                         SizedBox(
+          //                           width: 5.0,
+          //                         ),
+          //                         Text(
+          //                           "${comment.data()["comment"]}",
+          //                           style: TextStyle(
+          //                             fontSize: 14,
+          //                             color: Colors.white,
+          //                           ),
+          //                         ),
+          //                       ],
+          //                     ),
+          //                   ),
+          //                   subtitle: Row(
+          //                     children: [
+          //                       Text(
+          //                         "${Tago.format(comment.data()["time"].toDate())}",
+          //                         style: TextStyle(
+          //                             color: Colors.grey,
+          //                             fontWeight: FontWeight.bold),
+          //                       ),
+          //                       SizedBox(
+          //                         width: 10,
+          //                       ),
+          //                       Text(
+          //                         "${comment.data()["likes"].length} likes",
+          //                         style: TextStyle(
+          //                             color: Colors.grey,
+          //                             fontWeight: FontWeight.bold),
+          //                       ),
+          //                     ],
+          //                   ),
+          //                   // trailing: InkWell(
+          //                   //   onTap: () =>
+          //                   //       likeComment(comment.data()["id"]),
+          //                   //   child: Icon(
+          //                   //     comment.data()["likes"].contains(uid)
+          //                   //         ? Icons.favorite
+          //                   //         : Icons.favorite_border,
+          //                   //     size: 22,
+          //                   //     color: Colors.white,
+          //                   //   ),
+          //                   // ),
+          //                 ),
+          //               );
+          //             }),
+          //       );
+          //     },
+          //   ),
+          // ),
         ],
       ),
     );
