@@ -32,7 +32,6 @@ class _VideoThumbnailsState extends State<VideoThumbnails> {
             return Center(child: CircularProgressIndicator());
           }
           return Container(
-            color: UniversalVariables().primaryColor,
             child: ListView.separated(
               shrinkWrap: true,
               physics: ClampingScrollPhysics(),
@@ -45,13 +44,13 @@ class _VideoThumbnailsState extends State<VideoThumbnails> {
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (ctx) => VideoDetailScreen(
-                        channelAvatar: listData.data()["profilePic"],
-                        channelName: listData.data()["username"],
-                        likeCount: listData.data()["likes"].length.toString(),
-                        thumbnail: listData.data()["previewImage"],
-                        title: listData.data()["title"],
-                        video: listData.data()["videoUrl"],
-                      ),
+                          channelAvatar: listData.data()["profilePic"],
+                          channelName: listData.data()["username"],
+                          thumbnail: listData.data()["previewImage"],
+                          title: listData.data()["title"],
+                          video: listData.data()["videoUrl"],
+                          id: listData.data()["id"]
+                          ),
                     ),
                   ),
                   child: Column(

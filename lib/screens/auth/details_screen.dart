@@ -91,7 +91,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
           _isLoading = false;
         });
         Navigator.of(context)
-            .pushReplacement(MaterialPageRoute(builder: (ctx) => HomeScreen()));
+            .push(MaterialPageRoute(builder: (ctx) => HomeScreen()));
       } else {
         setState(() {
           _isLoading = false;

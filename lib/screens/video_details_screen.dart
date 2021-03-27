@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:notefynd/universal_variables.dart';
 import 'package:video_player/video_player.dart';
@@ -6,18 +8,18 @@ import 'package:notefynd/widgets/controls_overlay.dart';
 class VideoDetailScreen extends StatefulWidget {
   final thumbnail;
   final title;
-  final likeCount;
   final channelAvatar;
   final channelName;
   final video;
+  final id;
 
   VideoDetailScreen({
     @required this.thumbnail,
     @required this.title,
-    @required this.likeCount,
     @required this.channelAvatar,
     @required this.channelName,
     @required this.video,
+    @required this.id,
   });
   @override
   _VideoDetailScreenState createState() => _VideoDetailScreenState();
@@ -25,7 +27,8 @@ class VideoDetailScreen extends StatefulWidget {
 
 class _VideoDetailScreenState extends State<VideoDetailScreen> {
   VideoPlayerController _controller;
-
+  bool doesLike;
+  int likeCount;
   @override
   void initState() {
     super.initState();
@@ -39,6 +42,47 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
     });
     _controller.setLooping(false);
     _controller.initialize();
+    isLiked();
+  }
+
+  isLiked() async {
+    DocumentSnapshot snap = await FirebaseFirestore.instance
+        .collection("videos")
+        .doc(widget.id)
+        .get();
+    likeCount = snap["likes"].length;
+    if (snap["likes"].contains(FirebaseAuth.instance.currentUser.uid)) {
+      setState(() {
+        doesLike = true;
+      });
+    } else {
+      setState(() {
+        doesLike = false;
+      });
+    }
+  }
+
+  likeVideo(String id) async {
+    DocumentSnapshot doc =
+        await FirebaseFirestore.instance.collection("videos").doc(id).get();
+    if (doc.data()["likes"].contains(FirebaseAuth.instance.currentUser.uid)) {
+      FirebaseFirestore.instance.collection("videos").doc(id).update({
+        "likes":
+            FieldValue.arrayRemove([FirebaseAuth.instance.currentUser.uid]),
+      });
+      setState(() {
+        doesLike = false;
+        likeCount -=1;
+      });
+    } else {
+      FirebaseFirestore.instance.collection("videos").doc(id).update({
+        "likes": FieldValue.arrayUnion([FirebaseAuth.instance.currentUser.uid]),
+      });
+      setState(() {
+        doesLike = true;
+        likeCount += 1;
+      });
+    }
   }
 
   @override
@@ -118,10 +162,26 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              _buildButtonColumn(Icons.thumb_up_alt_outlined, widget.likeCount),
-              _buildButtonColumn(Icons.share, "Share"),
-              _buildButtonColumn(Icons.cloud_download, "Download"),
-              _buildButtonColumn(Icons.playlist_add, "Save"),
+              Column(
+                children: <Widget>[
+                  Container(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: IconButton(
+                      onPressed: () => likeVideo(widget.id),
+                      icon: Icon(
+                        (doesLike != true
+                            ? Icons.thumb_up_alt_outlined
+                            : Icons.thumb_up),
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    likeCount.toString(),
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
             ],
           ),
         )
