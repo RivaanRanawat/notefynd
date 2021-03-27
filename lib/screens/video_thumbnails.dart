@@ -50,6 +50,7 @@ class _VideoThumbnailsState extends State<VideoThumbnails> {
                         likeCount: listData.data()["likes"].length.toString(),
                         thumbnail: listData.data()["previewImage"],
                         title: listData.data()["title"],
+                        video: listData.data()["videoUrl"],
                       ),
                     ),
                   ),

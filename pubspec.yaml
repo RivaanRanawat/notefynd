@@ -40,8 +40,8 @@ dependencies:
   image_picker: ^0.7.3
   provider: ^5.0.0
   timeago: ^3.0.2
-  video_player: ^2.0.2
   uuid: ^3.0.2
+  video_player: ^2.1.0
 
 dev_dependencies:
   flutter_test:
