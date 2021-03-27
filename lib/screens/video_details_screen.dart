@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import 'package:notefynd/universal_variables.dart';
 import 'package:video_player/video_player.dart';
+import 'package:notefynd/widgets/controls_overlay.dart';
 
 class VideoDetailScreen extends StatefulWidget {
   final thumbnail;
@@ -10,38 +11,40 @@ class VideoDetailScreen extends StatefulWidget {
   final channelName;
   final video;
 
-  VideoDetailScreen(
-      {@required this.thumbnail,
-      @required this.title,
-      @required this.likeCount,
-      @required this.channelAvatar,
-      @required this.channelName,
-      @required this.video});
+  VideoDetailScreen({
+    @required this.thumbnail,
+    @required this.title,
+    @required this.likeCount,
+    @required this.channelAvatar,
+    @required this.channelName,
+    @required this.video,
+  });
   @override
   _VideoDetailScreenState createState() => _VideoDetailScreenState();
 }
 
 class _VideoDetailScreenState extends State<VideoDetailScreen> {
-  VideoPlayerController _videoPlayerController;
-  bool startedPlaying = false;
+  VideoPlayerController _controller;
+
   @override
   void initState() {
     super.initState();
-    _videoPlayerController = VideoPlayerController.network(widget.video);
-    _videoPlayerController.addListener(() {});
+    _controller = VideoPlayerController.network(
+      widget.video,
+      videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+    );
+
+    _controller.addListener(() {
+      setState(() {});
+    });
+    _controller.setLooping(false);
+    _controller.initialize();
   }
 
   @override
   void dispose() {
-    _videoPlayerController.dispose();
+    _controller.dispose();
     super.dispose();
-  }
-
-  Future<bool> started() async {
-    await _videoPlayerController.initialize();
-    await _videoPlayerController.play();
-    startedPlaying = true;
-    return true;
   }
 
   @override
@@ -82,18 +85,17 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
       //   image: DecorationImage(
       //       image: NetworkImage(widget.thumbnail), fit: BoxFit.cover),
       // ),
-      child: FutureBuilder<bool>(
-        future: started(),
-        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-          if (snapshot.data == true) {
-            return AspectRatio(
-              aspectRatio: _videoPlayerController.value.aspectRatio,
-              child: VideoPlayer(_videoPlayerController),
-            );
-          } else {
-            return const Text('waiting for video to load');
-          }
-        },
+      child: AspectRatio(
+        aspectRatio: _controller.value.aspectRatio,
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            VideoPlayer(_controller),
+            ClosedCaption(text: _controller.value.caption.text),
+            ControlsOverlay(controller: _controller),
+            VideoProgressIndicator(_controller, allowScrubbing: true),
+          ],
+        ),
       ),
     );
   }
