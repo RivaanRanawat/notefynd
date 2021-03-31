@@ -19,7 +19,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _schoolNameController = TextEditingController();
   TextEditingController _subjectController = TextEditingController();
-  TextEditingController _streamController = TextEditingController();
   io.File _image;
   final picker = ImagePicker();
   PickedFile pickedFile;
@@ -91,7 +90,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
           _isLoading = false;
         });
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (ctx) => HomeScreen()));
+            .pushReplacement(MaterialPageRoute(builder: (ctx) => HomeScreen()));
       } else {
         setState(() {
           _isLoading = false;

@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notefynd/screens/auth/details_screen.dart';
 import 'package:notefynd/screens/auth/login_screen.dart';
@@ -37,7 +36,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           .signUpUser(email, password, fullName);
       if (result == "success") {
         Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (ctx) => DetailsScreen()));
+            MaterialPageRoute(builder: (ctx) => HomeScreen()));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(result),

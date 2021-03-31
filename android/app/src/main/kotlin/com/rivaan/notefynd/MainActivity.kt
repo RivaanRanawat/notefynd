@@ -1,4 +1,4 @@
-package com.example.notefynd
+package com.rivaan.notefynd
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.notefynd">
+    package="com.rivaan.notefynd">
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="notefynd"
         android:icon="@mipmap/ic_launcher">
