@@ -5,6 +5,7 @@ import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notefynd/screens/auth/login_screen.dart';
+import 'package:notefynd/screens/edit_profile_screen.dart';
 import 'package:notefynd/services/AuthMethods.dart';
 import 'package:notefynd/services/Creator.dart';
 import 'package:notefynd/universal_variables.dart';
@@ -20,6 +21,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String creatorText;
   String profileUrl = "";
   String bio = "";
+  String schoolName = "";
+  String stream = "";
+  String grade = "";
+  String subject = "";
   void getUsername() async {
     DocumentSnapshot snapshot = await FirebaseFirestore.instance
         .collection("users")
@@ -29,6 +34,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       username = snapshot["username"];
       profileUrl = snapshot["profilePhoto"];
       bio = snapshot["bio"];
+      schoolName = snapshot["schoolName"];
+      stream = snapshot["stream"];
+      grade = snapshot["grade"];
+      subject = snapshot["subject"];
     });
   }
 
@@ -107,7 +116,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         minWidth: 150,
                         elevation: 0,
                         height: 50,
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (ctx) => EditProfileScreen(
+                                description: bio,
+                                grade: grade,
+                                image: profileUrl,
+                                schoolName: schoolName,
+                                stream: stream,
+                                subject: subject,
+                              ),
+                            ),
+                          );
+                        },
                         color: UniversalVariables().logoGreen,
                         child: Text("Edit Profile"),
                         shape: RoundedRectangleBorder(
