@@ -327,25 +327,25 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
                 style: TextStyle(color: Colors.white),
                 overflow: TextOverflow.ellipsis,
               ),
-              subtitle: Text(
-                "0 subscribers",
-                style: TextStyle(color: Colors.white70),
-              ),
+              // subtitle: Text(
+              //   "0 subscribers",
+              //   style: TextStyle(color: Colors.white70),
+              // ),
             ),
           ),
-          TextButton.icon(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Some thing to be done")));
-              },
-              icon: Icon(
-                Icons.support,
-                color: Colors.red,
-              ),
-              label: Text(
-                "SUPPORT",
-                style: TextStyle(color: Colors.red),
-              ))
+          // TextButton.icon(
+          //     onPressed: () {
+          //       ScaffoldMessenger.of(context).showSnackBar(
+          //           SnackBar(content: Text("Some thing to be done")));
+          //     },
+          //     icon: Icon(
+          //       Icons.support,
+          //       color: Colors.red,
+          //     ),
+          //     label: Text(
+          //       "SUPPORT",
+          //       style: TextStyle(color: Colors.red),
+          //     ))
         ],
       ),
     );

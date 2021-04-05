@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import "package:flutter/material.dart";
+import 'package:google_fonts/google_fonts.dart';
 import 'package:notefynd/screens/video_details_screen.dart';
 import 'package:notefynd/universal_variables.dart';
 import "package:timeago/timeago.dart" as timeago;
@@ -11,6 +14,7 @@ class VideoThumbnails extends StatefulWidget {
 
 class _VideoThumbnailsState extends State<VideoThumbnails> {
   Stream _videoStream;
+  String dropDownValue = "One";
 
   @override
   void initState() {
@@ -44,18 +48,18 @@ class _VideoThumbnailsState extends State<VideoThumbnails> {
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (ctx) => VideoDetailScreen(
-                          channelAvatar: listData.data()["profilePic"],
-                          channelName: listData.data()["username"],
-                          thumbnail: listData.data()["previewImage"],
-                          title: listData.data()["title"],
-                          video: listData.data()["videoUrl"],
-                          id: listData.data()["id"],
-                          description: listData.data()["description"],
-                          school: listData.data()["school"],
-                          stream: listData.data()["stream"],
-                          subject: listData.data()["subject"],
-                          grade: listData.data()["grade"],
-                          ),
+                        channelAvatar: listData.data()["profilePic"],
+                        channelName: listData.data()["username"],
+                        thumbnail: listData.data()["previewImage"],
+                        title: listData.data()["title"],
+                        video: listData.data()["videoUrl"],
+                        id: listData.data()["id"],
+                        description: listData.data()["description"],
+                        school: listData.data()["school"],
+                        stream: listData.data()["stream"],
+                        subject: listData.data()["subject"],
+                        grade: listData.data()["grade"],
+                      ),
                     ),
                   ),
                   child: Column(
@@ -92,12 +96,65 @@ class _VideoThumbnailsState extends State<VideoThumbnails> {
                           "${listData.data()["username"]} - $timePosted",
                           style: TextStyle(color: Colors.white),
                         ),
-                        trailing: Container(
-                            margin: const EdgeInsets.only(bottom: 20.0),
-                            child: Icon(
-                              Icons.more_vert,
-                              color: Colors.white,
-                            )),
+                        trailing: listData.data()["uid"] ==
+                                FirebaseAuth.instance.currentUser.uid
+                            ? Container(
+                                margin: const EdgeInsets.only(bottom: 20.0),
+                                child: TextButton(
+                                  onPressed: () {
+                                    return showDialog(
+                                      context: context,
+                                      builder: (ctx) => AlertDialog(
+                                        title: Text("Delete Confirmation"),
+                                        content: Text(
+                                          "Are you sure you want to delete Your Video?",
+                                          style: GoogleFonts.lato(),
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              FirebaseFirestore.instance
+                                                  .collection("videos")
+                                                  .doc(listData.data()["id"])
+                                                  .delete();
+                                              FirebaseStorage.instance
+                                                  .ref("videos")
+                                                  .child(FirebaseAuth
+                                                      .instance.currentUser.uid)
+                                                  .child(listData.data()["id"])
+                                                  .delete();
+                                              FirebaseStorage.instance
+                                                  .ref("video-images")
+                                                  .child(FirebaseAuth
+                                                      .instance.currentUser.uid)
+                                                  .child(listData.data()["id"])
+                                                  .delete();
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text(
+                                              "Confirm",
+                                              style:
+                                                  TextStyle(color: Colors.red),
+                                            ),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text("Cancel"),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                  child: Text(
+                                    "Delete",
+                                    style: GoogleFonts.lato(
+                                        color: Colors.white, fontSize: 10),
+                                  ),
+                                ),
+                              )
+                            : Text(""),
                       ),
                     ],
                   ),
