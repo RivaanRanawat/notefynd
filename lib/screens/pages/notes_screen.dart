@@ -147,7 +147,7 @@ class _NotesScreenState extends State<NotesScreen> {
                                                                 .currentUser
                                                                 .uid)
                                                             .child(posts
-                                                                .data()["id"])
+                                                                .data()["title"])
                                                             .delete();
                                                         Navigator.of(context)
                                                             .pop();
