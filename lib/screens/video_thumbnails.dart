@@ -49,7 +49,12 @@ class _VideoThumbnailsState extends State<VideoThumbnails> {
                           thumbnail: listData.data()["previewImage"],
                           title: listData.data()["title"],
                           video: listData.data()["videoUrl"],
-                          id: listData.data()["id"]
+                          id: listData.data()["id"],
+                          description: listData.data()["description"],
+                          school: listData.data()["school"],
+                          stream: listData.data()["stream"],
+                          subject: listData.data()["subject"],
+                          grade: listData.data()["grade"],
                           ),
                     ),
                   ),

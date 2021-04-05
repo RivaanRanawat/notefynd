@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notefynd/universal_variables.dart';
 import 'package:video_player/video_player.dart';
@@ -14,15 +15,24 @@ class VideoDetailScreen extends StatefulWidget {
   final channelName;
   final video;
   final id;
+  final description;
+  final school;
+  final stream;
+  final subject;
+  final grade;
 
-  VideoDetailScreen({
-    @required this.thumbnail,
-    @required this.title,
-    @required this.channelAvatar,
-    @required this.channelName,
-    @required this.video,
-    @required this.id,
-  });
+  VideoDetailScreen(
+      {@required this.thumbnail,
+      @required this.title,
+      @required this.channelAvatar,
+      @required this.channelName,
+      @required this.video,
+      @required this.id,
+      @required this.description,
+      @required this.school,
+      @required this.stream,
+      @required this.subject,
+      @required this.grade});
   @override
   _VideoDetailScreenState createState() => _VideoDetailScreenState();
 }
@@ -32,6 +42,7 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
   bool doesLike;
   int likeCount;
   String profilePic;
+  bool didClickExtra = false;
   TextEditingController _commentController = TextEditingController();
   @override
   void initState() {
@@ -148,7 +159,6 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
           alignment: Alignment.bottomCenter,
           children: [
             VideoPlayer(_controller),
-            ClosedCaption(text: _controller.value.caption.text),
             ControlsOverlay(controller: _controller),
             VideoProgressIndicator(_controller, allowScrubbing: true),
           ],
@@ -159,15 +169,62 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
 
   Widget _videoInfo() {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        ListTile(
-          title: Text(
-            widget.title,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          trailing: Icon(
-            Icons.arrow_drop_down,
-            color: Colors.white,
+        InkWell(
+          onTap: () {
+            setState(() {
+              didClickExtra = !didClickExtra;
+            });
+          },
+          child: ListTile(
+            title: Text(
+              widget.title,
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            subtitle: didClickExtra
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(top: 10, right: 10),
+                        child: Text(
+                          widget.description != null
+                              ? "Description: " + widget.description
+                              : "",
+                          style: GoogleFonts.lato(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 10, right: 10),
+                        child: Text(
+                          "Notes for " + widget.subject + ", " + widget.stream,
+                          style: GoogleFonts.lato(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 10, right: 10),
+                        child: Text(
+                          "Grade: " + widget.grade,
+                          style: GoogleFonts.lato(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                : Container(),
+            trailing: Icon(
+              Icons.arrow_drop_down,
+              color: Colors.white,
+            ),
           ),
         ),
         Container(
@@ -187,22 +244,6 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
                             : Icons.thumb_up),
                         color: Colors.white,
                       ),
-                    ),
-                  ),
-                  Text(
-                    likeCount.toString(),
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ],
-              ),
-              Column(
-                children: <Widget>[
-                  Container(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.thumb_down, color: Colors.white),
-                      color: Colors.white,
                     ),
                   ),
                   Text(
@@ -286,19 +327,25 @@ class _VideoDetailScreenState extends State<VideoDetailScreen> {
                 style: TextStyle(color: Colors.white),
                 overflow: TextOverflow.ellipsis,
               ),
-              // subtitle: Text("1m subscribers"),
+              subtitle: Text(
+                "0 subscribers",
+                style: TextStyle(color: Colors.white70),
+              ),
             ),
           ),
-          // TextButton.icon(
-          //     onPressed: () {},
-          //     icon: Icon(
-          //       Icons.play_circle_filled,
-          //       color: Colors.red,
-          //     ),
-          //     label: Text(
-          //       "JOIN",
-          //       style: TextStyle(color: Colors.red),
-          //     ))
+          TextButton.icon(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Some thing to be done")));
+              },
+              icon: Icon(
+                Icons.support,
+                color: Colors.red,
+              ),
+              label: Text(
+                "SUPPORT",
+                style: TextStyle(color: Colors.red),
+              ))
         ],
       ),
     );
