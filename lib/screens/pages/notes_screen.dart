@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -111,8 +112,74 @@ class _NotesScreenState extends State<NotesScreen> {
                                       posts.data()["profilePic"],
                                     ),
                                   ),
-                                  trailing: const Icon(Icons.more_vert,
-                                      color: Colors.white),
+                                  trailing: posts.data()["uid"] ==
+                                          FirebaseAuth.instance.currentUser.uid
+                                      ? PopupMenuButton<String>(
+                                          icon: Icon(
+                                            Icons.more_vert,
+                                            color: Colors.white,
+                                          ),
+                                          onSelected: (String choice) {
+                                            if (choice == "Delete") {
+                                              return showDialog(
+                                                context: context,
+                                                builder: (ctx) => AlertDialog(
+                                                  title: Text(
+                                                      "Delete Confirmation"),
+                                                  content: Text(
+                                                    "Are you sure you want to delete Your PDF?",
+                                                    style: GoogleFonts.lato(),
+                                                  ),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        FirebaseFirestore
+                                                            .instance
+                                                            .collection(
+                                                                "pdf-posts")
+                                                            .doc(posts
+                                                                .data()["id"])
+                                                            .delete();
+                                                        FirebaseStorage.instance
+                                                            .ref("pdf-notes")
+                                                            .child(FirebaseAuth
+                                                                .instance
+                                                                .currentUser
+                                                                .uid)
+                                                            .child(posts
+                                                                .data()["id"])
+                                                            .delete();
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                      child: Text(
+                                                        "Confirm",
+                                                        style: TextStyle(
+                                                            color: Colors.red),
+                                                      ),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                      child: Text("Cancel"),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          itemBuilder: (BuildContext context) {
+                                            return ["Delete"]
+                                                .map((String choice) {
+                                              return PopupMenuItem<String>(
+                                                value: choice,
+                                                child: Text(choice),
+                                              );
+                                            }).toList();
+                                          })
+                                      : Text(""),
                                   title: Padding(
                                     padding: const EdgeInsets.only(bottom: 8.0),
                                     child: Row(
@@ -131,7 +198,7 @@ class _NotesScreenState extends State<NotesScreen> {
                                                   .width *
                                               0.05,
                                         ),
-                                        SafeArea(
+                                        Flexible(
                                           child: Text(
                                             timePosted,
                                             style: GoogleFonts.lato(
@@ -139,8 +206,11 @@ class _NotesScreenState extends State<NotesScreen> {
                                               fontSize: 12,
                                               fontWeight: FontWeight.bold,
                                             ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            softWrap: false,
                                           ),
-                                        )
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -154,8 +224,9 @@ class _NotesScreenState extends State<NotesScreen> {
                                         child: Text(
                                           "Grade : " + posts.data()["grade"],
                                           style: GoogleFonts.lato(
-                                              color: Colors.white,
-                                              fontSize: 14),
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                          ),
                                         ),
                                       ),
                                       Padding(
