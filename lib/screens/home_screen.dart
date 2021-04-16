@@ -5,7 +5,7 @@ import 'package:notefynd/screens/add_content.dart';
 import 'package:notefynd/screens/auth/details_screen.dart';
 import 'package:notefynd/screens/pages/notes_screen.dart';
 import 'package:notefynd/screens/pages/profile_screen.dart';
-import 'package:notefynd/screens/pages/videos_screen.dart';
+import 'package:notefynd/screens/pages/search_screen.dart';
 import 'package:notefynd/services/Creator.dart';
 import 'package:notefynd/universal_variables.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   UniversalVariables universalVariables = UniversalVariables();
-  int pageIndex = 0;
+  int pageIndex = 1;
 
   String status;
 
@@ -29,13 +29,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   List pageOptions = [
-    VideoScreen(),
+    // VideoScreen(),
     NotesScreen(),
+    SearchScreen(),
     ProfileScreen(),
   ];
   List creatorPageOptions = [
-    VideoScreen(),
+    // VideoScreen(),
     NotesScreen(),
+    SearchScreen(),
     AddContent(),
     ProfileScreen(),
   ];
@@ -83,10 +85,12 @@ class _HomeScreenState extends State<HomeScreen> {
         unselectedItemColor: Colors.white,
         currentIndex: pageIndex,
         items: [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.video_collection, size: 30), label: ""),
+          // BottomNavigationBarItem(
+          //     icon: Icon(Icons.video_collection, size: 30), label: ""),
           BottomNavigationBarItem(
               icon: Icon(Icons.picture_as_pdf, size: 30), label: ""),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.search, size: 30), label: ""),
           if (status == "creator")
             BottomNavigationBarItem(icon: Icon(Icons.add, size: 30), label: ""),
           BottomNavigationBarItem(
