@@ -37,7 +37,15 @@ class _AddBoardArticlesState extends State<AddBoardArticles> {
 
                 return GestureDetector(
                   onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => DetailArticle()));
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (ctx) => DetailArticle(
+                          content: posts.data()["content"],
+                          title: posts.data()["title"],
+                          timePublished: timePosted,
+                        ),
+                      ),
+                    );
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width,
