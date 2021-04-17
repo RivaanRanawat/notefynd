@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import 'package:notefynd/screens/admin/notes_management.dart';
 import 'package:notefynd/universal_variables.dart';
 
 class AdminScreen extends StatefulWidget {
@@ -8,7 +9,7 @@ class AdminScreen extends StatefulWidget {
 
 class _AdminScreenState extends State<AdminScreen> {
   var items = [
-    Text("Delete Notes Page"),
+    NotesManagement(),
     Text("Add Board Articles Page"),
     Text("Log Out Page"),
   ];
@@ -28,6 +29,7 @@ class _AdminScreenState extends State<AdminScreen> {
             pageIndex = value;
           });
         },
+        selectedItemColor: Colors.blue,
         type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(

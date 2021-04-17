@@ -22,18 +22,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String status;
   @override
   Widget build(BuildContext context) {
-    getUserStatus() async {
-      DocumentSnapshot snap = await FirebaseFirestore.instance
-          .collection("users")
-          .doc(FirebaseAuth.instance.currentUser.uid)
-          .get();
-
-      status = snap["status"];
-    }
-
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthMethods()),
@@ -52,10 +42,6 @@ class _MyAppState extends State<MyApp> {
                 return SplashScreen();
               }
               if (userSnapshot.hasData) {
-                getUserStatus();
-                if (status == "admin") {
-                  return AdminScreen();
-                }
                 return HomeScreen();
               }
               return LoginScreen();

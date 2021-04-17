@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:notefynd/screens/add_content.dart';
+import 'package:notefynd/screens/admin_screen.dart';
 import 'package:notefynd/screens/auth/details_screen.dart';
 import 'package:notefynd/screens/pages/notes_screen.dart';
 import 'package:notefynd/screens/pages/profile_screen.dart';
@@ -56,14 +57,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   getUserData() async {
     String bio;
+    String status;
     DocumentSnapshot snapshot = await FirebaseFirestore.instance
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser.uid)
         .get();
     bio = snapshot["bio"];
+    status = snapshot["status"];
     if (bio == "") {
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (ctx) => DetailsScreen()));
+    }
+
+    if(status == "admin") {
+      Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => AdminScreen()));
     }
   }
 
