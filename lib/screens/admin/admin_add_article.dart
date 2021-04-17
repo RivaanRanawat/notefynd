@@ -92,8 +92,8 @@ class _AdminAddArticleState extends State<AdminAddArticle> {
                           "content": _contentController.text,
                           "datePublished": Timestamp.now(),
                           "likes": [],
-                          "comments": [],
                           "id": uniqueId,
+                          "commentCount": 0,
                         });
                         setState(() {
                           _isLoading = false;

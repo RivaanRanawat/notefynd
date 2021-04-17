@@ -17,25 +17,23 @@ class DetailArticle extends StatelessWidget {
       backgroundColor: UniversalVariables().secondaryColor,
       body: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: MediaQuery.of(context).size.height / 13),
-            Padding(
-              padding: const EdgeInsets.only(left: 18.0),
-              child: Text(
-                title,
-                style: GoogleFonts.lato(
-                    fontSize: 30,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold),
-              ),
+            Text(
+              title,
+              style: GoogleFonts.lato(
+                  fontSize: 30,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold),
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
-                  margin: EdgeInsets.only(top: 10),
+                  margin: EdgeInsets.only(top: 10, left: 2),
                   child: Text(
-                    timePublished,
+                    "Puslished $timePublished",
                     style: TextStyle(
                       color: Colors.white60,
                     ),

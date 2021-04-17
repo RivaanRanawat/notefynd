@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:notefynd/screens/add_content.dart';
 import 'package:notefynd/screens/admin/admin_add_article.dart';
+import 'package:notefynd/screens/admin/board_articles.dart';
 import 'package:notefynd/screens/admin_screen.dart';
 import 'package:notefynd/screens/auth/details_screen.dart';
 import 'package:notefynd/screens/pages/notes_screen.dart';
@@ -19,7 +20,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   UniversalVariables universalVariables = UniversalVariables();
-  int pageIndex = 1;
+  int pageIndex = 0;
 
   String status;
 
@@ -34,6 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // VideoScreen(),
     NotesScreen(),
     SearchScreen(),
+    BoardArticles(),
     ProfileScreen(),
   ];
   List creatorPageOptions = [
@@ -41,6 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
     NotesScreen(),
     SearchScreen(),
     AddContent(),
+    BoardArticles(),
     ProfileScreen(),
   ];
 
@@ -101,6 +104,8 @@ class _HomeScreenState extends State<HomeScreen> {
               icon: Icon(Icons.search, size: 30), label: ""),
           if (status == "creator")
             BottomNavigationBarItem(icon: Icon(Icons.add, size: 30), label: ""),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.article, size: 30), label: ""),
           BottomNavigationBarItem(
               icon: Icon(Icons.person, size: 30), label: ""),
         ],
