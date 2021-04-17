@@ -25,7 +25,8 @@ class AuthMethods with ChangeNotifier {
         "schoolName": "",
         "stream": "",
         "subject": "",
-        "grade": ""
+        "grade": "",
+        "uid": _credential.user.uid,
       });
       returnValue = "success";
     } catch (err) {
@@ -77,7 +78,8 @@ class AuthMethods with ChangeNotifier {
           "schoolName": "",
           "stream": "",
           "subject": "",
-          "grade": ""
+          "grade": "",
+          "uid": user.uid,
         });
       }
 

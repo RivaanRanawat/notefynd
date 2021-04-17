@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
 import 'package:google_fonts/google_fonts.dart';
+import 'package:notefynd/screens/UserProfileScreen.dart';
 import 'package:notefynd/universal_variables.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -60,14 +61,13 @@ class _SearchScreenState extends State<SearchScreen> {
                     itemBuilder: (BuildContext context, int index) {
                       DocumentSnapshot user = snapshot.data.docs[index];
                       return InkWell(
-                        // onTap: () => Navigator.of(context).push(
-                        //   MaterialPageRoute(
-                        //     builder: (ctx) => ProfilePage(
-                        //       user.data()["uid"],
-                        //     ),
-                        //   ),
-                        // ),
-                        onTap: () {},
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (ctx) => UserProfileScreen(
+                              user.data()["uid"],
+                            ),
+                          ),
+                        ),
                         child: ListTile(
                           leading: CircleAvatar(
                             backgroundColor: Colors.black,
