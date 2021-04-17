@@ -230,22 +230,18 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       height: 30,
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 30),
+                      padding: const EdgeInsets.only(left: 10),
                       child: Row(
                         children: [
-                          Text(
-                            "Description: ",
-                            style: GoogleFonts.lato(
-                              fontSize: 18,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            bio,
-                            style: GoogleFonts.lato(
-                              fontSize: 18,
-                              color: Colors.white,
+                          Flexible(
+                            child: Text(
+                              bio,
+                              style: GoogleFonts.lato(
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
@@ -254,7 +250,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     Column(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 30),
+                          padding: const EdgeInsets.only(left: 10),
                           child: Row(
                             children: [
                               Text(
@@ -276,7 +272,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(left: 30),
+                          padding: const EdgeInsets.only(left: 10),
                           child: Row(
                             children: [
                               Text(
@@ -298,7 +294,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(left: 30, bottom: 10),
+                          padding: const EdgeInsets.only(left: 10, bottom: 10),
                           child: Row(
                             children: [
                               Text(
