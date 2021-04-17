@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:notefynd/screens/add_content.dart';
+import 'package:notefynd/screens/admin/admin_add_article.dart';
 import 'package:notefynd/screens/admin_screen.dart';
 import 'package:notefynd/screens/auth/details_screen.dart';
 import 'package:notefynd/screens/pages/notes_screen.dart';
@@ -70,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     if(status == "admin") {
-      Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => AdminScreen()));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx) => AdminScreen()));
     }
   }
 

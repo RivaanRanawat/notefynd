@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import 'package:notefynd/screens/admin/board_articles.dart';
 import 'package:notefynd/screens/admin/notes_management.dart';
 import 'package:notefynd/universal_variables.dart';
 
@@ -10,11 +11,11 @@ class AdminScreen extends StatefulWidget {
 class _AdminScreenState extends State<AdminScreen> {
   var items = [
     NotesManagement(),
-    Text("Add Board Articles Page"),
+    AddBoardArticles(),
     Text("Log Out Page"),
   ];
 
-  int pageIndex = 0;
+  int pageIndex = 1;
 
   @override
   Widget build(BuildContext context) {
