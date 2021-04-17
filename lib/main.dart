@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:notefynd/screens/admin_screen.dart';
 import 'package:notefynd/screens/auth/login_screen.dart';
 import 'package:notefynd/screens/home_screen.dart';
 import 'package:notefynd/screens/splash_screen.dart';
@@ -20,9 +22,18 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
+  String status;
   @override
   Widget build(BuildContext context) {
+    getUserStatus() async {
+      DocumentSnapshot snap = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(FirebaseAuth.instance.currentUser.uid)
+          .get();
+
+      status = snap["status"];
+    }
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthMethods()),
@@ -41,6 +52,10 @@ class _MyAppState extends State<MyApp> {
                 return SplashScreen();
               }
               if (userSnapshot.hasData) {
+                getUserStatus();
+                if (status == "admin") {
+                  return AdminScreen();
+                }
                 return HomeScreen();
               }
               return LoginScreen();
