@@ -1,4 +1,4 @@
-<img src="../master/screenshots/app/src/appIcon.jpeg" alt="logo" width="144" height="144" align="right" />
+<img src="../master/screenshots/appIcon.jpeg" alt="logo" width="144" height="144" align="right" />
 
 # notefynd
 
