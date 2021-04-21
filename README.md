@@ -1,4 +1,4 @@
-<img src="../screenshots/app/src/appIcon.jpeg" alt="logo" width="144" height="144" align="right" />
+<img src="../master/screenshots/app/src/appIcon.jpeg" alt="logo" width="144" height="144" align="right" />
 
 # notefynd
 
@@ -29,10 +29,13 @@ Notefynd is an application which is used to share notes with other users on the 
 
 ## Preview
 
-|![Preview](../screenshots/screenshot1.jpeg) | ![Preview](../screenshots/screenshot2.jpeg) |
-|![Preview](../screenshots/screenshot3.jpeg) | ![Preview](../screenshots/screenshot4.jpeg) |
-|![Preview](../screenshots/screenshot5.jpeg) | ![Preview](../screenshots/screenshot6.jpeg) |
-|![Preview](../screenshots/screenshot7.jpeg) | ![Preview](../screenshots/screenshot8.jpeg) |
+|![Preview](../master/screenshots/screenshot1.jpeg) | ![Preview](../master/screenshots/screenshot2.jpeg) |
+|:-------------------:|:------------------------:|
+|![Preview](../master/screenshots/screenshot3.jpeg) | ![Preview](../master/screenshots/screenshot4.jpeg) |
+|:-------------------:|:------------------------:|
+|![Preview](../master/screenshots/screenshot5.jpeg) | ![Preview](../master/screenshots/screenshot6.jpeg) |
+|:-------------------:|:------------------------:|
+|![Preview](../master/screenshots/screenshot7.jpeg) | ![Preview](../master/screenshots/screenshot8.jpeg) |
 |:-------------------:|:------------------------:|
 
 ## Technologies Used
