@@ -1,16 +1,42 @@
+<img src="../screenshots/app/src/appIcon.jpeg" alt="logo" width="144" height="144" align="right" />
+
 # notefynd
 
-A new Flutter project.
+Notefynd is an application which is used to share notes with other users on the platform developed using Flutter.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+* Login Sign up Auth
+* Google Sign in Auth
+* Adding & Editing Profile
+* Creator Switching Option
+* PDF Sharing
+* Liking & Commenting on PDF
+* Deleting PDF
+* Video Sharing
+* Liking & Commenting on Video
+* Deleting Video
+* Searching Users
+* Showing Profile of Users
+* Showing Following & Followers of Users
+* Showing Total Likes Received By Users
+* Showing The PDF Shared By User on Profile
+* Showing Articles Written By Admin
+* Admin Panel:
+    * Deleting Any User's PDF
+    * Writing Articles
+* Sign Out
 
-A few resources to get you started if this is your first Flutter project:
+## Preview
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+|![Preview](../screenshots/screenshot1.jpeg) | ![Preview](../screenshots/screenshot2.jpeg) |
+|![Preview](../screenshots/screenshot3.jpeg) | ![Preview](../screenshots/screenshot4.jpeg) |
+|![Preview](../screenshots/screenshot5.jpeg) | ![Preview](../screenshots/screenshot6.jpeg) |
+|![Preview](../screenshots/screenshot7.jpeg) | ![Preview](../screenshots/screenshot8.jpeg) |
+|:-------------------:|:------------------------:|
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Technologies Used
+
+* Flutter
+* Firebase
+* Provider
