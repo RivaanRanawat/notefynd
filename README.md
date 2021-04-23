@@ -35,11 +35,11 @@ Notefynd is an application which is used to share notes with other users on the 
 |:-------------------:|:------------------------:|
 |![Preview](../master/screenshots/screenshot5.jpeg) | ![Preview](../master/screenshots/screenshot6.jpeg) |
 |:-------------------:|:------------------------:|
-|![Preview](../master/screenshots/screenshot7.jpeg) | ![Preview](../master/screenshots/screenshot8.jpeg) |
+|![Preview](../master/screenshots/screenshot7.jpeg)
 |:-------------------:|:------------------------:|
 
 ## Technologies Used
 
-* Flutter
-* Firebase
-* Provider
+* Flutter - UI
+* Firebase - Backend
+* Provider - State Management
