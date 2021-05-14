@@ -630,7 +630,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                   MaterialPageRoute(
                                                     builder: (ctx) =>
                                                         CommentScreen(
-                                                      posts.data()["id"],
+                                                      id: posts.data()["id"],
+                                                      fileType: "pdf",
                                                     ),
                                                   ),
                                                 ),

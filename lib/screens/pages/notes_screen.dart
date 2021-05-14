@@ -350,7 +350,8 @@ class _NotesScreenState extends State<NotesScreen> {
                                                 Navigator.of(context).push(
                                               MaterialPageRoute(
                                                 builder: (ctx) => CommentScreen(
-                                                  posts.data()["id"],
+                                                  id: posts.data()["id"],
+                                                  fileType: "pdf",
                                                 ),
                                               ),
                                             ),

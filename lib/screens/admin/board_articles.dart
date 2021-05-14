@@ -228,7 +228,8 @@ class _BoardArticlesState extends State<BoardArticles> {
                                                 Navigator.of(context).push(
                                               MaterialPageRoute(
                                                 builder: (ctx) => CommentScreen(
-                                                  posts.data()["id"],
+                                                  id: posts.data()["id"],
+                                                  fileType: "article"
                                                 ),
                                               ),
                                             ),

@@ -7,7 +7,8 @@ import "package:timeago/timeago.dart" as Tago;
 
 class CommentScreen extends StatefulWidget {
   final String id;
-  CommentScreen(this.id);
+  final String fileType;
+  CommentScreen({@required this.id, @required this.fileType});
   @override
   _CommentScreenState createState() => _CommentScreenState();
 }
@@ -15,22 +16,26 @@ class CommentScreen extends StatefulWidget {
 class _CommentScreenState extends State<CommentScreen> {
   String uid;
   TextEditingController commentsController = TextEditingController();
-  var videoColection = FirebaseFirestore.instance.collection("pdf-posts");
+  var videoCollection = FirebaseFirestore.instance.collection("pdf-posts");
+  var articleCollection = FirebaseFirestore.instance.collection("articles");
+  var pdfCollection;
   var userCollection = FirebaseFirestore.instance.collection("users");
 
   @override
   void initState() {
     super.initState();
     uid = FirebaseAuth.instance.currentUser.uid;
+    pdfCollection =
+        widget.fileType == "pdf" ? videoCollection : articleCollection;
   }
 
   uploadComment() async {
     if (commentsController.text.isNotEmpty) {
       DocumentSnapshot userDoc = await userCollection.doc(uid).get();
       var allDocs =
-          await videoColection.doc(widget.id).collection("comments").get();
+          await pdfCollection.doc(widget.id).collection("comments").get();
       int len = allDocs.docs.length;
-      videoColection
+      pdfCollection
           .doc(widget.id)
           .collection("comments")
           .doc("Comment $len")
@@ -44,8 +49,8 @@ class _CommentScreenState extends State<CommentScreen> {
         "id": "Comment $len"
       });
       commentsController.clear();
-      DocumentSnapshot doc = await videoColection.doc(widget.id).get();
-      videoColection.doc(widget.id).update({
+      DocumentSnapshot doc = await pdfCollection.doc(widget.id).get();
+      pdfCollection.doc(widget.id).update({
         "commentCount": doc.data()["commentCount"] + 1,
       });
     } else {
@@ -54,17 +59,14 @@ class _CommentScreenState extends State<CommentScreen> {
   }
 
   likeComment(String id) async {
-    DocumentSnapshot doc = await videoColection
-        .doc(widget.id)
-        .collection("comments")
-        .doc(id)
-        .get();
+    DocumentSnapshot doc =
+        await pdfCollection.doc(widget.id).collection("comments").doc(id).get();
     if (doc.data()["likes"].contains(uid)) {
-      videoColection.doc(widget.id).collection("comments").doc(id).update({
+      pdfCollection.doc(widget.id).collection("comments").doc(id).update({
         "likes": FieldValue.arrayRemove([uid]),
       });
     } else {
-      videoColection.doc(widget.id).collection("comments").doc(id).update({
+      pdfCollection.doc(widget.id).collection("comments").doc(id).update({
         "likes": FieldValue.arrayUnion([uid]),
       });
     }
@@ -82,7 +84,7 @@ class _CommentScreenState extends State<CommentScreen> {
               children: [
                 Expanded(
                   child: StreamBuilder(
-                    stream: videoColection
+                    stream: pdfCollection
                         .doc(widget.id)
                         .collection("comments")
                         .snapshots(),
