@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
 import 'package:google_fonts/google_fonts.dart';
+import 'package:notefynd/screens/home_screen.dart';
 import 'package:notefynd/universal_variables.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:uuid/uuid.dart';
 
 class RequestNewNotes extends StatefulWidget {
   @override
@@ -228,7 +231,33 @@ class _RequestNewNotesState extends State<RequestNewNotes> {
               minWidth: 150,
               elevation: 0,
               height: 50,
-              onPressed: () {
+              onPressed: () async {
+                if (_subjectController.text.isNotEmpty &&
+                    _topicNameController.text.isNotEmpty &&
+                    _grade.isNotEmpty) {
+                  var uniqueId = Uuid().v1();
+                  await FirebaseFirestore.instance
+                      .collection("postRequests")
+                      .doc(uniqueId)
+                      .set({
+                    "requestID": uniqueId,
+                    "topic": _topicNameController.text,
+                    "grade": _grade,
+                    "subject": _subjectController.text
+                  });
+                  FocusScope.of(context).unfocus();
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                        "Thank You For Your Request! You will be provided with the notes you need soon!"),
+                  ));
+                  Navigator.of(context).pushReplacement(PageTransition(
+                      child: HomeScreen(),
+                      type: PageTransitionType.leftToRight));
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text("Please enter all the fields"),
+                  ));
+                }
               },
               color: UniversalVariables().logoGreen,
               child: Text("Done"),
