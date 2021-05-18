@@ -33,7 +33,7 @@ class DetailArticle extends StatelessWidget {
                 Container(
                   margin: EdgeInsets.only(top: 10, left: 2),
                   child: Text(
-                    "Puslished $timePublished",
+                    "Published $timePublished",
                     style: TextStyle(
                       color: Colors.white60,
                     ),

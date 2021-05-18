@@ -1,6 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:notefynd/services/Creator.dart';
 import 'dart:io';
@@ -19,14 +17,18 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
   TextEditingController _titleController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _subjectController = TextEditingController();
-  TextEditingController _schoolController = TextEditingController();
+  TextEditingController _gradeController = TextEditingController();
   var _isLoading = false;
 
   uploadPdftoFirebase() async {
     setState(() {
       _isLoading = true;
     });
-    if (_titleController.text.isNotEmpty && _file != null) {
+    if (_titleController.text.isNotEmpty &&
+        _descriptionController.text.isNotEmpty &&
+        _subjectController.text.isNotEmpty &&
+        _gradeController.text.isNotEmpty &&
+        _file != null) {
       var result = await Provider.of<Creator>(context, listen: false)
           .storePdfNotes(
               _file,
@@ -34,7 +36,7 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
               _titleController.text,
               _subjectController.text,
               _descriptionController.text,
-              _schoolController.text);
+              _gradeController.text);
       setState(() {
         _isLoading = false;
       });
@@ -43,7 +45,7 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
           _titleController.text = "";
           _descriptionController.text = "";
           _subjectController.text = "";
-          _schoolController.text = "";
+          _gradeController.text = "";
           _file = null;
         });
         setState(() {
@@ -67,11 +69,6 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
         content: Text("Enter all the fields"),
       ));
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
   }
 
   @override
@@ -175,11 +172,11 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
                         color: UniversalVariables().secondaryColor,
                         border: Border.all(color: Colors.blue)),
                     child: TextFormField(
-                      controller: _schoolController,
+                      controller: _gradeController,
                       style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                        labelText: "School",
+                        labelText: "Grade",
                         labelStyle: TextStyle(color: Colors.white),
                         border: InputBorder.none,
                       ),
@@ -205,4 +202,3 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
     );
   }
 }
-//

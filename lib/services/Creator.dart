@@ -19,7 +19,7 @@ class Creator with ChangeNotifier {
   }
 
   Future<String> storePdfNotes(File _file, String _fileName, String _title,
-      String subject, String description, String school) async {
+      String subject, String description, String grade) async {
     String retValue = "";
     try {
       var reference = firebase_storage.FirebaseStorage.instance
@@ -34,7 +34,6 @@ class Creator with ChangeNotifier {
               contentType: ContentType('application', 'pdf').toString()));
       firebase_storage.TaskSnapshot snapshot = await uploadTask;
       String url = await snapshot.ref.getDownloadURL();
-      print("epic " + url);
       DocumentSnapshot snap = await FirebaseFirestore.instance
           .collection("users")
           .doc(FirebaseAuth.instance.currentUser.uid)
@@ -46,11 +45,10 @@ class Creator with ChangeNotifier {
         "datePublished": Timestamp.now(),
         "pdfUrl": url,
         "title": _title,
-        "grade": snap["grade"],
+        "grade": grade,
         "description": description,
         "subject": subject,
         "username": username,
-        "schoolName": school,
         "likes": [],
         "commentCount": 0,
         "reports": [],

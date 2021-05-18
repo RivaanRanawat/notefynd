@@ -146,8 +146,8 @@ class _NotesScreenState extends State<NotesScreen> {
                                                                 .instance
                                                                 .currentUser
                                                                 .uid)
-                                                            .child(posts
-                                                                .data()["title"])
+                                                            .child(posts.data()[
+                                                                "title"])
                                                             .delete();
                                                         Navigator.of(context)
                                                             .pop();
@@ -182,22 +182,17 @@ class _NotesScreenState extends State<NotesScreen> {
                                       : Text(""),
                                   title: Padding(
                                     padding: const EdgeInsets.only(bottom: 8.0),
-                                    child: Row(
+                                    child: Wrap(
+                                      direction: Axis.vertical,
                                       children: [
-                                        Text(
-                                          posts.data()["title"],
-                                          style: GoogleFonts.lato(
-                                            color: Colors.white,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.05,
-                                        ),
+                                        Text(posts.data()["title"],
+                                            style: GoogleFonts.lato(
+                                              color: Colors.white,
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            overflow: TextOverflow.fade,
+                                            maxLines: 2),
                                         Flexible(
                                           child: Text(
                                             timePosted,
@@ -227,17 +222,6 @@ class _NotesScreenState extends State<NotesScreen> {
                                             color: Colors.white,
                                             fontSize: 14,
                                           ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 8.0),
-                                        child: Text(
-                                          "School : " +
-                                              posts.data()["schoolName"],
-                                          style: GoogleFonts.lato(
-                                              color: Colors.white,
-                                              fontSize: 14),
                                         ),
                                       ),
                                       Padding(
