@@ -13,15 +13,15 @@ class EditProfileScreen extends StatefulWidget {
   final description;
   final schoolName;
   final stream;
-  final subject;
   final grade;
   final image;
+  final username;
 
   EditProfileScreen(
-      {@required this.description,
+      {@required this.username,
+      @required this.description,
       @required this.schoolName,
       @required this.stream,
-      @required this.subject,
       @required this.grade,
       @required this.image});
   @override
@@ -32,7 +32,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   UniversalVariables _universalVariables = UniversalVariables();
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _schoolNameController = TextEditingController();
-  TextEditingController _subjectController = TextEditingController();
+  TextEditingController _nameController = TextEditingController();
   io.File _image;
   final picker = ImagePicker();
   PickedFile pickedFile;
@@ -82,13 +82,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       _isLoading = true;
     });
     try {
-      if (downloadUrl != null &&
-          _descriptionController.text.isNotEmpty &&
+      if (_descriptionController.text.isNotEmpty &&
           _schoolNameController.text.isNotEmpty &&
           _stream != "" &&
-          _subjectController.text.isNotEmpty &&
+          _nameController.text.isNotEmpty &&
           _grade != "") {
-        if (pickedFile != null) {
+        if (_image != null) {
           await uploadImageToStorage(pickedFile);
         }
         FirebaseFirestore.instance
@@ -96,11 +95,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             .doc(FirebaseAuth.instance.currentUser.uid)
             .update({
           "bio": _descriptionController.text,
-          "profilePhoto": downloadUrl,
+          "profilePhoto": _image != null
+              ? downloadUrl
+              : "https://i.stack.imgur.com/l60Hf.png",
           "schoolName": _schoolNameController.text,
           "stream": _stream,
-          "subject": _subjectController.text,
           "grade": _grade,
+          "username": _nameController.text
         });
         setState(() {
           _isLoading = false;
@@ -127,7 +128,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.initState();
     _descriptionController.text = widget.description;
     _schoolNameController.text = widget.schoolName;
-    _subjectController.text = widget.subject;
+    _nameController.text = widget.username;
     downloadUrl = widget.image;
     _grade = widget.grade;
     _stream = widget.stream;
@@ -150,7 +151,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         radius: 64,
                         backgroundImage: _image == null
                             ? NetworkImage(
-                                widget.image,
+                                downloadUrl != ""
+                                    ? downloadUrl
+                                    : "https://i.stack.imgur.com/l60Hf.png",
                               )
                             : FileImage(_image),
                       ),
@@ -162,10 +165,48 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           icon: Icon(Icons.add_a_photo),
                           color: Colors.white,
                         ),
+                      ),
+                      Positioned(
+                        left: 97,
+                        bottom: 20,
+                        child: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              downloadUrl = "";
+                            });
+                          },
+                          icon: Icon(Icons.delete),
+                          color: Colors.red,
+                        ),
                       )
                     ]),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 15),
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                        color: _universalVariables.secondaryColor,
+                        border: Border.all(color: Colors.blue)),
+                    child: TextFormField(
+                      controller: _nameController,
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                        labelText: "Username",
+                        alignLabelWithHint: true,
+                        labelStyle: TextStyle(color: Colors.white),
+                        icon: Icon(
+                          Icons.person,
+                          color: Colors.white,
+                        ),
+                        border: InputBorder.none,
+                      ),
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.done,
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.015),
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 15),
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -248,29 +289,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     ),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 15),
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                        color: _universalVariables.secondaryColor,
-                        border: Border.all(color: Colors.blue)),
-                    child: TextFormField(
-                      controller: _subjectController,
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                        labelText: "Subject",
-                        labelStyle: TextStyle(color: Colors.white),
-                        icon: Icon(
-                          Icons.book,
-                          color: Colors.white,
-                        ),
-                        border: InputBorder.none,
-                      ),
-                      textInputAction: TextInputAction.done,
-                    ),
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.015),
                   Padding(
                     padding: const EdgeInsets.only(
                         left: 19.0, right: 19.0, bottom: 15),
@@ -293,7 +311,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 elevation: 0,
                                 height: 50,
                                 onPressed: () => handleClassButtonClick("7"),
-                                color: _universalVariables.secondaryColor,
+                                color: _grade == "7"
+                                    ? _universalVariables.logoGreen
+                                    : _universalVariables.secondaryColor,
                                 child: Text("7"),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -309,7 +329,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 elevation: 0,
                                 height: 50,
                                 onPressed: () => handleClassButtonClick("8"),
-                                color: _universalVariables.secondaryColor,
+                                color: _grade == "8"
+                                    ? _universalVariables.logoGreen
+                                    : _universalVariables.secondaryColor,
                                 child: Text("8"),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -325,7 +347,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 elevation: 0,
                                 height: 50,
                                 onPressed: () => handleClassButtonClick("9"),
-                                color: _universalVariables.secondaryColor,
+                                color: _grade == "9"
+                                    ? _universalVariables.logoGreen
+                                    : _universalVariables.secondaryColor,
                                 child: Text("9"),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -341,7 +365,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 elevation: 0,
                                 height: 50,
                                 onPressed: () => handleClassButtonClick("10"),
-                                color: _universalVariables.secondaryColor,
+                                color: _grade == "10"
+                                    ? _universalVariables.logoGreen
+                                    : _universalVariables.secondaryColor,
                                 child: Text("10"),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -363,7 +389,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   elevation: 0,
                                   height: 50,
                                   onPressed: () => handleClassButtonClick("11"),
-                                  color: _universalVariables.secondaryColor,
+                                  color: _grade == "11"
+                                      ? _universalVariables.logoGreen
+                                      : _universalVariables.secondaryColor,
                                   child: Text("11"),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),
@@ -379,7 +407,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   elevation: 0,
                                   height: 50,
                                   onPressed: () => handleClassButtonClick("12"),
-                                  color: _universalVariables.secondaryColor,
+                                  color: _grade == "12"
+                                      ? _universalVariables.logoGreen
+                                      : _universalVariables.secondaryColor,
                                   child: Text("12"),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),
@@ -395,7 +425,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   elevation: 0,
                                   height: 50,
                                   onPressed: () => handleClassButtonClick("UG"),
-                                  color: _universalVariables.secondaryColor,
+                                  color: _grade == "UG"
+                                      ? _universalVariables.logoGreen
+                                      : _universalVariables.secondaryColor,
                                   child: Text("UG"),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),
@@ -411,7 +443,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   elevation: 0,
                                   height: 50,
                                   onPressed: () => handleClassButtonClick("PG"),
-                                  color: _universalVariables.secondaryColor,
+                                  color: _grade == "PG"
+                                      ? _universalVariables.logoGreen
+                                      : _universalVariables.secondaryColor,
                                   child: Text("PG"),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),

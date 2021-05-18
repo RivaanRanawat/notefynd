@@ -18,7 +18,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
   UniversalVariables _universalVariables = UniversalVariables();
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _schoolNameController = TextEditingController();
-  TextEditingController _subjectController = TextEditingController();
+  TextEditingController _usernameController = TextEditingController();
   io.File _image;
   final picker = ImagePicker();
   PickedFile pickedFile;
@@ -68,22 +68,25 @@ class _DetailsScreenState extends State<DetailsScreen> {
       _isLoading = true;
     });
     try {
-      if (_image != null &&
-          _descriptionController.text.isNotEmpty &&
+      if (_descriptionController.text.isNotEmpty &&
           _schoolNameController.text.isNotEmpty &&
           _stream != "" &&
-          _subjectController.text.isNotEmpty &&
+          _usernameController.text.isNotEmpty &&
           _grade != "") {
-        await uploadImageToStorage(pickedFile);
+        if (_image != null) {
+          await uploadImageToStorage(pickedFile);
+        }
         FirebaseFirestore.instance
             .collection("users")
             .doc(FirebaseAuth.instance.currentUser.uid)
             .update({
           "bio": _descriptionController.text,
-          "profilePhoto": downloadUrl,
+          "profilePhoto": _image != null
+              ? downloadUrl
+              : "https://i.stack.imgur.com/l60Hf.png",
           "schoolName": _schoolNameController.text,
           "stream": _stream,
-          "subject": _subjectController.text,
+          "username": _usernameController.text,
           "grade": _grade,
         });
         setState(() {
@@ -139,6 +142,29 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     ]),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 15),
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                        color: _universalVariables.secondaryColor,
+                        border: Border.all(color: Colors.blue)),
+                    child: TextFormField(
+                      controller: _usernameController,
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                        labelText: "Username",
+                        labelStyle: TextStyle(color: Colors.white),
+                        icon: Icon(
+                          Icons.person,
+                          color: Colors.white,
+                        ),
+                        border: InputBorder.none,
+                      ),
+                      textInputAction: TextInputAction.done,
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.015),
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 15),
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -221,29 +247,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     ),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.015),
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 15),
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                        color: _universalVariables.secondaryColor,
-                        border: Border.all(color: Colors.blue)),
-                    child: TextFormField(
-                      controller: _subjectController,
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                        labelText: "Subject",
-                        labelStyle: TextStyle(color: Colors.white),
-                        icon: Icon(
-                          Icons.book,
-                          color: Colors.white,
-                        ),
-                        border: InputBorder.none,
-                      ),
-                      textInputAction: TextInputAction.done,
-                    ),
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.015),
                   Padding(
                     padding: const EdgeInsets.only(
                         left: 19.0, right: 19.0, bottom: 15),
@@ -266,7 +269,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 elevation: 0,
                                 height: 50,
                                 onPressed: () => handleClassButtonClick("7"),
-                                color: _universalVariables.secondaryColor,
+                                color: _grade == "7"
+                                    ? _universalVariables.logoGreen
+                                    : _universalVariables.secondaryColor,
                                 child: Text("7"),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -282,7 +287,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 elevation: 0,
                                 height: 50,
                                 onPressed: () => handleClassButtonClick("8"),
-                                color: _universalVariables.secondaryColor,
+                                color: _grade == "8"
+                                    ? _universalVariables.logoGreen
+                                    : _universalVariables.secondaryColor,
                                 child: Text("8"),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -298,7 +305,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 elevation: 0,
                                 height: 50,
                                 onPressed: () => handleClassButtonClick("9"),
-                                color: _universalVariables.secondaryColor,
+                                color: _grade == "9"
+                                    ? _universalVariables.logoGreen
+                                    : _universalVariables.secondaryColor,
                                 child: Text("9"),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -314,7 +323,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 elevation: 0,
                                 height: 50,
                                 onPressed: () => handleClassButtonClick("10"),
-                                color: _universalVariables.secondaryColor,
+                                color: _grade == "10"
+                                    ? _universalVariables.logoGreen
+                                    : _universalVariables.secondaryColor,
                                 child: Text("10"),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -336,7 +347,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   elevation: 0,
                                   height: 50,
                                   onPressed: () => handleClassButtonClick("11"),
-                                  color: _universalVariables.secondaryColor,
+                                  color: _grade == "11"
+                                      ? _universalVariables.logoGreen
+                                      : _universalVariables.secondaryColor,
                                   child: Text("11"),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),
@@ -352,7 +365,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   elevation: 0,
                                   height: 50,
                                   onPressed: () => handleClassButtonClick("12"),
-                                  color: _universalVariables.secondaryColor,
+                                  color: _grade == "12"
+                                      ? _universalVariables.logoGreen
+                                      : _universalVariables.secondaryColor,
                                   child: Text("12"),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),
@@ -368,7 +383,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   elevation: 0,
                                   height: 50,
                                   onPressed: () => handleClassButtonClick("UG"),
-                                  color: _universalVariables.secondaryColor,
+                                  color: _grade == "UG"
+                                      ? _universalVariables.logoGreen
+                                      : _universalVariables.secondaryColor,
                                   child: Text("UG"),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),
@@ -384,7 +401,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   elevation: 0,
                                   height: 50,
                                   onPressed: () => handleClassButtonClick("PG"),
-                                  color: _universalVariables.secondaryColor,
+                                  color: _grade == "PG"
+                                      ? _universalVariables.logoGreen
+                                      : _universalVariables.secondaryColor,
                                   child: Text("PG"),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),

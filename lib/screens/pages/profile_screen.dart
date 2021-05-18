@@ -25,7 +25,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String stream = "";
   String grade = "";
   String subject = "";
-  void getUsername() async {
+  void getData() async {
     DocumentSnapshot snapshot = await FirebaseFirestore.instance
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser.uid)
@@ -61,7 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    getUsername();
+    getData();
   }
 
   @override
@@ -125,7 +125,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 image: profileUrl,
                                 schoolName: schoolName,
                                 stream: stream,
-                                subject: subject,
+                                username: username,
                               ),
                             ),
                           );
