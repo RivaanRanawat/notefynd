@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notefynd/screens/comment_screen.dart';
 import 'package:notefynd/screens/pages/pdf_screen.dart';
+import 'package:notefynd/screens/request_new_notes.dart';
 import 'package:notefynd/universal_variables.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
@@ -123,7 +124,16 @@ class _NotesScreenState extends State<NotesScreen> {
                 onFieldSubmitted: searchNotes,
               ),
               automaticallyImplyLeading: false,
-              actions: [Icon(Icons.add_circle_outline_outlined)],
+              actions: [
+                IconButton(
+                  icon: Icon(Icons.add_circle_outline_outlined),
+                  onPressed: () => Navigator.push(
+                      context,
+                      PageTransition(
+                          type: PageTransitionType.rightToLeft,
+                          child: RequestNewNotes())),
+                ),
+              ],
               elevation: 0.25,
             ),
             body: StreamBuilder(
@@ -653,9 +663,10 @@ class _NotesScreenState extends State<NotesScreen> {
                                                           Navigator.of(context)
                                                               .push(
                                                         PageTransition(
-                                                          type: PageTransitionType.bottomToTop,
-                                                          child:
-                                                              CommentScreen(
+                                                          type:
+                                                              PageTransitionType
+                                                                  .bottomToTop,
+                                                          child: CommentScreen(
                                                             id: posts
                                                                 .data()["id"],
                                                             fileType: "pdf",
