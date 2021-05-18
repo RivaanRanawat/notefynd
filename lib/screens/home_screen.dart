@@ -11,6 +11,7 @@ import 'package:notefynd/screens/pages/profile_screen.dart';
 import 'package:notefynd/screens/pages/search_screen.dart';
 import 'package:notefynd/services/Creator.dart';
 import 'package:notefynd/universal_variables.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -21,7 +22,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   UniversalVariables universalVariables = UniversalVariables();
   int pageIndex = 0;
-
+  PageController _pageController;
   String status;
 
   getUserStatus() async {
@@ -31,14 +32,14 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  List pageOptions = [
+  List<Widget> pageOptions = [
     // VideoScreen(),
     NotesScreen(),
     SearchScreen(),
     BoardArticles(),
     ProfileScreen(),
   ];
-  List creatorPageOptions = [
+  List<Widget> creatorPageOptions = [
     // VideoScreen(),
     NotesScreen(),
     SearchScreen(),
@@ -57,6 +58,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     getUserData();
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   getUserData() async {
@@ -69,29 +77,42 @@ class _HomeScreenState extends State<HomeScreen> {
     bio = snapshot["bio"];
     status = snapshot["status"];
     if (bio == "") {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (ctx) => DetailsScreen()));
+      Navigator.pushReplacement(
+          context,
+          PageTransition(
+              type: PageTransitionType.bottomToTop, child: DetailsScreen()));
     }
 
-    if(status == "admin") {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (ctx) => AdminScreen()));
+    if (status == "admin") {
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (ctx) => AdminScreen()));
     }
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      pageIndex = index;
+      _pageController.animateToPage(index,
+          duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: universalVariables.secondaryColor,
-      body: status == "creator"
-          ? creatorPageOptions[pageIndex]
-          : pageOptions[pageIndex],
+      body: SizedBox.expand(
+        child: PageView(
+          controller: _pageController,
+          onPageChanged: (index) {
+            setState(() => pageIndex = index);
+          },
+          children: status == "creator" ? creatorPageOptions : pageOptions,
+        ),
+      ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        onTap: (newIdx) {
-          setState(() {
-            pageIndex = newIdx;
-          });
-        },
+        onTap: _onItemTapped,
         backgroundColor: universalVariables.secondaryColor,
         unselectedItemColor: Colors.white,
         currentIndex: pageIndex,

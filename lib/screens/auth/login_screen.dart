@@ -6,6 +6,7 @@ import 'package:notefynd/screens/auth/signup_screen.dart';
 import 'package:notefynd/screens/home_screen.dart';
 import 'package:notefynd/services/AuthMethods.dart';
 import 'package:notefynd/universal_variables.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
 enum LoginType { email, google }
@@ -81,8 +82,10 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         _isLoading = false;
       });
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (ctx) => HomeScreen()));
+      Navigator.push(
+          context,
+          PageTransition(
+              type: PageTransitionType.fade, child: DetailsScreen()));
     } else {
       setState(() {
         _isLoading = false;

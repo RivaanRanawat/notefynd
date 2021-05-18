@@ -34,10 +34,12 @@ class _SearchScreenState extends State<SearchScreen> {
             filled: false,
             hintText: "Search",
             hintStyle: GoogleFonts.lato(fontSize: 18, color: Colors.white),
+            border: InputBorder.none,
           ),
           textInputAction: TextInputAction.search,
           onFieldSubmitted: searchUser,
         ),
+        automaticallyImplyLeading: false,
       ),
       body: searchResult == null
           ? Center(
@@ -79,7 +81,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                           title: Text(
                             user.data()["username"],
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                           ),
                         ),
                       );

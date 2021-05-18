@@ -121,7 +121,8 @@ class _NotesScreenState extends State<NotesScreen> {
                 textInputAction: TextInputAction.search,
                 onFieldSubmitted: searchNotes,
               ),
-              actions: [Icon(Icons.add_circle)],
+              automaticallyImplyLeading: false,
+              actions: [Icon(Icons.add_circle_outline_outlined)],
               elevation: 0.25,
             ),
             body: StreamBuilder(
