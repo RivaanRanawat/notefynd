@@ -29,11 +29,13 @@ class _SearchScreenState extends State<SearchScreen> {
       appBar: AppBar(
         backgroundColor: UniversalVariables().secondaryColor,
         title: TextFormField(
+          style: TextStyle(color: Colors.white),
           decoration: InputDecoration(
             filled: false,
             hintText: "Search",
             hintStyle: GoogleFonts.lato(fontSize: 18, color: Colors.white),
           ),
+          textInputAction: TextInputAction.search,
           onFieldSubmitted: searchUser,
         ),
       ),
@@ -69,19 +71,15 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                         ),
                         child: ListTile(
+                          contentPadding: EdgeInsets.all(5),
                           leading: CircleAvatar(
                             backgroundColor: Colors.black,
                             backgroundImage:
                                 NetworkImage(user.data()["profilePhoto"]),
                           ),
-                          trailing: Icon(
-                            Icons.search,
-                            color: Colors.white,
-                          ),
                           title: Text(
                             user.data()["username"],
-                            style: GoogleFonts.lato(
-                                fontSize: 20, color: Colors.white),
+                            style: TextStyle(color: Colors.white),
                           ),
                         ),
                       );
