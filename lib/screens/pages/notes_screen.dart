@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:notefynd/screens/comment_screen.dart';
 import 'package:notefynd/screens/pages/pdf_screen.dart';
 import 'package:notefynd/universal_variables.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
 import "package:timeago/timeago.dart" as timeago;
 
@@ -651,8 +652,9 @@ class _NotesScreenState extends State<NotesScreen> {
                                                       onPressed: () =>
                                                           Navigator.of(context)
                                                               .push(
-                                                        MaterialPageRoute(
-                                                          builder: (ctx) =>
+                                                        PageTransition(
+                                                          type: PageTransitionType.bottomToTop,
+                                                          child:
                                                               CommentScreen(
                                                             id: posts
                                                                 .data()["id"],

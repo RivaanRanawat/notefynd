@@ -6,6 +6,7 @@ import 'package:notefynd/screens/admin/admin_add_article.dart';
 import 'package:notefynd/screens/admin/detail_article.dart';
 import 'package:notefynd/screens/comment_screen.dart';
 import 'package:notefynd/universal_variables.dart';
+import 'package:page_transition/page_transition.dart';
 import "package:timeago/timeago.dart" as tago;
 
 class BoardArticles extends StatefulWidget {
@@ -56,8 +57,9 @@ class _BoardArticlesState extends State<BoardArticles> {
                 return GestureDetector(
                   onTap: () {
                     Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (ctx) => DetailArticle(
+                      PageTransition(
+                        type: PageTransitionType.fade,
+                        child: DetailArticle(
                           content: posts.data()["content"],
                           title: posts.data()["title"],
                           timePublished: timePosted,
@@ -226,8 +228,9 @@ class _BoardArticlesState extends State<BoardArticles> {
                                           IconButton(
                                             onPressed: () =>
                                                 Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                builder: (ctx) => CommentScreen(
+                                              PageTransition(
+                                                type: PageTransitionType.bottomToTop,
+                                                child: CommentScreen(
                                                   id: posts.data()["id"],
                                                   fileType: "article"
                                                 ),
