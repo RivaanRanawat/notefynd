@@ -21,6 +21,10 @@ class _NotesScreenState extends State<NotesScreen> {
   String remotePDFpath = "";
   Stream fileStream;
   bool _isLoading = false;
+  TextEditingController _titleController = new TextEditingController();
+  TextEditingController _gradeController = new TextEditingController();
+  TextEditingController _subjectController = new TextEditingController();
+  TextEditingController _descriptionController = new TextEditingController();
 
   Future<File> createFileOfPdfUrl(String url) async {
     Completer<File> completer = Completer();
@@ -70,6 +74,15 @@ class _NotesScreenState extends State<NotesScreen> {
         .collection("pdf-posts")
         .orderBy("datePublished", descending: true)
         .snapshots();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _titleController.dispose();
+    _gradeController.dispose();
+    _subjectController.dispose();
+    _descriptionController.dispose();
   }
 
   @override
@@ -168,10 +181,239 @@ class _NotesScreenState extends State<NotesScreen> {
                                                   ],
                                                 ),
                                               );
+                                            } else if (choice == "Edit") {
+                                              return showDialog(
+                                                context: context,
+                                                builder: (ctx) => AlertDialog(
+                                                  backgroundColor:
+                                                      Color.fromRGBO(
+                                                          249, 250, 252, 1),
+                                                  title: Text("Edit"),
+                                                  content:
+                                                      SingleChildScrollView(
+                                                    child: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Container(
+                                                          margin:
+                                                              EdgeInsets.all(
+                                                                  10),
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      10,
+                                                                  vertical: 5),
+                                                          decoration: BoxDecoration(
+                                                              color: Color
+                                                                  .fromRGBO(
+                                                                      251,
+                                                                      251,
+                                                                      251,
+                                                                      1),
+                                                              border: Border.all(
+                                                                  color: Colors
+                                                                      .blue)),
+                                                          child: TextFormField(
+                                                            controller:
+                                                                _titleController,
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .black),
+                                                            decoration:
+                                                                InputDecoration(
+                                                              contentPadding:
+                                                                  EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          10),
+                                                              labelText:
+                                                                  "Title",
+                                                              labelStyle: TextStyle(
+                                                                  color: Colors
+                                                                      .black),
+                                                              border:
+                                                                  InputBorder
+                                                                      .none,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          margin:
+                                                              EdgeInsets.all(
+                                                                  10),
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      10,
+                                                                  vertical: 5),
+                                                          decoration: BoxDecoration(
+                                                              color: Color
+                                                                  .fromRGBO(
+                                                                      251,
+                                                                      251,
+                                                                      251,
+                                                                      1),
+                                                              border: Border.all(
+                                                                  color: Colors
+                                                                      .blue)),
+                                                          child: TextFormField(
+                                                            controller:
+                                                                _descriptionController,
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .black),
+                                                            decoration:
+                                                                InputDecoration(
+                                                              contentPadding:
+                                                                  EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          10),
+                                                              labelText:
+                                                                  "Description",
+                                                              labelStyle: TextStyle(
+                                                                  color: Colors
+                                                                      .black),
+                                                              border:
+                                                                  InputBorder
+                                                                      .none,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          margin:
+                                                              EdgeInsets.all(
+                                                                  10),
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      10,
+                                                                  vertical: 5),
+                                                          decoration: BoxDecoration(
+                                                              color: Color
+                                                                  .fromRGBO(
+                                                                      251,
+                                                                      251,
+                                                                      251,
+                                                                      1),
+                                                              border: Border.all(
+                                                                  color: Colors
+                                                                      .blue)),
+                                                          child: TextFormField(
+                                                            controller:
+                                                                _subjectController,
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .black),
+                                                            decoration:
+                                                                InputDecoration(
+                                                              contentPadding:
+                                                                  EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          10),
+                                                              labelText:
+                                                                  "Subject",
+                                                              labelStyle: TextStyle(
+                                                                  color: Colors
+                                                                      .black),
+                                                              border:
+                                                                  InputBorder
+                                                                      .none,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          margin:
+                                                              EdgeInsets.all(
+                                                                  10),
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      10,
+                                                                  vertical: 5),
+                                                          decoration: BoxDecoration(
+                                                              color: Color
+                                                                  .fromRGBO(
+                                                                      251,
+                                                                      251,
+                                                                      251,
+                                                                      1),
+                                                              border: Border.all(
+                                                                  color: Colors
+                                                                      .blue)),
+                                                          child: TextFormField(
+                                                            controller:
+                                                                _gradeController,
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .black),
+                                                            decoration:
+                                                                InputDecoration(
+                                                              contentPadding:
+                                                                  EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          10),
+                                                              labelText:
+                                                                  "Grade",
+                                                              labelStyle: TextStyle(
+                                                                  color: Colors
+                                                                      .black),
+                                                              border:
+                                                                  InputBorder
+                                                                      .none,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () async {
+                                                        await FirebaseFirestore
+                                                            .instance
+                                                            .collection(
+                                                                "pdf-posts")
+                                                            .doc(posts
+                                                                .data()["id"])
+                                                            .update({
+                                                          "description":
+                                                              _descriptionController
+                                                                  .text,
+                                                          "grade":
+                                                              _gradeController
+                                                                  .text,
+                                                          "subject":
+                                                              _subjectController
+                                                                  .text,
+                                                          "title":
+                                                              _titleController
+                                                                  .text
+                                                        });
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                      child: Text(
+                                                        "Edit",
+                                                      ),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                      child: Text(
+                                                        "Cancel",
+                                                        style: TextStyle(
+                                                            color: Colors.red),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
                                             }
                                           },
                                           itemBuilder: (BuildContext context) {
-                                            return ["Delete"]
+                                            return ["Edit", "Delete"]
                                                 .map((String choice) {
                                               return PopupMenuItem<String>(
                                                 value: choice,
