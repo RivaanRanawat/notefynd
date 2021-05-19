@@ -4,8 +4,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import "package:flutter/material.dart";
 import 'package:google_fonts/google_fonts.dart';
+import 'package:notefynd/screens/notes_request_see_screen.dart';
 import 'package:notefynd/screens/pages/pdf_screen.dart';
 import 'package:notefynd/universal_variables.dart';
+import 'package:page_transition/page_transition.dart';
 import "dart:async";
 import "dart:io";
 import 'package:path_provider/path_provider.dart';
@@ -20,6 +22,7 @@ class _NotesManagementState extends State<NotesManagement> {
   String remotePDFpath = "";
   Stream fileStream;
   bool _isLoading = false;
+  Future<QuerySnapshot> searchResult;
 
   Future<File> createFileOfPdfUrl(String url) async {
     Completer<File> completer = Completer();
@@ -65,221 +68,286 @@ class _NotesManagementState extends State<NotesManagement> {
   @override
   void initState() {
     super.initState();
+    searchResult = FirebaseFirestore.instance
+        .collection("pdf-posts")
+        .orderBy("datePublished", descending: true)
+        .get();
     fileStream = FirebaseFirestore.instance
         .collection("pdf-posts")
         .orderBy("datePublished", descending: true)
         .snapshots();
   }
 
+  searchNotes(String notes) {
+    print(notes);
+    if (notes != "") {
+      var posts = FirebaseFirestore.instance
+          .collection("pdf-posts")
+          .where("title", isGreaterThanOrEqualTo: notes)
+          .get();
+      setState(() {
+        searchResult = posts;
+      });
+    } else {
+      var posts = FirebaseFirestore.instance
+          .collection("pdf-posts")
+          .orderBy("datePublished", descending: true)
+          .get();
+      setState(() {
+        searchResult = posts;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return _isLoading == false
-        ? StreamBuilder(
-            stream: fileStream,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Center(child: CircularProgressIndicator());
-              }
-              return ListView.builder(
-                shrinkWrap: true,
-                itemCount: snapshot.data.docs.length,
-                itemBuilder: (ctx, idx) {
-                  DocumentSnapshot posts = snapshot.data.docs[idx];
-                  Timestamp timestamp = posts.data()["datePublished"];
-                  DateTime dateTime = timestamp.toDate();
-                  String timePosted = timeago.format(dateTime);
-                  return Column(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          createFileOfPdfUrl(posts.data()["pdfUrl"]).then((f) {
-                            setState(() {
-                              remotePDFpath = f.path;
-                            });
-                          });
-                        },
-                        child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          child: Card(
-                            color: UniversalVariables().primaryColor,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundImage: NetworkImage(
-                                      posts.data()["profilePic"],
-                                    ),
-                                  ),
-                                  trailing: PopupMenuButton<String>(
-                                      icon: Icon(
-                                        Icons.more_vert,
-                                        color: Colors.white,
+        ? Scaffold(
+            backgroundColor: UniversalVariables().secondaryColor,
+            appBar: AppBar(
+              backgroundColor: UniversalVariables().secondaryColor,
+              title: TextFormField(
+                style: TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  filled: false,
+                  hintText: "Search Notes",
+                  hintStyle:
+                      GoogleFonts.lato(fontSize: 18, color: Colors.white),
+                  border: InputBorder.none,
+                ),
+                textInputAction: TextInputAction.search,
+                onFieldSubmitted: searchNotes,
+              ),
+              automaticallyImplyLeading: false,
+              actions: [
+                IconButton(
+                  icon: Icon(Icons.add_circle_outline_outlined),
+                  onPressed: () => Navigator.push(
+                      context,
+                      PageTransition(
+                          type: PageTransitionType.rightToLeft,
+                          child: NotesRequestSeeScreen())),
+                ),
+              ],
+              elevation: 0.25,
+            ),
+            body: FutureBuilder(
+                future: searchResult,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: snapshot.data.docs.length,
+                    itemBuilder: (ctx, idx) {
+                      DocumentSnapshot posts = snapshot.data.docs[idx];
+                      Timestamp timestamp = posts.data()["datePublished"];
+                      DateTime dateTime = timestamp.toDate();
+                      String timePosted = timeago.format(dateTime);
+                      return Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              createFileOfPdfUrl(posts.data()["pdfUrl"])
+                                  .then((f) {
+                                setState(() {
+                                  remotePDFpath = f.path;
+                                });
+                              });
+                            },
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              child: Card(
+                                color: UniversalVariables().primaryColor,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    ListTile(
+                                      leading: CircleAvatar(
+                                        backgroundImage: NetworkImage(
+                                          posts.data()["profilePic"],
+                                        ),
                                       ),
-                                      onSelected: (String choice) {
-                                        if (choice == "Delete") {
-                                          return showDialog(
-                                            context: context,
-                                            builder: (ctx) => AlertDialog(
-                                              title:
-                                                  Text("Delete Confirmation"),
-                                              content: Text(
-                                                "Are you sure you want to delete Your PDF?",
-                                                style: GoogleFonts.lato(),
-                                              ),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () {
-                                                    FirebaseFirestore.instance
-                                                        .collection("pdf-posts")
-                                                        .doc(posts.data()["id"])
-                                                        .delete();
-                                                    FirebaseStorage.instance
-                                                        .ref("pdf-notes")
-                                                        .child(FirebaseAuth
-                                                            .instance
-                                                            .currentUser
-                                                            .uid)
-                                                        .child(posts
-                                                            .data()["title"])
-                                                        .delete();
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child: Text(
-                                                    "Confirm",
-                                                    style: TextStyle(
-                                                        color: Colors.red),
+                                      trailing: PopupMenuButton<String>(
+                                          icon: Icon(
+                                            Icons.more_vert,
+                                            color: Colors.white,
+                                          ),
+                                          onSelected: (String choice) {
+                                            if (choice == "Delete") {
+                                              return showDialog(
+                                                context: context,
+                                                builder: (ctx) => AlertDialog(
+                                                  title: Text(
+                                                      "Delete Confirmation"),
+                                                  content: Text(
+                                                    "Are you sure you want to delete Your PDF?",
+                                                    style: GoogleFonts.lato(),
                                                   ),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        FirebaseFirestore
+                                                            .instance
+                                                            .collection(
+                                                                "pdf-posts")
+                                                            .doc(posts
+                                                                .data()["id"])
+                                                            .delete();
+                                                        FirebaseStorage.instance
+                                                            .ref("pdf-notes")
+                                                            .child(FirebaseAuth
+                                                                .instance
+                                                                .currentUser
+                                                                .uid)
+                                                            .child(posts.data()[
+                                                                "title"])
+                                                            .delete();
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                      child: Text(
+                                                        "Confirm",
+                                                        style: TextStyle(
+                                                            color: Colors.red),
+                                                      ),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                      child: Text("Cancel"),
+                                                    ),
+                                                  ],
                                                 ),
-                                                TextButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child: Text("Cancel"),
+                                              );
+                                            }
+                                          },
+                                          itemBuilder: (BuildContext context) {
+                                            return ["Delete"]
+                                                .map((String choice) {
+                                              return PopupMenuItem<String>(
+                                                value: choice,
+                                                child: Text(choice),
+                                              );
+                                            }).toList();
+                                          }),
+                                      title: Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 8.0),
+                                        child: Wrap(
+                                          direction: Axis.vertical,
+                                          children: [
+                                            Text(
+                                              posts.data()["title"],
+                                              style: GoogleFonts.lato(
+                                                color: Colors.white,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.05,
+                                            ),
+                                            Flexible(
+                                              child: Text(
+                                                timePosted,
+                                                style: GoogleFonts.lato(
+                                                  color: Colors.grey,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold,
                                                 ),
-                                              ],
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                softWrap: false,
+                                              ),
                                             ),
-                                          );
-                                        }
-                                      },
-                                      itemBuilder: (BuildContext context) {
-                                        return ["Delete"].map((String choice) {
-                                          return PopupMenuItem<String>(
-                                            value: choice,
-                                            child: Text(choice),
-                                          );
-                                        }).toList();
-                                      }),
-                                  title: Padding(
-                                    padding: const EdgeInsets.only(bottom: 8.0),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          posts.data()["title"],
-                                          style: GoogleFonts.lato(
-                                            color: Colors.white,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                          ],
                                         ),
-                                        SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.05,
-                                        ),
-                                        Flexible(
-                                          child: Text(
-                                            timePosted,
-                                            style: GoogleFonts.lato(
-                                              color: Colors.grey,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
+                                      ),
+                                      subtitle: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 8.0),
+                                            child: Text(
+                                              "Grade : " +
+                                                  posts.data()["grade"],
+                                              style: GoogleFonts.lato(
+                                                color: Colors.white,
+                                                fontSize: 14,
+                                              ),
                                             ),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            softWrap: false,
                                           ),
-                                        ),
-                                      ],
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 8.0),
+                                            child: Text(
+                                              "School : " +
+                                                  posts.data()["schoolName"],
+                                              style: GoogleFonts.lato(
+                                                  color: Colors.white,
+                                                  fontSize: 14),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 8.0),
+                                            child: Text(
+                                              "Notes for " +
+                                                  posts.data()["subject"] +
+                                                  " , " +
+                                                  posts.data()["stream"],
+                                              style: GoogleFonts.lato(
+                                                  color: Colors.white,
+                                                  fontSize: 14),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 8.0),
+                                            child: Text(
+                                              "Description: " +
+                                                  posts.data()["description"],
+                                              style: GoogleFonts.lato(
+                                                  color: Colors.white,
+                                                  fontSize: 14),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 8.0),
+                                            child: Text(
+                                              posts.data()["username"] != null
+                                                  ? "By " +
+                                                      posts.data()["username"]
+                                                  : "",
+                                              style: GoogleFonts.lato(
+                                                  color: Colors.white,
+                                                  fontSize: 15),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  subtitle: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 8.0),
-                                        child: Text(
-                                          "Grade : " + posts.data()["grade"],
-                                          style: GoogleFonts.lato(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 8.0),
-                                        child: Text(
-                                          "School : " +
-                                              posts.data()["schoolName"],
-                                          style: GoogleFonts.lato(
-                                              color: Colors.white,
-                                              fontSize: 14),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 8.0),
-                                        child: Text(
-                                          "Notes for " +
-                                              posts.data()["subject"] +
-                                              " , " +
-                                              posts.data()["stream"],
-                                          style: GoogleFonts.lato(
-                                              color: Colors.white,
-                                              fontSize: 14),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 8.0),
-                                        child: Text(
-                                          "Description: " +
-                                              posts.data()["description"],
-                                          style: GoogleFonts.lato(
-                                              color: Colors.white,
-                                              fontSize: 14),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 8.0),
-                                        child: Text(
-                                          posts.data()["username"] != null
-                                              ? "By " + posts.data()["username"]
-                                              : "",
-                                          style: GoogleFonts.lato(
-                                              color: Colors.white,
-                                              fontSize: 15),
-                                        ),
-                                      ),
-                                      
-                                    ],
-                                  ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    ],
+                        ],
+                      );
+                    },
                   );
-                },
-              );
-            })
+                }))
         : Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,

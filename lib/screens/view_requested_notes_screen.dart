@@ -35,35 +35,38 @@ class _ViewRequestedNotesScreenState extends State<ViewRequestedNotesScreen> {
                   Timestamp timestamp = requestPost.data()["datePublished"];
                   DateTime dateTime = timestamp.toDate();
                   String timePosted = timeago.format(dateTime);
-                  return ListTile(
-                    title: Text(
-                      requestPost["topic"],
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(bottom: 5),
-                          child: Text(
-                            requestPost["subject"],
-                            style: TextStyle(color: Colors.white, fontSize: 16),
+                  return Container(
+                    margin: EdgeInsets.only(top: 10),
+                    child: ListTile(
+                      title: Text(
+                        requestPost["topic"],
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20),
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(bottom: 5),
+                            child: Text(
+                              requestPost["subject"],
+                              style: TextStyle(color: Colors.white, fontSize: 16),
+                            ),
                           ),
+                          Text(
+                            "Requested $timePosted",
+                            style: TextStyle(color: Colors.white70),
+                          )
+                        ],
+                      ),
+                      trailing: Text(
+                        requestPost["grade"],
+                        style: GoogleFonts.lato(
+                          color: Colors.white,
+                          fontSize: 22,
                         ),
-                        Text(
-                          "Requested $timePosted",
-                          style: TextStyle(color: Colors.white70),
-                        )
-                      ],
-                    ),
-                    trailing: Text(
-                      requestPost["grade"],
-                      style: GoogleFonts.lato(
-                        color: Colors.white,
-                        fontSize: 22,
                       ),
                     ),
                   );
