@@ -18,7 +18,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
   UniversalVariables _universalVariables = UniversalVariables();
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _schoolNameController = TextEditingController();
-  TextEditingController _usernameController = TextEditingController();
   io.File _image;
   final picker = ImagePicker();
   PickedFile pickedFile;
@@ -71,7 +70,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
       if (_descriptionController.text.isNotEmpty &&
           _schoolNameController.text.isNotEmpty &&
           _stream != "" &&
-          _usernameController.text.isNotEmpty &&
           _grade != "") {
         if (_image != null) {
           await uploadImageToStorage(pickedFile);
@@ -86,7 +84,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
               : "https://i.stack.imgur.com/l60Hf.png",
           "schoolName": _schoolNameController.text,
           "stream": _stream,
-          "username": _usernameController.text,
           "grade": _grade,
         });
         setState(() {
@@ -142,29 +139,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     ]),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 15),
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                        color: _universalVariables.secondaryColor,
-                        border: Border.all(color: Colors.blue)),
-                    child: TextFormField(
-                      controller: _usernameController,
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                        labelText: "Username",
-                        labelStyle: TextStyle(color: Colors.white),
-                        icon: Icon(
-                          Icons.person,
-                          color: Colors.white,
-                        ),
-                        border: InputBorder.none,
-                      ),
-                      textInputAction: TextInputAction.done,
-                    ),
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.015),
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 15),
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),

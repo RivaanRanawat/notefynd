@@ -28,7 +28,6 @@ class _NotesScreenState extends State<NotesScreen> {
   TextEditingController _gradeController = new TextEditingController();
   TextEditingController _subjectController = new TextEditingController();
   TextEditingController _descriptionController = new TextEditingController();
-  Future<QuerySnapshot> searchResult;
 
   Future<File> createFileOfPdfUrl(String url) async {
     Completer<File> completer = Completer();
@@ -74,10 +73,6 @@ class _NotesScreenState extends State<NotesScreen> {
   @override
   void initState() {
     super.initState();
-    searchResult = FirebaseFirestore.instance
-        .collection("pdf-posts")
-        .orderBy("datePublished", descending: true)
-        .get();
     postStream = FirebaseFirestore.instance
         .collection("pdf-posts")
         .orderBy("datePublished", descending: true)
@@ -99,17 +94,17 @@ class _NotesScreenState extends State<NotesScreen> {
       var posts = FirebaseFirestore.instance
           .collection("pdf-posts")
           .where("title", isGreaterThanOrEqualTo: notes)
-          .get();
+          .snapshots();
       setState(() {
-        searchResult = posts;
+        postStream = posts;
       });
     } else {
       var posts = FirebaseFirestore.instance
           .collection("pdf-posts")
           .orderBy("datePublished", descending: true)
-          .get();
+          .snapshots();
       setState(() {
-        searchResult = posts;
+        postStream = posts;
       });
     }
   }
@@ -146,17 +141,19 @@ class _NotesScreenState extends State<NotesScreen> {
               ],
               elevation: 0.25,
             ),
-            body: FutureBuilder(
-                future: searchResult,
-                builder: (BuildContext ctx, snap) {
-                  if (!snap.hasData) {
-                    return Center(child: CircularProgressIndicator());
+            body: StreamBuilder(
+                stream: postStream,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
                   }
                   return ListView.builder(
                     shrinkWrap: true,
-                    itemCount: snap.data.docs.length,
+                    itemCount: snapshot.data.docs.length,
                     itemBuilder: (ctx, idx) {
-                      DocumentSnapshot posts = snap.data.docs[idx];
+                      DocumentSnapshot posts = snapshot.data.docs[idx];
                       Timestamp timestamp = posts.data()["datePublished"];
                       DateTime dateTime = timestamp.toDate();
                       String timePosted = timeago.format(dateTime);
