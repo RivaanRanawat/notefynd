@@ -6,6 +6,8 @@ import 'package:notefynd/screens/confirm_video_screen.dart';
 import 'package:notefynd/universal_variables.dart';
 import "dart:io";
 
+import 'package:page_transition/page_transition.dart';
+
 class AddContent extends StatefulWidget {
   @override
   _AddContentState createState() => _AddContentState();
@@ -75,7 +77,7 @@ class _AddContentState extends State<AddContent> {
               elevation: 0,
               height: 50,
               onPressed: () => Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (ctx) => AddPdfNotes())),
+                  .push(PageTransition(child: AddPdfNotes(), type: PageTransitionType.bottomToTop)),
               color: Colors.blue,
               child: Text("Add PDF"),
               textColor: Colors.white,
