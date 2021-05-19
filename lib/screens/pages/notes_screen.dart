@@ -8,8 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notefynd/screens/UserProfileScreen.dart';
 import 'package:notefynd/screens/comment_screen.dart';
+import 'package:notefynd/screens/notes_request_see_screen.dart';
 import 'package:notefynd/screens/pages/pdf_screen.dart';
-import 'package:notefynd/screens/request_new_notes.dart';
+import 'package:notefynd/screens/request_new_notes_screen.dart';
 import 'package:notefynd/universal_variables.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:path_provider/path_provider.dart';
@@ -141,7 +142,7 @@ class _NotesScreenState extends State<NotesScreen> {
                       context,
                       PageTransition(
                           type: PageTransitionType.rightToLeft,
-                          child: RequestNewNotes())),
+                          child: NotesRequestSeeScreen())),
                 ),
               ],
               elevation: 0.25,

@@ -457,6 +457,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                         fontWeight:
                                                             FontWeight.bold,
                                                       ),
+                                                      overflow: TextOverflow.ellipsis,
                                                     ),
                                                     Text(timePosted,
                                                         style: GoogleFonts.lato(
