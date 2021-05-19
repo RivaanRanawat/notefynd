@@ -223,10 +223,51 @@ class _NotesManagementState extends State<NotesManagement> {
                                                   ],
                                                 ),
                                               );
+                                            } else if (choice == "Verify") {
+                                              return showDialog(
+                                                context: context,
+                                                builder: (ctx) => AlertDialog(
+                                                  title: Text("Verification"),
+                                                  content: Text(
+                                                    "Are you sure you want to verify these notes?",
+                                                    style: GoogleFonts.lato(),
+                                                  ),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        FirebaseFirestore
+                                                            .instance
+                                                            .collection(
+                                                                "pdf-posts")
+                                                            .doc(posts["id"])
+                                                            .update({
+                                                          "isVerified": true
+                                                        });
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                      child: Text(
+                                                        "Confirm",
+                                                      ),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                      child: Text(
+                                                        "Cancel",
+                                                        style: TextStyle(
+                                                            color: Colors.red),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
                                             }
                                           },
                                           itemBuilder: (BuildContext context) {
-                                            return ["Delete"]
+                                            return ["Delete", "Verify"]
                                                 .map((String choice) {
                                               return PopupMenuItem<String>(
                                                 value: choice,
@@ -255,8 +296,8 @@ class _NotesManagementState extends State<NotesManagement> {
                                                       .width *
                                                   0.05,
                                             ),
-                                            Flexible(
-                                              child: Text(
+                                            Row(children: [
+                                              Text(
                                                 timePosted,
                                                 style: GoogleFonts.lato(
                                                   color: Colors.grey,
@@ -267,7 +308,14 @@ class _NotesManagementState extends State<NotesManagement> {
                                                 overflow: TextOverflow.ellipsis,
                                                 softWrap: false,
                                               ),
-                                            ),
+                                              SizedBox(width: 10),
+                                              posts.data()["isVerified"] == true
+                                                  ? Icon(
+                                                      Icons.verified_rounded,
+                                                      color: Colors.white,
+                                                    )
+                                                  : Container()
+                                            ]),
                                           ],
                                         ),
                                       ),

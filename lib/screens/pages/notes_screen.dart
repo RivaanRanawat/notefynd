@@ -697,6 +697,18 @@ class _NotesScreenState extends State<NotesScreen> {
                                                   fontWeight: FontWeight.bold,
                                                 ),
                                               ),
+                                              SizedBox(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.15,
+                                              ),
+                                              posts.data()["isVerified"] == true
+                                                  ? Icon(
+                                                      Icons.verified_rounded,
+                                                      color: Colors.white,
+                                                    )
+                                                  : Container()
                                             ],
                                           ),
                                         ],
