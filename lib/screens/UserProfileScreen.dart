@@ -86,6 +86,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     myPdf = FirebaseFirestore.instance
         .collection("pdf-posts")
         .where("uid", isEqualTo: widget.uid)
+        .orderBy("datePublished", descending: true)
         .get();
     DocumentSnapshot userDoc = await userCollection.doc(widget.uid).get();
     username = userDoc.data()["username"];
@@ -102,7 +103,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         .get();
     for (var item in docs.docs) {
       likes += item.data()["likes"].length;
-      noOfPosts+=1;
+      noOfPosts += 1;
     }
     var followerDoc =
         await userCollection.doc(widget.uid).collection("followers").get();
@@ -127,7 +128,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         });
       }
     });
-    
+
     setState(() {
       _isLoading = false;
     });
@@ -215,27 +216,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             Column(
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 10),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        bio,
-                                        style:TextStyle(
-                                          fontSize: 18,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      Text(
-                                        grade,
-                                        style: GoogleFonts.lato(
-                                          fontSize: 18,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ],
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child: Text(
+                                    bio,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
+                                SizedBox(height: 5),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 10),
                                   child: Row(
@@ -453,28 +443,20 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                             }).toList();
                                                           })
                                                       : Text(""),
-                                              title: Container(
+                                              title: Padding(
                                                 padding: EdgeInsets.only(
                                                     bottom: 8.0),
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.8,
                                                 child: Wrap(
                                                   direction: Axis.vertical,
                                                   children: [
-                                                    Flexible(
-                                                      child: Text(
-                                                          posts.data()["title"],
-                                                          style:
-                                                              GoogleFonts.lato(
-                                                            color: Colors.white,
-                                                            fontSize: 18,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                          textAlign:
-                                                              TextAlign.left),
+                                                    Text(
+                                                      posts.data()["title"],
+                                                      style: GoogleFonts.lato(
+                                                        color: Colors.white,
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
                                                     ),
                                                     Text(timePosted,
                                                         style: GoogleFonts.lato(
@@ -709,7 +691,8 @@ class MenuItemWidget extends StatelessWidget {
         children: <Widget>[
           Text(
             '$title',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 24),
+            style: TextStyle(
+                color: Colors.white, fontWeight: FontWeight.w800, fontSize: 24),
           ),
           Padding(
             padding: EdgeInsets.only(top: 2),
