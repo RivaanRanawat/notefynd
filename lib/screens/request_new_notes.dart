@@ -248,7 +248,7 @@ class _RequestNewNotesState extends State<RequestNewNotes> {
                   FocusScope.of(context).unfocus();
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Text(
-                        "Thank You For Your Request! You will be provided with the notes you need soon!"),
+                        "Thank You For Your Request! You will be provided with the notes soon!"),
                   ));
                   Navigator.of(context).pushReplacement(PageTransition(
                       child: HomeScreen(),

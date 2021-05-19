@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:notefynd/screens/UserProfileScreen.dart';
 import 'package:notefynd/screens/comment_screen.dart';
 import 'package:notefynd/screens/pages/pdf_screen.dart';
 import 'package:notefynd/screens/request_new_notes.dart';
@@ -173,9 +174,20 @@ class _NotesScreenState extends State<NotesScreen> {
                                             MainAxisAlignment.start,
                                         children: [
                                           ListTile(
-                                            leading: CircleAvatar(
-                                              backgroundImage: NetworkImage(
-                                                posts.data()["profilePic"],
+                                            leading: GestureDetector(
+                                              onTap: () =>
+                                                  Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                  builder: (ctx) =>
+                                                      UserProfileScreen(
+                                                    posts.data()["uid"],
+                                                  ),
+                                                ),
+                                              ),
+                                              child: CircleAvatar(
+                                                backgroundImage: NetworkImage(
+                                                  posts.data()["profilePic"],
+                                                ),
                                               ),
                                             ),
                                             trailing:
@@ -484,16 +496,19 @@ class _NotesScreenState extends State<NotesScreen> {
                                               child: Wrap(
                                                 direction: Axis.vertical,
                                                 children: [
-                                                  Text(posts.data()["title"],
-                                                      style: GoogleFonts.lato(
-                                                        color: Colors.white,
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                      overflow:
-                                                          TextOverflow.fade,
-                                                      maxLines: 2),
+                                                  Flexible(
+                                                    child: Text(
+                                                        posts.data()["title"],
+                                                        style: GoogleFonts.lato(
+                                                          color: Colors.white,
+                                                          fontSize: 18,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                        overflow:
+                                                            TextOverflow.fade,
+                                                        maxLines: 2),
+                                                  ),
                                                   Flexible(
                                                     child: Text(
                                                       timePosted,
