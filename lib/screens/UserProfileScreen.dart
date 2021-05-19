@@ -21,7 +21,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   String profilePic;
   Future myPdf;
   var likes = 0;
-  var isData = false;
   var isFollowing = false;
   var isLiked;
   int following;
@@ -30,6 +29,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   String grade = "";
   String schoolName = "";
   String stream = "";
+  int noOfPosts = 0;
+  var _isLoading = false;
   TextEditingController usernameController = TextEditingController();
   var userCollection = FirebaseFirestore.instance.collection("users");
 
@@ -79,6 +80,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   getAllData() async {
+    setState(() {
+      _isLoading = true;
+    });
     myPdf = FirebaseFirestore.instance
         .collection("pdf-posts")
         .where("uid", isEqualTo: widget.uid)
@@ -87,10 +91,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     username = userDoc.data()["username"];
     profilePic = userDoc.data()["profilePhoto"];
     currentUser = FirebaseAuth.instance.currentUser.uid;
-    bio = userDoc.data()["bio"];
     grade = userDoc.data()["grade"];
     schoolName = userDoc.data()["schoolName"];
     stream = userDoc.data()["stream"];
+    bio = userDoc.data()["bio"];
 
     var docs = await FirebaseFirestore.instance
         .collection("pdf-posts")
@@ -98,6 +102,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         .get();
     for (var item in docs.docs) {
       likes += item.data()["likes"].length;
+      noOfPosts+=1;
     }
     var followerDoc =
         await userCollection.doc(widget.uid).collection("followers").get();
@@ -122,284 +127,444 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         });
       }
     });
+    
     setState(() {
-      isData = true;
+      _isLoading = false;
     });
-
-    print("followers $followers");
-    print("following $following");
-    print("likes $likes");
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: UniversalVariables().secondaryColor,
-      body: isData == false
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : SingleChildScrollView(
-              physics: ScrollPhysics(),
-              child: Container(
-                margin: EdgeInsets.only(top: 20),
-                alignment: Alignment.center,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 20,
-                    ),
-                    CircleAvatar(
-                      radius: 64,
-                      backgroundColor: Colors.black,
-                      backgroundImage: NetworkImage(
-                        profilePic,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      username,
-                      style: GoogleFonts.lato(
-                        fontSize: 25,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        backgroundColor: UniversalVariables().secondaryColor,
+        body: _isLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : SingleChildScrollView(
+                physics: ScrollPhysics(),
+                child: Container(
+                  margin: EdgeInsets.only(top: 20),
+                  alignment: Alignment.center,
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text(
-                          followers.toString(),
-                          style: GoogleFonts.lato(
-                              fontSize: 23,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        CircleAvatar(
+                          radius: 64,
+                          backgroundColor: Colors.black,
+                          backgroundImage: NetworkImage(
+                            profilePic,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 5,
                         ),
                         Text(
-                          following.toString(),
+                          username,
                           style: GoogleFonts.lato(
-                              fontSize: 23,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
+                            fontSize: 25,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        Text(
-                          likes.toString(),
-                          style: GoogleFonts.lato(
-                              fontSize: 23,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
+                        SizedBox(
+                          height: 10,
                         ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(
-                          "Followers",
-                          style: GoogleFonts.lato(
-                              fontSize: 18,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        Text(
-                          "Following",
-                          style: GoogleFonts.lato(
-                              fontSize: 18,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        Text(
-                          "Likes",
-                          style: GoogleFonts.lato(
-                              fontSize: 18,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                              bio,
-                              style: GoogleFonts.lato(
-                                fontSize: 18,
-                                color: Colors.white,
+                        Column(
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 16,
+                                horizontal: 16,
                               ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Expanded(
+                                      child: Container(
+                                    alignment: Alignment.center,
+                                    child: Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                            child: MenuItemWidget(
+                                          title: followers.toString(),
+                                          content: 'Followers',
+                                        )),
+                                        Expanded(
+                                            child: MenuItemWidget(
+                                          title: following.toString(),
+                                          content: 'Following',
+                                        )),
+                                        Expanded(
+                                            child: MenuItemWidget(
+                                          title: likes.toString(),
+                                          content: 'Likes',
+                                        ))
+                                      ],
+                                    ),
+                                  ))
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: Row(
-                            children: [
-                              Text(
-                                "Stream: ",
-                                style: GoogleFonts.lato(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                stream,
-                                style: GoogleFonts.lato(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: Row(
-                            children: [
-                              Text(
-                                "School Name: ",
-                                style: GoogleFonts.lato(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                schoolName,
-                                style: GoogleFonts.lato(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10, bottom: 10),
-                          child: Row(
-                            children: [
-                              Text(
-                                "Grade: ",
-                                style: GoogleFonts.lato(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                grade,
-                                style: GoogleFonts.lato(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    FirebaseAuth.instance.currentUser.uid != widget.uid
-                        ? MaterialButton(
-                            minWidth: MediaQuery.of(context).size.width / 2,
-                            elevation: 0,
-                            height: 50,
-                            onPressed: () => followUser(),
-                            color: UniversalVariables().logoGreen,
-                            child: Text(
-                              isFollowing == false ? "Follow" : "Unfollow",
-                              style: TextStyle(fontSize: 16),
+                            SizedBox(
+                              height: 10,
                             ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            textColor: Colors.white,
-                          )
-                        : Text(""),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      "Notes",
-                      style:
-                          GoogleFonts.lato(fontSize: 20, color: Colors.white),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    FutureBuilder(
-                      future: myPdf,
-                      builder: (BuildContext coontext, snapshot) {
-                        if (!snapshot.hasData) {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                        return ListView.builder(
-                          physics: const ScrollPhysics(),
-                          shrinkWrap: true,
-                          itemBuilder: (BuildContext context, int index) {
-                            DocumentSnapshot posts = snapshot.data.docs[index];
-                            Timestamp timestamp = posts.data()["datePublished"];
-                            DateTime dateTime = timestamp.toDate();
-                            String timePosted = timeago.format(dateTime);
-                            isLiked = posts.data()["likes"].contains(
-                                FirebaseAuth.instance.currentUser.uid);
-                            return Container(
-                              width: MediaQuery.of(context).size.width,
-                              child: Card(
-                                color: UniversalVariables().primaryColor,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    ListTile(
-                                      leading: CircleAvatar(
-                                        backgroundImage: NetworkImage(
-                                          posts.data()["profilePic"],
+                            Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 10),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        bio,
+                                        style:TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.white,
                                         ),
                                       ),
-                                      trailing: posts.data()["uid"] ==
-                                              FirebaseAuth
-                                                  .instance.currentUser.uid
-                                          ? PopupMenuButton<String>(
-                                              icon: Icon(
-                                                Icons.more_vert,
-                                                color: Colors.white,
+                                      Text(
+                                        grade,
+                                        style: GoogleFonts.lato(
+                                          fontSize: 18,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "Stream: ",
+                                        style: GoogleFonts.lato(
+                                          fontSize: 18,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        stream,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "School Name: ",
+                                        style: GoogleFonts.lato(
+                                          fontSize: 18,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        schoolName,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 10, bottom: 10),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "Grade: ",
+                                        style: GoogleFonts.lato(
+                                          fontSize: 18,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        grade,
+                                        style: GoogleFonts.lato(
+                                          fontSize: 18,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            FirebaseAuth.instance.currentUser.uid != widget.uid
+                                ? MaterialButton(
+                                    minWidth:
+                                        MediaQuery.of(context).size.width / 2,
+                                    elevation: 0,
+                                    height: 50,
+                                    onPressed: () => followUser(),
+                                    color: UniversalVariables().logoGreen,
+                                    child: Text(
+                                      isFollowing == false
+                                          ? "Follow"
+                                          : "Unfollow",
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                    ),
+                                    textColor: Colors.white,
+                                  )
+                                : Text(""),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              "${noOfPosts.toString()} Notes",
+                              style: GoogleFonts.lato(
+                                  fontSize: 20, color: Colors.white),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            FutureBuilder(
+                              future: myPdf,
+                              builder: (BuildContext coontext, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                }
+                                return ListView.builder(
+                                  physics: const ScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    DocumentSnapshot posts =
+                                        snapshot.data.docs[index];
+                                    Timestamp timestamp =
+                                        posts.data()["datePublished"];
+                                    DateTime dateTime = timestamp.toDate();
+                                    String timePosted =
+                                        timeago.format(dateTime);
+                                    isLiked = posts.data()["likes"].contains(
+                                        FirebaseAuth.instance.currentUser.uid);
+                                    return Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Card(
+                                        color:
+                                            UniversalVariables().primaryColor,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            ListTile(
+                                              leading: CircleAvatar(
+                                                backgroundImage: NetworkImage(
+                                                  posts.data()["profilePic"],
+                                                ),
                                               ),
-                                              onSelected: (String choice) {
-                                                if (choice == "Delete") {
-                                                  return showDialog(
-                                                    context: context,
-                                                    builder: (ctx) =>
-                                                        AlertDialog(
-                                                      title: Text(
-                                                          "Delete Confirmation"),
-                                                      content: Text(
-                                                        "Are you sure you want to delete Your PDF?",
-                                                        style:
-                                                            GoogleFonts.lato(),
+                                              trailing:
+                                                  posts.data()["uid"] ==
+                                                          FirebaseAuth.instance
+                                                              .currentUser.uid
+                                                      ? PopupMenuButton<String>(
+                                                          icon: Icon(
+                                                            Icons.more_vert,
+                                                            color: Colors.white,
+                                                          ),
+                                                          onSelected:
+                                                              (String choice) {
+                                                            if (choice ==
+                                                                "Delete") {
+                                                              return showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder: (ctx) =>
+                                                                    AlertDialog(
+                                                                  title: Text(
+                                                                      "Delete Confirmation"),
+                                                                  content: Text(
+                                                                    "Are you sure you want to delete Your PDF?",
+                                                                    style: GoogleFonts
+                                                                        .lato(),
+                                                                  ),
+                                                                  actions: [
+                                                                    TextButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        FirebaseFirestore
+                                                                            .instance
+                                                                            .collection("pdf-posts")
+                                                                            .doc(posts.data()["id"])
+                                                                            .delete();
+                                                                        FirebaseStorage
+                                                                            .instance
+                                                                            .ref("pdf-notes")
+                                                                            .child(FirebaseAuth.instance.currentUser.uid)
+                                                                            .child(posts.data()["title"])
+                                                                            .delete();
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                      },
+                                                                      child:
+                                                                          Text(
+                                                                        "Confirm",
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.red),
+                                                                      ),
+                                                                    ),
+                                                                    TextButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                      },
+                                                                      child: Text(
+                                                                          "Cancel"),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              );
+                                                            }
+                                                          },
+                                                          itemBuilder:
+                                                              (BuildContext
+                                                                  context) {
+                                                            return ["Delete"]
+                                                                .map((String
+                                                                    choice) {
+                                                              return PopupMenuItem<
+                                                                  String>(
+                                                                value: choice,
+                                                                child: Text(
+                                                                    choice),
+                                                              );
+                                                            }).toList();
+                                                          })
+                                                      : Text(""),
+                                              title: Container(
+                                                padding: EdgeInsets.only(
+                                                    bottom: 8.0),
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.8,
+                                                child: Wrap(
+                                                  direction: Axis.vertical,
+                                                  children: [
+                                                    Flexible(
+                                                      child: Text(
+                                                          posts.data()["title"],
+                                                          style:
+                                                              GoogleFonts.lato(
+                                                            color: Colors.white,
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.left),
+                                                    ),
+                                                    Text(timePosted,
+                                                        style: GoogleFonts.lato(
+                                                          color: Colors.grey,
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                        maxLines: 1,
+                                                        textAlign:
+                                                            TextAlign.left),
+                                                  ],
+                                                ),
+                                              ),
+                                              subtitle: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            bottom: 8.0),
+                                                    child: Text(
+                                                      "Grade : " +
+                                                          posts.data()["grade"],
+                                                      style: GoogleFonts.lato(
+                                                        color: Colors.white,
+                                                        fontSize: 14,
                                                       ),
-                                                      actions: [
-                                                        TextButton(
-                                                          onPressed: () {
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            bottom: 8.0),
+                                                    child: Text(
+                                                      "Notes for " +
+                                                          posts.data()[
+                                                              "subject"] +
+                                                          " , " +
+                                                          posts
+                                                              .data()["stream"],
+                                                      style: GoogleFonts.lato(
+                                                          color: Colors.white,
+                                                          fontSize: 14),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            bottom: 8.0),
+                                                    child: Text(
+                                                      "Description: " +
+                                                          posts.data()[
+                                                              "description"],
+                                                      style: GoogleFonts.lato(
+                                                          color: Colors.white,
+                                                          fontSize: 14),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            bottom: 8.0),
+                                                    child: Text(
+                                                      posts.data()[
+                                                                  "username"] !=
+                                                              null
+                                                          ? "By " +
+                                                              posts.data()[
+                                                                  "username"]
+                                                          : "",
+                                                      style: GoogleFonts.lato(
+                                                          color: Colors.white,
+                                                          fontSize: 15),
+                                                    ),
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      IconButton(
+                                                        onPressed: () {
+                                                          if (posts
+                                                              .data()["likes"]
+                                                              .contains(
+                                                                  FirebaseAuth
+                                                                      .instance
+                                                                      .currentUser
+                                                                      .uid)) {
                                                             FirebaseFirestore
                                                                 .instance
                                                                 .collection(
@@ -407,250 +572,152 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                                 .doc(posts
                                                                         .data()[
                                                                     "id"])
-                                                                .delete();
-                                                            FirebaseStorage
-                                                                .instance
-                                                                .ref(
-                                                                    "pdf-notes")
-                                                                .child(FirebaseAuth
+                                                                .update({
+                                                              "likes": FieldValue
+                                                                  .arrayRemove([
+                                                                FirebaseAuth
                                                                     .instance
                                                                     .currentUser
-                                                                    .uid)
-                                                                .child(posts
+                                                                    .uid
+                                                              ]),
+                                                            });
+                                                            setState(() {
+                                                              isLiked = false;
+                                                            });
+                                                          } else {
+                                                            FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    "pdf-posts")
+                                                                .doc(posts
                                                                         .data()[
-                                                                    "title"])
-                                                                .delete();
+                                                                    "id"])
+                                                                .update({
+                                                              "likes": FieldValue
+                                                                  .arrayUnion([
+                                                                FirebaseAuth
+                                                                    .instance
+                                                                    .currentUser
+                                                                    .uid
+                                                              ]),
+                                                            });
+                                                            setState(() {
+                                                              isLiked = true;
+                                                            });
+                                                          }
+                                                        },
+                                                        icon: isLiked
+                                                            ? Icon(
+                                                                Icons.favorite,
+                                                                color:
+                                                                    Colors.red,
+                                                                size: 30,
+                                                              )
+                                                            : Icon(
+                                                                Icons
+                                                                    .favorite_border,
+                                                                color: Colors
+                                                                    .white,
+                                                                size: 30,
+                                                              ),
+                                                      ),
+                                                      Text(
+                                                        posts
+                                                            .data()["likes"]
+                                                            .length
+                                                            .toString(),
+                                                        style: GoogleFonts.lato(
+                                                          color: Colors.white,
+                                                          fontSize: 18,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.15,
+                                                      ),
+                                                      IconButton(
+                                                        onPressed: () =>
                                                             Navigator.of(
                                                                     context)
-                                                                .pop();
-                                                          },
-                                                          child: Text(
-                                                            "Confirm",
-                                                            style: TextStyle(
-                                                                color:
-                                                                    Colors.red),
+                                                                .push(
+                                                          MaterialPageRoute(
+                                                            builder: (ctx) =>
+                                                                CommentScreen(
+                                                              id: posts
+                                                                  .data()["id"],
+                                                              fileType: "pdf",
+                                                            ),
                                                           ),
                                                         ),
-                                                        TextButton(
-                                                          onPressed: () {
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                          },
-                                                          child: Text("Cancel"),
+                                                        icon: Icon(
+                                                          Icons.comment,
+                                                          color: Colors.white,
+                                                          size: 30,
                                                         ),
-                                                      ],
-                                                    ),
-                                                  );
-                                                }
-                                              },
-                                              itemBuilder:
-                                                  (BuildContext context) {
-                                                return ["Delete"]
-                                                    .map((String choice) {
-                                                  return PopupMenuItem<String>(
-                                                    value: choice,
-                                                    child: Text(choice),
-                                                  );
-                                                }).toList();
-                                              })
-                                          : Text(""),
-                                      title: Container(
-                                        padding: EdgeInsets.only(bottom: 8.0),
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.8,
-                                        child: Wrap(
-                                          direction: Axis.vertical,
-                                          children: [
-                                            Flexible(
-                                              child: Text(posts.data()["title"],
-                                                  style: GoogleFonts.lato(
-                                                    color: Colors.white,
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.bold,
+                                                      ),
+                                                      Text(
+                                                        posts
+                                                            .data()[
+                                                                "commentCount"]
+                                                            .toString(),
+                                                        style: GoogleFonts.lato(
+                                                          color: Colors.white,
+                                                          fontSize: 18,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  textAlign: TextAlign.left),
+                                                ],
+                                              ),
                                             ),
-                                            Text(timePosted,
-                                                style: GoogleFonts.lato(
-                                                  color: Colors.grey,
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                                maxLines: 1,
-                                                textAlign: TextAlign.left),
                                           ],
                                         ),
                                       ),
-                                      subtitle: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 8.0),
-                                            child: Text(
-                                              "Grade : " +
-                                                  posts.data()["grade"],
-                                              style: GoogleFonts.lato(
-                                                color: Colors.white,
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 8.0),
-                                            child: Text(
-                                              "Notes for " +
-                                                  posts.data()["subject"] +
-                                                  " , " +
-                                                  posts.data()["stream"],
-                                              style: GoogleFonts.lato(
-                                                  color: Colors.white,
-                                                  fontSize: 14),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 8.0),
-                                            child: Text(
-                                              "Description: " +
-                                                  posts.data()["description"],
-                                              style: GoogleFonts.lato(
-                                                  color: Colors.white,
-                                                  fontSize: 14),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 8.0),
-                                            child: Text(
-                                              posts.data()["username"] != null
-                                                  ? "By " +
-                                                      posts.data()["username"]
-                                                  : "",
-                                              style: GoogleFonts.lato(
-                                                  color: Colors.white,
-                                                  fontSize: 15),
-                                            ),
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              IconButton(
-                                                onPressed: () {
-                                                  if (posts
-                                                      .data()["likes"]
-                                                      .contains(FirebaseAuth
-                                                          .instance
-                                                          .currentUser
-                                                          .uid)) {
-                                                    FirebaseFirestore.instance
-                                                        .collection("pdf-posts")
-                                                        .doc(posts.data()["id"])
-                                                        .update({
-                                                      "likes": FieldValue
-                                                          .arrayRemove([
-                                                        FirebaseAuth.instance
-                                                            .currentUser.uid
-                                                      ]),
-                                                    });
-                                                    setState(() {
-                                                      isLiked = false;
-                                                    });
-                                                  } else {
-                                                    FirebaseFirestore.instance
-                                                        .collection("pdf-posts")
-                                                        .doc(posts.data()["id"])
-                                                        .update({
-                                                      "likes": FieldValue
-                                                          .arrayUnion([
-                                                        FirebaseAuth.instance
-                                                            .currentUser.uid
-                                                      ]),
-                                                    });
-                                                    setState(() {
-                                                      isLiked = true;
-                                                    });
-                                                  }
-                                                },
-                                                icon: isLiked
-                                                    ? Icon(
-                                                        Icons.favorite,
-                                                        color: Colors.red,
-                                                        size: 30,
-                                                      )
-                                                    : Icon(
-                                                        Icons.favorite_border,
-                                                        color: Colors.white,
-                                                        size: 30,
-                                                      ),
-                                              ),
-                                              Text(
-                                                posts
-                                                    .data()["likes"]
-                                                    .length
-                                                    .toString(),
-                                                style: GoogleFonts.lato(
-                                                  color: Colors.white,
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.15,
-                                              ),
-                                              IconButton(
-                                                onPressed: () =>
-                                                    Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                    builder: (ctx) =>
-                                                        CommentScreen(
-                                                      id: posts.data()["id"],
-                                                      fileType: "pdf",
-                                                    ),
-                                                  ),
-                                                ),
-                                                icon: Icon(
-                                                  Icons.comment,
-                                                  color: Colors.white,
-                                                  size: 30,
-                                                ),
-                                              ),
-                                              Text(
-                                                posts
-                                                    .data()["commentCount"]
-                                                    .toString(),
-                                                style: GoogleFonts.lato(
-                                                  color: Colors.white,
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                          itemCount: snapshot.data.docs.length,
-                        );
-                      },
-                    ),
-                  ],
+                                    );
+                                  },
+                                  itemCount: snapshot.data.docs.length,
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ]),
                 ),
-              ),
-            ),
+              ));
+  }
+}
+
+class MenuItemWidget extends StatelessWidget {
+  final String title;
+  final String content;
+
+  MenuItemWidget({@required this.title, @required this.content});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(8),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Text(
+            '$title',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 24),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 2),
+            child: Text('$content',
+                style: TextStyle(color: Colors.white, fontSize: 16)),
+          )
+        ],
+      ),
     );
   }
 }
