@@ -513,33 +513,28 @@ class _NotesScreenState extends State<NotesScreen> {
                                                   })
                                               : Text(""),
                                       title: Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 8.0),
+                                        padding: EdgeInsets.only(bottom: 8.0),
                                         child: Wrap(
                                           direction: Axis.vertical,
                                           children: [
-                                            Flexible(
-                                              child: Text(posts.data()["title"],
-                                                  style: GoogleFonts.lato(
-                                                    color: Colors.white,
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                  overflow: TextOverflow.fade,
-                                                  maxLines: 2),
-                                            ),
-                                            Flexible(
-                                              child: Text(
-                                                timePosted,
+                                            Text(posts.data()["title"],
                                                 style: GoogleFonts.lato(
-                                                  color: Colors.grey,
-                                                  fontSize: 12,
+                                                  color: Colors.white,
+                                                  fontSize: 18,
                                                   fontWeight: FontWeight.bold,
                                                 ),
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                softWrap: false,
+                                                overflow: TextOverflow.fade,
+                                                maxLines: 2),
+                                            Text(
+                                              timePosted,
+                                              style: GoogleFonts.lato(
+                                                color: Colors.grey,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
                                               ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              softWrap: false,
                                             ),
                                           ],
                                         ),
