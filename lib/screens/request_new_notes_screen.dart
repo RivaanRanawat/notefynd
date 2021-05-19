@@ -38,7 +38,6 @@ class _RequestNewNotesState extends State<RequestNewNotes> {
         "topic": _topicNameController.text,
         "grade": _grade,
         "subject": _subjectController.text,
-        "isCompleted": false,
         "uid": FirebaseAuth.instance.currentUser.uid,
         "datePublished": Timestamp.now(),
       });

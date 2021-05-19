@@ -11,7 +11,7 @@ class NotesRequestSeeScreen extends StatefulWidget {
 }
 
 class _NotesRequestSeeScreenState extends State<NotesRequestSeeScreen> {
-  var isCreator = false;
+  var status = "";
 
   @override
   void initState() {
@@ -24,7 +24,7 @@ class _NotesRequestSeeScreenState extends State<NotesRequestSeeScreen> {
     var snapshot =
         await FirebaseFirestore.instance.collection("users").doc(uid).get();
     setState(() {
-      isCreator = snapshot["status"] == "creator";
+      status = snapshot["status"];
     });
   }
 
@@ -33,12 +33,12 @@ class _NotesRequestSeeScreenState extends State<NotesRequestSeeScreen> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: DefaultTabController(
-        length: isCreator ? 2 : 1,
+        length: status == "creator" ? 2 : 1,
         child: Scaffold(
             appBar: AppBar(
                 backgroundColor: UniversalVariables().primaryColor,
                 title: Text('Request Notes'),
-                bottom: isCreator
+                bottom: status == "creator"
                     ? TabBar(
                         tabs: [
                           Tab(
@@ -49,25 +49,39 @@ class _NotesRequestSeeScreenState extends State<NotesRequestSeeScreen> {
                               text: "View")
                         ],
                       )
-                    : TabBar(
-                        tabs: [
-                          Tab(
-                              icon: Icon(Icons.add_to_home_screen_rounded),
-                              text: "Request"),
-                        ],
-                      )),
-            body: isCreator
+                    : status == "user"
+                        ? TabBar(
+                            tabs: [
+                              Tab(
+                                  icon: Icon(Icons.add_to_home_screen_rounded),
+                                  text: "Request"),
+                            ],
+                          )
+                        : TabBar(
+                            tabs: [
+                              Tab(
+                                  icon: Icon(Icons.remove_red_eye_sharp),
+                                  text: "View"),
+                            ],
+                          )),
+            body: status == "creator"
                 ? TabBarView(
                     children: [
                       RequestNewNotes(),
-                      ViewRequestedNotesScreen(),
+                      ViewRequestedNotesScreen(status: status),
                     ],
                   )
-                : TabBarView(
-                    children: [
-                      RequestNewNotes(),
-                    ],
-                  )),
+                : status == "user"
+                    ? TabBarView(
+                        children: [
+                          RequestNewNotes(),
+                        ],
+                      )
+                    : TabBarView(
+                        children: [
+                          ViewRequestedNotesScreen(status: status),
+                        ],
+                      )),
       ),
     );
   }
