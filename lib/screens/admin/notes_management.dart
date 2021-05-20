@@ -339,17 +339,6 @@ class _NotesManagementState extends State<NotesManagement> {
                                             padding: const EdgeInsets.only(
                                                 bottom: 8.0),
                                             child: Text(
-                                              "School : " +
-                                                  posts.data()["schoolName"],
-                                              style: GoogleFonts.lato(
-                                                  color: Colors.white,
-                                                  fontSize: 14),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 8.0),
-                                            child: Text(
                                               "Notes for " +
                                                   posts.data()["subject"] +
                                                   " , " +
