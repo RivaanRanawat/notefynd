@@ -29,11 +29,11 @@ Notefynd is an application which is used to share notes with other users on the 
 
 ## Preview
 
-|![Preview](../master/screenshots/iphone-feature-01.png) | ![Preview](../master/screenshots/phone-feature-02.png)|
+|![Preview](../master/screenshots/iphone-feature-01.png) | ![Preview](../master/screenshots/iphone-feature-02.png)|
 |:-------------------:|:------------------------:|
-|![Preview](../master/screenshots/phone-feature-03.png) | ![Preview](../master/screenshots/phone-feature-04.png) |
+|![Preview](../master/screenshots/iphone-feature-03.png) | ![Preview](../master/screenshots/phone-feature-04.png) |
 |:-------------------:|:------------------------:|
-|![Preview](../master/screenshots/phone-feature-05.png) | ![Preview](../master/screenshots/phone-feature-06.png) |
+|![Preview](../master/screenshots/iphone-feature-05.png) | ![Preview](../master/screenshots/iphone-feature-06.png) |
 |:-------------------:|:------------------------:|
 
 ## Technologies Used
