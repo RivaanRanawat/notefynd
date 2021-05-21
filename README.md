@@ -2,17 +2,20 @@
 
 # notefynd
 
-Notefynd is an application which is used to share notes with other users on the platform developed using Flutter.
+Notefynd is a platform by, for and of students where people can share and view notes and articles to learn better, and help others do the same!
+[Lets go to Landing Page](https://www.notefynd.com)
 
 ## Features
 
-* Login Sign up Auth
-* Google Sign in Auth
+* Login 
+* Sign up
+* Google Sign in
 * Adding & Editing Profile
 * Creator Switching Option
 * PDF Sharing
 * Liking & Commenting on PDF
 * Deleting PDF
+* Editing PDF
 * Video Sharing
 * Liking & Commenting on Video
 * Deleting Video
@@ -21,6 +24,7 @@ Notefynd is an application which is used to share notes with other users on the 
 * Showing Following & Followers of Users
 * Showing Total Likes Received By Users
 * Showing The PDF Shared By User on Profile
+* Requesting And Viewing Notes
 * Showing Articles Written By Admin
 * Admin Panel:
     * Deleting Any User's PDF
@@ -31,7 +35,7 @@ Notefynd is an application which is used to share notes with other users on the 
 
 |![Preview](../master/screenshots/iphone-feature-01.png) | ![Preview](../master/screenshots/iphone-feature-02.png)|
 |:-------------------:|:------------------------:|
-|![Preview](../master/screenshots/iphone-feature-03.png) | ![Preview](../master/screenshots/phone-feature-04.png) |
+|![Preview](../master/screenshots/iphone-feature-03.png) | ![Preview](../master/screenshots/iphone-feature-04.png) |
 |:-------------------:|:------------------------:|
 |![Preview](../master/screenshots/iphone-feature-05.png) | ![Preview](../master/screenshots/iphone-feature-06.png) |
 |:-------------------:|:------------------------:|
