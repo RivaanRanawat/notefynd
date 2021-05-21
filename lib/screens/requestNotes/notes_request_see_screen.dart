@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
-import 'package:notefynd/screens/request_new_notes_screen.dart';
-import 'package:notefynd/screens/view_requested_notes_screen.dart';
+import 'package:notefynd/screens/requestNotes/request_new_notes_screen.dart';
+import 'package:notefynd/screens/requestNotes/view_requested_notes_screen.dart';
 import 'package:notefynd/universal_variables.dart';
 
 class NotesRequestSeeScreen extends StatefulWidget {

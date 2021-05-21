@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notefynd/screens/admin/admin_add_article.dart';
-import 'package:notefynd/screens/admin/detail_article.dart';
+import 'package:notefynd/screens/pages/articles/detail_article.dart';
 import 'package:notefynd/screens/comment_screen.dart';
 import 'package:notefynd/universal_variables.dart';
 import 'package:page_transition/page_transition.dart';

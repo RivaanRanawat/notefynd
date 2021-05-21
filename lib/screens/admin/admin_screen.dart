@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:google_fonts/google_fonts.dart';
-import 'package:notefynd/screens/admin/board_articles.dart';
+import 'package:notefynd/screens/pages/articles/board_articles.dart';
 import 'package:notefynd/screens/admin/notes_management.dart';
 import 'package:notefynd/screens/auth/login_screen.dart';
 import 'package:notefynd/universal_variables.dart';

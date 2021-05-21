@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
-import 'package:notefynd/screens/admin_screen.dart';
+import 'package:notefynd/screens/admin/admin_screen.dart';
 import 'package:notefynd/universal_variables.dart';
 import 'package:uuid/uuid.dart';
-import "package:timeago/timeago.dart" as tago;
 
 class AdminAddArticle extends StatefulWidget {
   @override
@@ -18,7 +17,6 @@ class _AdminAddArticleState extends State<AdminAddArticle> {
   var _isLoading = false;
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _titleController.dispose();
     _contentController.dispose();

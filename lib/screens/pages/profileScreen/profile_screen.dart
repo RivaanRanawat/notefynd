@@ -5,9 +5,9 @@ import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notefynd/screens/auth/login_screen.dart';
-import 'package:notefynd/screens/edit_profile_screen.dart';
-import 'package:notefynd/services/AuthMethods.dart';
-import 'package:notefynd/services/Creator.dart';
+import 'package:notefynd/screens/pages/profileScreen/edit_profile_screen.dart';
+import 'package:notefynd/provider/AuthMethods.dart';
+import 'package:notefynd/provider/Creator.dart';
 import 'package:notefynd/universal_variables.dart';
 import 'package:provider/provider.dart';
 

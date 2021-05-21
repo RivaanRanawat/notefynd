@@ -1,13 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:notefynd/screens/admin_screen.dart';
 import 'package:notefynd/screens/auth/login_screen.dart';
 import 'package:notefynd/screens/home_screen.dart';
 import 'package:notefynd/screens/splash_screen.dart';
-import 'package:notefynd/services/AuthMethods.dart';
-import 'package:notefynd/services/Creator.dart';
+import 'package:notefynd/provider/AuthMethods.dart';
+import 'package:notefynd/provider/Creator.dart';
 import 'package:provider/provider.dart';
 
 void main() async {

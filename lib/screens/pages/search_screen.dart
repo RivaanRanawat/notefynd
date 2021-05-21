@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
 import 'package:google_fonts/google_fonts.dart';
-import 'package:notefynd/screens/UserProfileScreen.dart';
+import 'package:notefynd/screens/pages/profileScreen/user_profile_screen.dart';
 import 'package:notefynd/universal_variables.dart';
 
 class SearchScreen extends StatefulWidget {

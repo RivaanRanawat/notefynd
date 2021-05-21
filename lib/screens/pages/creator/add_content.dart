@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:notefynd/screens/add_pdf_notes.dart';
-import 'package:notefynd/screens/confirm_video_screen.dart';
+import 'package:notefynd/screens/pages/creator/add_pdf_notes.dart';
+import 'package:notefynd/screens/pages/videos/confirm_video_screen.dart';
 import 'package:notefynd/universal_variables.dart';
 import "dart:io";
 

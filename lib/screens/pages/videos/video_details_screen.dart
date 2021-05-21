@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notefynd/universal_variables.dart';
 import 'package:video_player/video_player.dart';
-import 'package:notefynd/widgets/controls_overlay.dart';
+import 'package:notefynd/screens/pages/videos/widgets/controls_overlay.dart';
 import "package:timeago/timeago.dart" as Tago;
 
 class VideoDetailScreen extends StatefulWidget {

@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import 'package:notefynd/screens/video_thumbnails.dart';
+import 'package:notefynd/screens/pages/videos/video_thumbnails.dart';
 import 'package:notefynd/universal_variables.dart';
 
 class VideoScreen extends StatelessWidget {

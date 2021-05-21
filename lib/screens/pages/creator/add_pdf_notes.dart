@@ -1,7 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import "package:flutter/material.dart";
 import 'package:google_fonts/google_fonts.dart';
-import 'package:notefynd/services/Creator.dart';
+import 'package:notefynd/provider/Creator.dart';
 import 'dart:io';
 
 import 'package:notefynd/universal_variables.dart';
