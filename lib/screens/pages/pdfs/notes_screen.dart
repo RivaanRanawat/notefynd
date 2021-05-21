@@ -12,6 +12,7 @@ import 'package:notefynd/screens/requestNotes/notes_request_see_screen.dart';
 import 'package:notefynd/screens/pages/pdfs/pdf_screen.dart';
 import 'package:notefynd/universal_variables.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:paginate_firestore/paginate_firestore.dart';
 import 'package:path_provider/path_provider.dart';
 import "package:timeago/timeago.dart" as timeago;
 
@@ -149,11 +150,9 @@ class _NotesScreenState extends State<NotesScreen> {
                       child: CircularProgressIndicator(),
                     );
                   }
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: snapshot.data.docs.length,
-                    itemBuilder: (ctx, idx) {
-                      DocumentSnapshot posts = snapshot.data.docs[idx];
+                  return PaginateFirestore(
+                    itemBuilder: (index, context, snapshot) {
+                      final posts = snapshot;
                       Timestamp timestamp = posts.data()["datePublished"];
                       DateTime dateTime = timestamp.toDate();
                       String timePosted = timeago.format(dateTime);
@@ -714,6 +713,11 @@ class _NotesScreenState extends State<NotesScreen> {
                         ],
                       );
                     },
+                    query: FirebaseFirestore.instance
+                        .collection("pdf-posts")
+                        .orderBy("datePublished", descending: true),
+                    itemBuilderType: PaginateBuilderType.listView,
+                    isLive: true,
                   );
                 }))
         : Column(

@@ -43,6 +43,7 @@ dependencies:
   timeago: ^3.0.2
   uuid: ^3.0.2
   video_player: ^2.1.0
+  paginate_firestore:
 
 dev_dependencies:
   flutter_test:
