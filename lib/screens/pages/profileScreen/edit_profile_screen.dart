@@ -101,7 +101,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           "schoolName": _schoolNameController.text,
           "stream": _stream,
           "grade": _grade,
-          "username": _nameController.text
+          "username": _nameController.text.contains(" ")
+              ? _nameController.text.replaceAll(" ", "").toLowerCase().trim()
+              : _nameController.text.toLowerCase().trim()
         });
         setState(() {
           _isLoading = false;

@@ -12,10 +12,10 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   Future<QuerySnapshot> searchResult;
 
-  searchUser(String typedUser) {
+  searchUser(String typedUser) async {
     var users = FirebaseFirestore.instance
         .collection("users")
-        .where("username", isGreaterThanOrEqualTo: typedUser)
+        .where("username", isGreaterThanOrEqualTo: typedUser.toLowerCase())
         .limit(20)
         .get();
     setState(() {

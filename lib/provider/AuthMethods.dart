@@ -17,7 +17,9 @@ class AuthMethods with ChangeNotifier {
       UserCredential _credential = await _auth.createUserWithEmailAndPassword(
           email: email.trim(), password: password);
       _firestore.collection("users").doc(_credential.user.uid).set({
-        "username": username.trim(),
+        "username": username.contains(" ")
+              ? username.replaceAll(" ", "").toLowerCase().trim()
+              : username.toLowerCase().trim(),
         "email": email.trim(),
         "status": "user",
         "bio": "",
