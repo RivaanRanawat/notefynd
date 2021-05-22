@@ -24,6 +24,7 @@ class NotesScreen extends StatefulWidget {
 class _NotesScreenState extends State<NotesScreen> {
   String remotePDFpath = "";
   Stream postStream;
+  var isSeacrh = false;
   bool _isLoading = false;
   TextEditingController _titleController = new TextEditingController();
   TextEditingController _gradeController = new TextEditingController();
@@ -72,15 +73,6 @@ class _NotesScreenState extends State<NotesScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    postStream = FirebaseFirestore.instance
-        .collection("pdf-posts")
-        .orderBy("datePublished", descending: true)
-        .snapshots();
-  }
-
-  @override
   void dispose() {
     super.dispose();
     _titleController.dispose();
@@ -90,23 +82,17 @@ class _NotesScreenState extends State<NotesScreen> {
   }
 
   searchNotes(String notes) {
-    print(notes);
     if (notes != "") {
-      var posts = FirebaseFirestore.instance
+      postStream = FirebaseFirestore.instance
           .collection("pdf-posts")
           .where("title", isGreaterThanOrEqualTo: notes)
+          .limit(10)
           .snapshots();
       setState(() {
-        postStream = posts;
+        isSeacrh = true;
       });
     } else {
-      var posts = FirebaseFirestore.instance
-          .collection("pdf-posts")
-          .orderBy("datePublished", descending: true)
-          .snapshots();
-      setState(() {
-        postStream = posts;
-      });
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please enter topic to search.")));
     }
   }
 
@@ -142,584 +128,31 @@ class _NotesScreenState extends State<NotesScreen> {
               ],
               elevation: 0.25,
             ),
-            body: StreamBuilder(
-                stream: postStream,
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  return PaginateFirestore(
-                    itemBuilder: (index, context, snapshot) {
-                      final posts = snapshot;
-                      Timestamp timestamp = posts.data()["datePublished"];
-                      DateTime dateTime = timestamp.toDate();
-                      String timePosted = timeago.format(dateTime);
-                      return Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              createFileOfPdfUrl(posts.data()["pdfUrl"])
-                                  .then((f) {
-                                setState(() {
-                                  remotePDFpath = f.path;
-                                });
-                              });
-                            },
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              child: Card(
-                                color: UniversalVariables().primaryColor,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    ListTile(
-                                      leading: GestureDetector(
-                                        onTap: () => Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (ctx) => UserProfileScreen(
-                                              posts.data()["uid"],
-                                            ),
-                                          ),
-                                        ),
-                                        child: CircleAvatar(
-                                          backgroundImage: NetworkImage(
-                                            posts.data()["profilePic"],
-                                          ),
-                                        ),
-                                      ),
-                                      trailing:
-                                          posts.data()["uid"] ==
-                                                  FirebaseAuth
-                                                      .instance.currentUser.uid
-                                              ? PopupMenuButton<String>(
-                                                  icon: Icon(
-                                                    Icons.more_vert,
-                                                    color: Colors.white,
-                                                  ),
-                                                  onSelected: (String choice) {
-                                                    if (choice == "Delete") {
-                                                      return showDialog(
-                                                        context: context,
-                                                        builder: (ctx) =>
-                                                            AlertDialog(
-                                                          title: Text(
-                                                              "Delete Confirmation"),
-                                                          content: Text(
-                                                            "Are you sure you want to delete Your PDF?",
-                                                            style: GoogleFonts
-                                                                .lato(),
-                                                          ),
-                                                          actions: [
-                                                            TextButton(
-                                                              onPressed: () {
-                                                                FirebaseFirestore
-                                                                    .instance
-                                                                    .collection(
-                                                                        "pdf-posts")
-                                                                    .doc(posts
-                                                                            .data()[
-                                                                        "id"])
-                                                                    .delete();
-                                                                FirebaseStorage
-                                                                    .instance
-                                                                    .ref(
-                                                                        "pdf-notes")
-                                                                    .child(FirebaseAuth
-                                                                        .instance
-                                                                        .currentUser
-                                                                        .uid)
-                                                                    .child(posts
-                                                                            .data()[
-                                                                        "title"])
-                                                                    .delete();
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                              },
-                                                              child: Text(
-                                                                "Confirm",
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .red),
-                                                              ),
-                                                            ),
-                                                            TextButton(
-                                                              onPressed: () {
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                              },
-                                                              child: Text(
-                                                                  "Cancel"),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      );
-                                                    } else if (choice ==
-                                                        "Edit") {
-                                                      return showDialog(
-                                                        context: context,
-                                                        builder: (ctx) =>
-                                                            AlertDialog(
-                                                          backgroundColor:
-                                                              Color.fromRGBO(
-                                                                  249,
-                                                                  250,
-                                                                  252,
-                                                                  1),
-                                                          title: Text("Edit"),
-                                                          content:
-                                                              SingleChildScrollView(
-                                                            child: Column(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .min,
-                                                              children: [
-                                                                Container(
-                                                                  margin:
-                                                                      EdgeInsets
-                                                                          .all(
-                                                                              10),
-                                                                  padding: EdgeInsets
-                                                                      .symmetric(
-                                                                          horizontal:
-                                                                              10,
-                                                                          vertical:
-                                                                              5),
-                                                                  decoration: BoxDecoration(
-                                                                      color: Color.fromRGBO(
-                                                                          251,
-                                                                          251,
-                                                                          251,
-                                                                          1),
-                                                                      border: Border.all(
-                                                                          color:
-                                                                              Colors.blue)),
-                                                                  child:
-                                                                      TextFormField(
-                                                                    controller:
-                                                                        _titleController,
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .black),
-                                                                    decoration:
-                                                                        InputDecoration(
-                                                                      contentPadding:
-                                                                          EdgeInsets.symmetric(
-                                                                              horizontal: 10),
-                                                                      labelText:
-                                                                          "Title",
-                                                                      labelStyle:
-                                                                          TextStyle(
-                                                                              color: Colors.black),
-                                                                      border: InputBorder
-                                                                          .none,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Container(
-                                                                  margin:
-                                                                      EdgeInsets
-                                                                          .all(
-                                                                              10),
-                                                                  padding: EdgeInsets
-                                                                      .symmetric(
-                                                                          horizontal:
-                                                                              10,
-                                                                          vertical:
-                                                                              5),
-                                                                  decoration: BoxDecoration(
-                                                                      color: Color.fromRGBO(
-                                                                          251,
-                                                                          251,
-                                                                          251,
-                                                                          1),
-                                                                      border: Border.all(
-                                                                          color:
-                                                                              Colors.blue)),
-                                                                  child:
-                                                                      TextFormField(
-                                                                    controller:
-                                                                        _descriptionController,
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .black),
-                                                                    decoration:
-                                                                        InputDecoration(
-                                                                      contentPadding:
-                                                                          EdgeInsets.symmetric(
-                                                                              horizontal: 10),
-                                                                      labelText:
-                                                                          "Description",
-                                                                      labelStyle:
-                                                                          TextStyle(
-                                                                              color: Colors.black),
-                                                                      border: InputBorder
-                                                                          .none,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Container(
-                                                                  margin:
-                                                                      EdgeInsets
-                                                                          .all(
-                                                                              10),
-                                                                  padding: EdgeInsets
-                                                                      .symmetric(
-                                                                          horizontal:
-                                                                              10,
-                                                                          vertical:
-                                                                              5),
-                                                                  decoration: BoxDecoration(
-                                                                      color: Color.fromRGBO(
-                                                                          251,
-                                                                          251,
-                                                                          251,
-                                                                          1),
-                                                                      border: Border.all(
-                                                                          color:
-                                                                              Colors.blue)),
-                                                                  child:
-                                                                      TextFormField(
-                                                                    controller:
-                                                                        _subjectController,
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .black),
-                                                                    decoration:
-                                                                        InputDecoration(
-                                                                      contentPadding:
-                                                                          EdgeInsets.symmetric(
-                                                                              horizontal: 10),
-                                                                      labelText:
-                                                                          "Subject",
-                                                                      labelStyle:
-                                                                          TextStyle(
-                                                                              color: Colors.black),
-                                                                      border: InputBorder
-                                                                          .none,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Container(
-                                                                  margin:
-                                                                      EdgeInsets
-                                                                          .all(
-                                                                              10),
-                                                                  padding: EdgeInsets
-                                                                      .symmetric(
-                                                                          horizontal:
-                                                                              10,
-                                                                          vertical:
-                                                                              5),
-                                                                  decoration: BoxDecoration(
-                                                                      color: Color.fromRGBO(
-                                                                          251,
-                                                                          251,
-                                                                          251,
-                                                                          1),
-                                                                      border: Border.all(
-                                                                          color:
-                                                                              Colors.blue)),
-                                                                  child:
-                                                                      TextFormField(
-                                                                    controller:
-                                                                        _gradeController,
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .black),
-                                                                    decoration:
-                                                                        InputDecoration(
-                                                                      contentPadding:
-                                                                          EdgeInsets.symmetric(
-                                                                              horizontal: 10),
-                                                                      labelText:
-                                                                          "Grade",
-                                                                      labelStyle:
-                                                                          TextStyle(
-                                                                              color: Colors.black),
-                                                                      border: InputBorder
-                                                                          .none,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          actions: [
-                                                            TextButton(
-                                                              onPressed:
-                                                                  () async {
-                                                                await FirebaseFirestore
-                                                                    .instance
-                                                                    .collection(
-                                                                        "pdf-posts")
-                                                                    .doc(posts
-                                                                            .data()[
-                                                                        "id"])
-                                                                    .update({
-                                                                  "description":
-                                                                      _descriptionController
-                                                                          .text,
-                                                                  "grade":
-                                                                      _gradeController
-                                                                          .text,
-                                                                  "subject":
-                                                                      _subjectController
-                                                                          .text,
-                                                                  "title":
-                                                                      _titleController
-                                                                          .text
-                                                                });
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                              },
-                                                              child: Text(
-                                                                "Edit",
-                                                              ),
-                                                            ),
-                                                            TextButton(
-                                                              onPressed: () {
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                              },
-                                                              child: Text(
-                                                                "Cancel",
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .red),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      );
-                                                    }
-                                                  },
-                                                  itemBuilder:
-                                                      (BuildContext context) {
-                                                    return ["Edit", "Delete"]
-                                                        .map((String choice) {
-                                                      return PopupMenuItem<
-                                                          String>(
-                                                        value: choice,
-                                                        child: Text(choice),
-                                                      );
-                                                    }).toList();
-                                                  })
-                                              : Text(""),
-                                      title: Padding(
-                                        padding: EdgeInsets.only(bottom: 8.0),
-                                        child: Wrap(
-                                          direction: Axis.vertical,
-                                          children: [
-                                            Text(posts.data()["title"],
-                                                style: GoogleFonts.lato(
-                                                  color: Colors.white,
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                                overflow: TextOverflow.fade,
-                                                maxLines: 2),
-                                            Text(
-                                              timePosted,
-                                              style: GoogleFonts.lato(
-                                                color: Colors.grey,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              softWrap: false,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      subtitle: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 8.0),
-                                            child: Text(
-                                              "Grade : " +
-                                                  posts.data()["grade"],
-                                              style: GoogleFonts.lato(
-                                                color: Colors.white,
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 8.0),
-                                            child: Text(
-                                              "Notes for " +
-                                                  posts.data()["subject"] +
-                                                  " , " +
-                                                  posts.data()["stream"],
-                                              style: GoogleFonts.lato(
-                                                  color: Colors.white,
-                                                  fontSize: 14),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 8.0),
-                                            child: Text(
-                                              "Description: " +
-                                                  posts.data()["description"],
-                                              style: GoogleFonts.lato(
-                                                  color: Colors.white,
-                                                  fontSize: 14),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 8.0),
-                                            child: Text(
-                                              posts.data()["username"] != null
-                                                  ? "By " +
-                                                      posts.data()["username"]
-                                                  : "",
-                                              style: GoogleFonts.lato(
-                                                  color: Colors.white,
-                                                  fontSize: 15),
-                                            ),
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              IconButton(
-                                                onPressed: () {
-                                                  if (posts
-                                                      .data()["likes"]
-                                                      .contains(FirebaseAuth
-                                                          .instance
-                                                          .currentUser
-                                                          .uid)) {
-                                                    FirebaseFirestore.instance
-                                                        .collection("pdf-posts")
-                                                        .doc(posts.data()["id"])
-                                                        .update({
-                                                      "likes": FieldValue
-                                                          .arrayRemove([
-                                                        FirebaseAuth.instance
-                                                            .currentUser.uid
-                                                      ]),
-                                                    });
-                                                  } else {
-                                                    FirebaseFirestore.instance
-                                                        .collection("pdf-posts")
-                                                        .doc(posts.data()["id"])
-                                                        .update({
-                                                      "likes": FieldValue
-                                                          .arrayUnion([
-                                                        FirebaseAuth.instance
-                                                            .currentUser.uid
-                                                      ]),
-                                                    });
-                                                  }
-                                                },
-                                                icon: posts
-                                                        .data()["likes"]
-                                                        .contains(FirebaseAuth
-                                                            .instance
-                                                            .currentUser
-                                                            .uid)
-                                                    ? Icon(
-                                                        Icons.favorite,
-                                                        color: Colors.red,
-                                                        size: 30,
-                                                      )
-                                                    : Icon(
-                                                        Icons.favorite_border,
-                                                        color: Colors.white,
-                                                        size: 30,
-                                                      ),
-                                              ),
-                                              Text(
-                                                posts
-                                                    .data()["likes"]
-                                                    .length
-                                                    .toString(),
-                                                style: GoogleFonts.lato(
-                                                  color: Colors.white,
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.15,
-                                              ),
-                                              IconButton(
-                                                onPressed: () =>
-                                                    Navigator.of(context).push(
-                                                  PageTransition(
-                                                    type: PageTransitionType
-                                                        .bottomToTop,
-                                                    child: CommentScreen(
-                                                      id: posts.data()["id"],
-                                                      fileType: "pdf",
-                                                    ),
-                                                  ),
-                                                ),
-                                                icon: Icon(
-                                                  Icons.comment,
-                                                  color: Colors.white,
-                                                  size: 30,
-                                                ),
-                                              ),
-                                              Text(
-                                                posts
-                                                    .data()["commentCount"]
-                                                    .toString(),
-                                                style: GoogleFonts.lato(
-                                                  color: Colors.white,
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.15,
-                                              ),
-                                              posts.data()["isVerified"] == true
-                                                  ? Icon(
-                                                      Icons.verified_rounded,
-                                                      color: Colors.white,
-                                                    )
-                                                  : Container()
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    },
+            body: !isSeacrh
+                ? PaginateFirestore(
                     query: FirebaseFirestore.instance
                         .collection("pdf-posts")
                         .orderBy("datePublished", descending: true),
                     itemBuilderType: PaginateBuilderType.listView,
                     isLive: true,
-                  );
-                }))
+                    itemBuilder: (index, context, snapshot) =>
+                        listViewItemBuilder(snapshot),
+                  )
+                : StreamBuilder(
+                    stream: postStream,
+                    builder: (context, snap) {
+                      if (!snap.hasData) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: snap.data.docs.length,
+                        itemBuilder: (ctx, idx) =>
+                            listViewItemBuilder(snap.data.docs[idx]),
+                      );
+                    }))
         : Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -732,5 +165,407 @@ class _NotesScreenState extends State<NotesScreen> {
               ),
             ],
           );
+  }
+
+  Widget listViewItemBuilder(snapshot) {
+    final posts = snapshot;
+    Timestamp timestamp = posts.data()["datePublished"];
+    DateTime dateTime = timestamp.toDate();
+    String timePosted = timeago.format(dateTime);
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: () {
+            createFileOfPdfUrl(posts.data()["pdfUrl"]).then((f) {
+              setState(() {
+                remotePDFpath = f.path;
+              });
+            });
+          },
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            child: Card(
+              color: UniversalVariables().primaryColor,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  ListTile(
+                    leading: GestureDetector(
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (ctx) => UserProfileScreen(
+                            posts.data()["uid"],
+                          ),
+                        ),
+                      ),
+                      child: CircleAvatar(
+                        backgroundImage: NetworkImage(
+                          posts.data()["profilePic"],
+                        ),
+                      ),
+                    ),
+                    trailing: posts.data()["uid"] ==
+                            FirebaseAuth.instance.currentUser.uid
+                        ? PopupMenuButton<String>(
+                            icon: Icon(
+                              Icons.more_vert,
+                              color: Colors.white,
+                            ),
+                            onSelected: (String choice) {
+                              if (choice == "Delete") {
+                                return showDialog(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    title: Text("Delete Confirmation"),
+                                    content: Text(
+                                      "Are you sure you want to delete Your PDF?",
+                                      style: GoogleFonts.lato(),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          FirebaseFirestore.instance
+                                              .collection("pdf-posts")
+                                              .doc(posts.data()["id"])
+                                              .delete();
+                                          FirebaseStorage.instance
+                                              .ref("pdf-notes")
+                                              .child(FirebaseAuth
+                                                  .instance.currentUser.uid)
+                                              .child(posts.data()["title"])
+                                              .delete();
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text(
+                                          "Confirm",
+                                          style: TextStyle(color: Colors.red),
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text("Cancel"),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              } else if (choice == "Edit") {
+                                return showDialog(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    backgroundColor:
+                                        Color.fromRGBO(249, 250, 252, 1),
+                                    title: Text("Edit"),
+                                    content: SingleChildScrollView(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.all(10),
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 10, vertical: 5),
+                                            decoration: BoxDecoration(
+                                                color: Color.fromRGBO(
+                                                    251, 251, 251, 1),
+                                                border: Border.all(
+                                                    color: Colors.blue)),
+                                            child: TextFormField(
+                                              controller: _titleController,
+                                              style: TextStyle(
+                                                  color: Colors.black),
+                                              decoration: InputDecoration(
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                        horizontal: 10),
+                                                labelText: "Title",
+                                                labelStyle: TextStyle(
+                                                    color: Colors.black),
+                                                border: InputBorder.none,
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.all(10),
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 10, vertical: 5),
+                                            decoration: BoxDecoration(
+                                                color: Color.fromRGBO(
+                                                    251, 251, 251, 1),
+                                                border: Border.all(
+                                                    color: Colors.blue)),
+                                            child: TextFormField(
+                                              controller:
+                                                  _descriptionController,
+                                              style: TextStyle(
+                                                  color: Colors.black),
+                                              decoration: InputDecoration(
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                        horizontal: 10),
+                                                labelText: "Description",
+                                                labelStyle: TextStyle(
+                                                    color: Colors.black),
+                                                border: InputBorder.none,
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.all(10),
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 10, vertical: 5),
+                                            decoration: BoxDecoration(
+                                                color: Color.fromRGBO(
+                                                    251, 251, 251, 1),
+                                                border: Border.all(
+                                                    color: Colors.blue)),
+                                            child: TextFormField(
+                                              controller: _subjectController,
+                                              style: TextStyle(
+                                                  color: Colors.black),
+                                              decoration: InputDecoration(
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                        horizontal: 10),
+                                                labelText: "Subject",
+                                                labelStyle: TextStyle(
+                                                    color: Colors.black),
+                                                border: InputBorder.none,
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.all(10),
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 10, vertical: 5),
+                                            decoration: BoxDecoration(
+                                                color: Color.fromRGBO(
+                                                    251, 251, 251, 1),
+                                                border: Border.all(
+                                                    color: Colors.blue)),
+                                            child: TextFormField(
+                                              controller: _gradeController,
+                                              style: TextStyle(
+                                                  color: Colors.black),
+                                              decoration: InputDecoration(
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                        horizontal: 10),
+                                                labelText: "Grade",
+                                                labelStyle: TextStyle(
+                                                    color: Colors.black),
+                                                border: InputBorder.none,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () async {
+                                          await FirebaseFirestore.instance
+                                              .collection("pdf-posts")
+                                              .doc(posts.data()["id"])
+                                              .update({
+                                            "description":
+                                                _descriptionController.text,
+                                            "grade": _gradeController.text,
+                                            "subject": _subjectController.text,
+                                            "title": _titleController.text
+                                          });
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text(
+                                          "Edit",
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text(
+                                          "Cancel",
+                                          style: TextStyle(color: Colors.red),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                            },
+                            itemBuilder: (BuildContext context) {
+                              return ["Edit", "Delete"].map((String choice) {
+                                return PopupMenuItem<String>(
+                                  value: choice,
+                                  child: Text(choice),
+                                );
+                              }).toList();
+                            })
+                        : Text(""),
+                    title: Padding(
+                      padding: EdgeInsets.only(bottom: 8.0),
+                      child: Wrap(
+                        direction: Axis.vertical,
+                        children: [
+                          Text(posts.data()["title"],
+                              style: GoogleFonts.lato(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              overflow: TextOverflow.fade,
+                              maxLines: 2),
+                          Text(
+                            timePosted,
+                            style: GoogleFonts.lato(
+                              color: Colors.grey,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: false,
+                          ),
+                        ],
+                      ),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Text(
+                            "Grade : " + posts.data()["grade"],
+                            style: GoogleFonts.lato(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Text(
+                            "Notes for " +
+                                posts.data()["subject"] +
+                                " , " +
+                                posts.data()["stream"],
+                            style: GoogleFonts.lato(
+                                color: Colors.white, fontSize: 14),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Text(
+                            "Description: " + posts.data()["description"],
+                            style: GoogleFonts.lato(
+                                color: Colors.white, fontSize: 14),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Text(
+                            posts.data()["username"] != null
+                                ? "By " + posts.data()["username"]
+                                : "",
+                            style: GoogleFonts.lato(
+                                color: Colors.white, fontSize: 15),
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                if (posts.data()["likes"].contains(
+                                    FirebaseAuth.instance.currentUser.uid)) {
+                                  FirebaseFirestore.instance
+                                      .collection("pdf-posts")
+                                      .doc(posts.data()["id"])
+                                      .update({
+                                    "likes": FieldValue.arrayRemove([
+                                      FirebaseAuth.instance.currentUser.uid
+                                    ]),
+                                  });
+                                } else {
+                                  FirebaseFirestore.instance
+                                      .collection("pdf-posts")
+                                      .doc(posts.data()["id"])
+                                      .update({
+                                    "likes": FieldValue.arrayUnion([
+                                      FirebaseAuth.instance.currentUser.uid
+                                    ]),
+                                  });
+                                }
+                              },
+                              icon: posts.data()["likes"].contains(
+                                      FirebaseAuth.instance.currentUser.uid)
+                                  ? Icon(
+                                      Icons.favorite,
+                                      color: Colors.red,
+                                      size: 30,
+                                    )
+                                  : Icon(
+                                      Icons.favorite_border,
+                                      color: Colors.white,
+                                      size: 30,
+                                    ),
+                            ),
+                            Text(
+                              posts.data()["likes"].length.toString(),
+                              style: GoogleFonts.lato(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.15,
+                            ),
+                            IconButton(
+                              onPressed: () => Navigator.of(context).push(
+                                PageTransition(
+                                  type: PageTransitionType.bottomToTop,
+                                  child: CommentScreen(
+                                    id: posts.data()["id"],
+                                    fileType: "pdf",
+                                  ),
+                                ),
+                              ),
+                              icon: Icon(
+                                Icons.comment,
+                                color: Colors.white,
+                                size: 30,
+                              ),
+                            ),
+                            Text(
+                              posts.data()["commentCount"].toString(),
+                              style: GoogleFonts.lato(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.15,
+                            ),
+                            posts.data()["isVerified"] == true
+                                ? Icon(
+                                    Icons.verified_rounded,
+                                    color: Colors.white,
+                                  )
+                                : Container()
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
