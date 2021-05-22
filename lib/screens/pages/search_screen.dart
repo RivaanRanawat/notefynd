@@ -16,6 +16,7 @@ class _SearchScreenState extends State<SearchScreen> {
     var users = FirebaseFirestore.instance
         .collection("users")
         .where("username", isGreaterThanOrEqualTo: typedUser)
+        .limit(20)
         .get();
     setState(() {
       searchResult = users;
