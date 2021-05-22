@@ -18,8 +18,8 @@ class AuthMethods with ChangeNotifier {
           email: email.trim(), password: password);
       _firestore.collection("users").doc(_credential.user.uid).set({
         "username": username.contains(" ")
-              ? username.replaceAll(" ", "").toLowerCase().trim()
-              : username.toLowerCase().trim(),
+            ? username.replaceAll(" ", "").toLowerCase().trim()
+            : username.toLowerCase().trim(),
         "email": email.trim(),
         "status": "user",
         "bio": "",
@@ -66,25 +66,25 @@ class AuthMethods with ChangeNotifier {
       final UserCredential userCredential =
           await _auth.signInWithCredential(credential);
       final User user = userCredential.user;
-      DocumentSnapshot snap = await FirebaseFirestore.instance
-          .collection("users")
-          .doc(user.uid)
-          .get();
-      if (!snap.exists) {
-        _firestore.collection("users").doc(user.uid).set({
-          "username": user.email.split("@")[0],
-          "email": user.email,
-          "status": "user",
-          "bio": "",
-          "profilePhoto": user.photoURL,
-          "schoolName": "",
-          "stream": "",
-          "subject": "",
-          "grade": "",
-          "uid": user.uid,
-        });
-      }
+      QuerySnapshot snap =
+          await FirebaseFirestore.instance.collection("users").get();
 
+      snap.docs.map((e) {
+        if (e.data()["uid"] != user.uid) {
+          _firestore.collection("users").doc(user.uid).set({
+            "username": user.email.split("@")[0],
+            "email": user.email,
+            "status": "user",
+            "bio": "",
+            "profilePhoto": user.photoURL,
+            "schoolName": "",
+            "stream": "",
+            "subject": "",
+            "grade": "",
+            "uid": user.uid,
+          });
+        }
+      }).toList();
       retVal = "success";
     } catch (err) {
       retVal = err.toString();
