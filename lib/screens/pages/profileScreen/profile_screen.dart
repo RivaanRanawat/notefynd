@@ -4,6 +4,7 @@ import "package:flutter/material.dart";
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:notefynd/provider/ThemeModel.dart';
 import 'package:notefynd/screens/auth/login_screen.dart';
 import 'package:notefynd/screens/pages/profileScreen/edit_profile_screen.dart';
 import 'package:notefynd/provider/AuthMethods.dart';
@@ -149,7 +150,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 .update({"status": "creator"});
                             setState(() {});
                           } else {
-                            print("Navigate To Creator Studio");
+                            Provider.of<ThemeModel>(context, listen: false).toggleTheme();
                           }
                         },
                         color: Colors.blue,

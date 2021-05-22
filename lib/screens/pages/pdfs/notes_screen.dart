@@ -80,6 +80,7 @@ class _NotesScreenState extends State<NotesScreen> {
     _subjectController.dispose();
     _descriptionController.dispose();
   }
+  
 
   searchNotes(String notes) {
     if (notes != "") {
@@ -95,16 +96,15 @@ class _NotesScreenState extends State<NotesScreen> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please enter topic to search.")));
     }
   }
+  
 
   @override
   Widget build(BuildContext context) {
     return _isLoading == false
         ? Scaffold(
-            backgroundColor: UniversalVariables().secondaryColor,
             appBar: AppBar(
-              backgroundColor: UniversalVariables().secondaryColor,
+              leading: Icon(Icons.search),
               title: TextFormField(
-                style: TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   filled: false,
                   hintText: "Search Notes",
@@ -172,9 +172,7 @@ class _NotesScreenState extends State<NotesScreen> {
     Timestamp timestamp = posts.data()["datePublished"];
     DateTime dateTime = timestamp.toDate();
     String timePosted = timeago.format(dateTime);
-    return Column(
-      children: [
-        GestureDetector(
+    return GestureDetector(
           onTap: () {
             createFileOfPdfUrl(posts.data()["pdfUrl"]).then((f) {
               setState(() {
@@ -564,8 +562,6 @@ class _NotesScreenState extends State<NotesScreen> {
               ),
             ),
           ),
-        ),
-      ],
-    );
+        );
   }
 }

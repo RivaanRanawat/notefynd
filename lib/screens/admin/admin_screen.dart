@@ -70,7 +70,7 @@ class _AdminScreenState extends State<AdminScreen> {
               label: ""),
           BottomNavigationBarItem(
               icon: Icon(
-                Icons.article,
+                Icons.dashboard,
                 color: Colors.white,
               ),
               label: ""),
