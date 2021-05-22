@@ -107,6 +107,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    print("in detail screen");
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _universalVariables.primaryColor,

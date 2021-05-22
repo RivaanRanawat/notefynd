@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "594891032404-vae6vpftj5kgfb3qpjvlmh87i4b9mqvf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rivaan.notefynd",
+            "certificate_hash": "c6d11f744bb7336352f82da36445fbd4ffef8de2"
+          }
+        },
+        {
           "client_id": "594891032404-86naob57klat1vu6p57abive1odbgi8c.apps.googleusercontent.com",
           "client_type": 3
         }

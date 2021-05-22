@@ -69,23 +69,32 @@ class AuthMethods with ChangeNotifier {
       QuerySnapshot snap =
           await FirebaseFirestore.instance.collection("users").get();
 
+      int ctr = 0;
       snap.docs.map((e) {
-        if (e.data()["uid"] != user.uid) {
-          _firestore.collection("users").doc(user.uid).set({
-            "username": user.email.split("@")[0],
-            "email": user.email,
-            "status": "user",
-            "bio": "",
-            "profilePhoto": user.photoURL,
-            "schoolName": "",
-            "stream": "",
-            "subject": "",
-            "grade": "",
-            "uid": user.uid,
-          });
-        }
+        // user signing up
+        if (user.uid == e.data()["uid"]) {
+          return;
+        } 
+          ctr+=1;
       }).toList();
-      retVal = "success";
+      print(snap.docs.length);
+      if (ctr == snap.docs.length) {
+        _firestore.collection("users").doc(user.uid).set({
+          "username": user.email.split("@")[0],
+          "email": user.email,
+          "status": "user",
+          "bio": "",
+          "profilePhoto": user.photoURL,
+          "schoolName": "",
+          "stream": "",
+          "subject": "",
+          "grade": "",
+          "uid": user.uid,
+        });
+      retVal = "signup";
+      } else {
+        retVal = "login";
+      }
     } catch (err) {
       retVal = err.toString();
     }

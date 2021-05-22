@@ -33,11 +33,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    myFocusNode.dispose();
     super.dispose();
   }
 
-  void _loginWithEmailAndPassword() async {
+  void _loginWithEmailAndPassword(BuildContext context) async {
     setState(() {
       _isLoading = true;
     });
@@ -72,24 +71,29 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  void signInWithGoogle() async {
+  void signInWithGoogle(BuildContext context) async {
     setState(() {
       _isLoading = true;
     });
     String result = await Provider.of<AuthMethods>(context, listen: false)
         .loginUserWithGoogle();
-    if (result == "success") {
+    print(result);
+    if (result == "signup") {
+      print("signed up");
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder:(ctx) => DetailsScreen()));
+      print("signing up");
+    } else if (result == "login") {
+      print("logged in");
       setState(() {
         _isLoading = false;
       });
-      Navigator.push(
+      Navigator.pushReplacement(
           context,
           PageTransition(
-              type: PageTransitionType.fade, child: DetailsScreen()));
-    } else {
-      setState(() {
-        _isLoading = false;
-      });
+              type: PageTransitionType.leftToRight, child: HomeScreen()));
+    }
+    else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(result),
         duration: Duration(seconds: 2),
@@ -184,7 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       elevation: 0,
                       minWidth: double.maxFinite,
                       height: 50,
-                      onPressed: _loginWithEmailAndPassword,
+                      onPressed: () => _loginWithEmailAndPassword(context),
                       color: _universalVariables.logoGreen,
                       child: Text('Login',
                           style: TextStyle(color: Colors.white, fontSize: 16)),
@@ -202,7 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       elevation: 0,
                       minWidth: double.maxFinite,
                       height: 50,
-                      onPressed: signInWithGoogle,
+                      onPressed: () => signInWithGoogle(context),
                       color: Colors.blue,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
