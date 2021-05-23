@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import 'package:google_fonts/google_fonts.dart';
-import 'package:notefynd/universal_variables.dart';
+import 'package:notefynd/provider/ThemeModel.dart';
+import 'package:provider/provider.dart';
 
 class DetailArticle extends StatelessWidget {
   final String title;
@@ -14,7 +15,8 @@ class DetailArticle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: UniversalVariables().secondaryColor,
+      backgroundColor:
+          Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -24,7 +26,11 @@ class DetailArticle extends StatelessWidget {
               title,
               style: GoogleFonts.lato(
                   fontSize: 30,
-                  color: Colors.white,
+                  color: Provider.of<ThemeModel>(context)
+                      .currentTheme
+                      .textTheme
+                      .headline6
+                      .color,
                   fontWeight: FontWeight.bold),
             ),
             Row(
@@ -35,7 +41,11 @@ class DetailArticle extends StatelessWidget {
                   child: Text(
                     "Published $timePublished",
                     style: TextStyle(
-                      color: Colors.white60,
+                      color: Provider.of<ThemeModel>(context)
+                          .currentTheme
+                          .textTheme
+                          .subtitle2
+                          .color,
                     ),
                   ),
                 ),
@@ -48,7 +58,11 @@ class DetailArticle extends StatelessWidget {
                 style: TextStyle(
                   height: 2,
                   fontSize: 16,
-                  color: Colors.white,
+                  color: Provider.of<ThemeModel>(context)
+                      .currentTheme
+                      .textTheme
+                      .headline6
+                      .color,
                 ),
               ),
             ),

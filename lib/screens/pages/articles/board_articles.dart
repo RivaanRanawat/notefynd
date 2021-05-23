@@ -2,11 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:google_fonts/google_fonts.dart';
+import 'package:notefynd/provider/ThemeModel.dart';
 import 'package:notefynd/screens/admin/admin_add_article.dart';
 import 'package:notefynd/screens/pages/articles/detail_article.dart';
 import 'package:notefynd/screens/comment_screen.dart';
-import 'package:notefynd/universal_variables.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
 import "package:timeago/timeago.dart" as tago;
 
 class BoardArticles extends StatefulWidget {
@@ -36,7 +37,8 @@ class _BoardArticlesState extends State<BoardArticles> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: UniversalVariables().secondaryColor,
+      backgroundColor:
+          Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection("articles").snapshots(),
         builder: (ctx, snapshot) {
@@ -70,7 +72,9 @@ class _BoardArticlesState extends State<BoardArticles> {
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     child: Card(
-                      color: UniversalVariables().primaryColor,
+                      color: Provider.of<ThemeModel>(context)
+                                          .currentTheme
+                                          .primaryColor,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -79,7 +83,9 @@ class _BoardArticlesState extends State<BoardArticles> {
                                 ? PopupMenuButton<String>(
                                     icon: Icon(
                                       Icons.more_vert,
-                                      color: Colors.white,
+                                      color: Provider.of<ThemeModel>(context)
+                                          .currentTheme
+                                          .textTheme.headline6.color
                                     ),
                                     onSelected: (String choice) {
                                       if (choice == "Delete") {
@@ -121,7 +127,9 @@ class _BoardArticlesState extends State<BoardArticles> {
                                       return ["Delete"].map((String choice) {
                                         return PopupMenuItem<String>(
                                           value: choice,
-                                          child: Text(choice),
+                                          child: Text(choice, style: Provider.of<ThemeModel>(context)
+                                          .currentTheme
+                                          .textTheme.headline6,),
                                         );
                                       }).toList();
                                     })
@@ -133,7 +141,11 @@ class _BoardArticlesState extends State<BoardArticles> {
                                   Text(
                                     posts.data()["title"],
                                     style: GoogleFonts.lato(
-                                      color: Colors.white,
+                                      color: Provider.of<ThemeModel>(context)
+                                          .currentTheme
+                                          .textTheme
+                                          .headline6
+                                          .color,
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -147,7 +159,11 @@ class _BoardArticlesState extends State<BoardArticles> {
                                 Text(
                                   timePosted,
                                   style: GoogleFonts.lato(
-                                    color: Colors.grey,
+                                    color: Provider.of<ThemeModel>(context)
+                                        .currentTheme
+                                        .textTheme
+                                        .subtitle2
+                                        .color,
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -204,7 +220,13 @@ class _BoardArticlesState extends State<BoardArticles> {
                                                   )
                                                 : Icon(
                                                     Icons.favorite_border,
-                                                    color: Colors.white,
+                                                    color:
+                                                        Provider.of<ThemeModel>(
+                                                                context)
+                                                            .currentTheme
+                                                            .textTheme
+                                                            .headline6
+                                                            .color,
                                                     size: 25,
                                                   ),
                                           ),
@@ -214,7 +236,12 @@ class _BoardArticlesState extends State<BoardArticles> {
                                                 .length
                                                 .toString(),
                                             style: GoogleFonts.lato(
-                                              color: Colors.white,
+                                              color: Provider.of<ThemeModel>(
+                                                      context)
+                                                  .currentTheme
+                                                  .textTheme
+                                                  .headline6
+                                                  .color,
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
                                             ),
@@ -229,16 +256,21 @@ class _BoardArticlesState extends State<BoardArticles> {
                                             onPressed: () =>
                                                 Navigator.of(context).push(
                                               PageTransition(
-                                                type: PageTransitionType.bottomToTop,
+                                                type: PageTransitionType
+                                                    .bottomToTop,
                                                 child: CommentScreen(
-                                                  id: posts.data()["id"],
-                                                  fileType: "article"
-                                                ),
+                                                    id: posts.data()["id"],
+                                                    fileType: "article"),
                                               ),
                                             ),
                                             icon: Icon(
                                               Icons.comment,
-                                              color: Colors.white,
+                                              color: Provider.of<ThemeModel>(
+                                                      context)
+                                                  .currentTheme
+                                                  .textTheme
+                                                  .headline6
+                                                  .color,
                                               size: 25,
                                             ),
                                           ),
@@ -247,7 +279,12 @@ class _BoardArticlesState extends State<BoardArticles> {
                                                 .data()["commentCount"]
                                                 .toString(),
                                             style: GoogleFonts.lato(
-                                              color: Colors.white,
+                                              color: Provider.of<ThemeModel>(
+                                                      context)
+                                                  .currentTheme
+                                                  .textTheme
+                                                  .headline6
+                                                  .color,
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
                                             ),
