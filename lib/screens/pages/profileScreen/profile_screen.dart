@@ -9,6 +9,7 @@ import 'package:notefynd/screens/auth/login_screen.dart';
 import 'package:notefynd/screens/pages/profileScreen/edit_profile_screen.dart';
 import 'package:notefynd/provider/AuthMethods.dart';
 import 'package:notefynd/provider/Creator.dart';
+import 'package:notefynd/screens/pages/profileScreen/theme_drawer.dart';
 import 'package:notefynd/universal_variables.dart';
 import 'package:provider/provider.dart';
 
@@ -68,131 +69,160 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     if (creatorText != null)
-      return Container(
-        color: Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .backgroundColor,
-        child: Stack(
-          children: [
-            ClipPath(
-              clipper: OvalBottomBorderClipper(),
-              child: Container(
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height / 2.5,
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                  colors: GradientColors.facebookMessenger,
-                )),
+      return Scaffold(
+        endDrawer: ThemeDrawer(),
+        appBar: AppBar(
+          backgroundColor:
+              Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
+          title: Text(
+            "Your Profile",
+            style: TextStyle(
+                color: Provider.of<ThemeModel>(context)
+                    .currentTheme
+                    .textTheme
+                    .headline6
+                    .color),
+          ),
+          actions: [
+            Builder(
+              builder: (context) => IconButton(
+                icon: Icon(Icons.settings,
+                    color: Provider.of<ThemeModel>(context)
+                        .currentTheme
+                        .textTheme
+                        .headline6
+                        .color),
+                onPressed: () => Scaffold.of(context).openEndDrawer(),
               ),
-            ),
-            Container(
-              margin: EdgeInsets.only(
-                left: MediaQuery.of(context).size.width / 2 - 64,
-                top: MediaQuery.of(context).size.height / 3.1,
-              ),
-              child: CircleAvatar(
-                radius: 64,
-                backgroundImage: profileUrl == ""
-                    ? NetworkImage(
-                        "https://i.stack.imgur.com/l60Hf.png",
-                      )
-                    : NetworkImage(profileUrl),
-              ),
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                SizedBox(
-                  height: 350,
-                ),
-                Text(
-                  username,
-                  style:
-                      GoogleFonts.montserrat(fontSize: 20, color: Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .textTheme.headline6.color),
-                  textAlign: TextAlign.center,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      MaterialButton(
-                        minWidth: 150,
-                        elevation: 0,
-                        height: 50,
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (ctx) => EditProfileScreen(
-                                description: bio,
-                                grade: grade,
-                                image: profileUrl,
-                                schoolName: schoolName,
-                                stream: stream,
-                                username: username,
-                              ),
-                            ),
-                          );
-                        },
-                        color: UniversalVariables().logoGreen,
-                        child: Text("Edit Profile"),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        textColor: Colors.white,
-                      ),
-                      MaterialButton(
-                        minWidth: 150,
-                        elevation: 0,
-                        height: 50,
-                        onPressed: () {
-                          if (creatorText == "Creator") {
-                            FirebaseFirestore.instance
-                                .collection("users")
-                                .doc(FirebaseAuth.instance.currentUser.uid)
-                                .update({"status": "creator"});
-                            setState(() {});
-                          } else {
-                            Provider.of<ThemeModel>(context, listen: false).toggleTheme();
-                          }
-                        },
-                        color: Colors.blue,
-                        child: Text(
-                          creatorText,
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        textColor: Colors.white,
-                      ),
-                    ],
-                  ),
-                ),
-                MaterialButton(
-                  onPressed: () async {
-                    String result = await AuthMethods().signOut();
-                    if (result == "success") {
-                      Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (ctx) => LoginScreen()));
-                    }
-                  },
-                  elevation: 0,
-                  minWidth: 350,
-                  height: 50,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                  color: Colors.red,
-                  child: Text('Log out',
-                      style: TextStyle(color: Colors.white, fontSize: 16)),
-                  textColor: Colors.white,
-                ),
-              ],
-            ),
+            )
           ],
+        ),
+        backgroundColor:
+            Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
+        body: Container(
+          child: Stack(
+            children: [
+              ClipPath(
+                clipper: OvalBottomBorderClipper(),
+                child: Container(
+                  width: double.infinity,
+                  height: MediaQuery.of(context).size.height / 3,
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                    colors: GradientColors.facebookMessenger,
+                  )),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width / 2 - 64,
+                  top: MediaQuery.of(context).size.height / 4,
+                ),
+                child: CircleAvatar(
+                  radius: 64,
+                  backgroundImage: profileUrl == ""
+                      ? NetworkImage(
+                          "https://i.stack.imgur.com/l60Hf.png",
+                        )
+                      : NetworkImage(profileUrl),
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.3),
+                  Text(
+                    username,
+                    style: GoogleFonts.montserrat(
+                        fontSize: 20,
+                        color: Provider.of<ThemeModel>(context)
+                            .currentTheme
+                            .textTheme
+                            .headline6
+                            .color),
+                    textAlign: TextAlign.center,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        MaterialButton(
+                          minWidth: 150,
+                          elevation: 0,
+                          height: 50,
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (ctx) => EditProfileScreen(
+                                  description: bio,
+                                  grade: grade,
+                                  image: profileUrl,
+                                  schoolName: schoolName,
+                                  stream: stream,
+                                  username: username,
+                                ),
+                              ),
+                            );
+                          },
+                          color: UniversalVariables().logoGreen,
+                          child: Text("Edit Profile"),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          textColor: Colors.white,
+                        ),
+                        MaterialButton(
+                          minWidth: 150,
+                          elevation: 0,
+                          height: 50,
+                          onPressed: () {
+                            if (creatorText == "Creator") {
+                              FirebaseFirestore.instance
+                                  .collection("users")
+                                  .doc(FirebaseAuth.instance.currentUser.uid)
+                                  .update({"status": "creator"});
+                              setState(() {});
+                            } else {
+                              // creator studio
+                            }
+                          },
+                          color: Colors.blue,
+                          child: Text(
+                            creatorText,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          textColor: Colors.white,
+                        ),
+                      ],
+                    ),
+                  ),
+                  MaterialButton(
+                    onPressed: () async {
+                      String result = await AuthMethods().signOut();
+                      if (result == "success") {
+                        Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (ctx) => LoginScreen()));
+                      }
+                    },
+                    elevation: 0,
+                    minWidth: 350,
+                    height: 50,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    color: Colors.red,
+                    child: Text('Log out',
+                        style: TextStyle(color: Colors.white, fontSize: 16)),
+                    textColor: Colors.white,
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       );
     else

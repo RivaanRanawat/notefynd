@@ -31,8 +31,18 @@ ThemeData lightTheme = ThemeData.light().copyWith(
   backgroundColor: Color.fromRGBO(255, 255, 255, 1),
   primaryColor: Color.fromRGBO(251, 251, 251, 1),
   accentColor: Color.fromRGBO(4, 86, 243, 1),
-  buttonColor: Color.fromRGBO(37,38,94,.7),
+  buttonColor: Color.fromRGBO(37, 38, 94, .7),
   textTheme: TextTheme(
       headline6: TextStyle(color: Colors.black),
-      subtitle2: TextStyle(color: Color.fromRGBO(37,38,94,.7))),
+      subtitle2: TextStyle(color: Color.fromRGBO(37, 38, 94, .7))),
 );
+
+ThemeData defaultTheme = ThemeData.dark().copyWith(
+    backgroundColor: Color(0xff232c51),
+    primaryColor: Color(0xff18203d),
+    accentColor: Colors.blue,
+    buttonColor: Color(0xff18203d),
+    textTheme: TextTheme(
+      headline6: TextStyle(color: Colors.white),
+      subtitle2: TextStyle(color: Colors.white54),
+    ));
