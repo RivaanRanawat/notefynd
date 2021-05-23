@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
 import 'package:google_fonts/google_fonts.dart';
+import 'package:notefynd/provider/ThemeModel.dart';
 import 'package:notefynd/screens/pages/profileScreen/user_profile_screen.dart';
-import 'package:notefynd/universal_variables.dart';
+import 'package:provider/provider.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -26,15 +27,31 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: UniversalVariables().secondaryColor,
+      backgroundColor:
+          Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
       appBar: AppBar(
-        backgroundColor: UniversalVariables().secondaryColor,
+        leading: Icon(
+          Icons.search,
+          color: Provider.of<ThemeModel>(context)
+              .currentTheme
+              .textTheme
+              .headline6
+              .color,
+        ),
+        backgroundColor:
+            Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
         title: TextFormField(
           style: TextStyle(color: Colors.white),
           decoration: InputDecoration(
             filled: false,
             hintText: "Search",
-            hintStyle: GoogleFonts.lato(fontSize: 18, color: Colors.white),
+            hintStyle: GoogleFonts.lato(
+                fontSize: 18,
+                color: Provider.of<ThemeModel>(context)
+                    .currentTheme
+                    .textTheme
+                    .headline6
+                    .color),
             border: InputBorder.none,
           ),
           textInputAction: TextInputAction.search,
@@ -48,7 +65,11 @@ class _SearchScreenState extends State<SearchScreen> {
                 "Search for users!",
                 style: GoogleFonts.raleway(
                   fontSize: 25,
-                  color: Colors.white,
+                  color: Provider.of<ThemeModel>(context)
+                      .currentTheme
+                      .textTheme
+                      .headline6
+                      .color,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -82,7 +103,13 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                           title: Text(
                             user.data()["username"],
-                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                color: Provider.of<ThemeModel>(context)
+                                    .currentTheme
+                                    .textTheme
+                                    .headline6
+                                    .color,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                       );

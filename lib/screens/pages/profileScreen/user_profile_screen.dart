@@ -3,8 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import "package:flutter/material.dart";
 import 'package:google_fonts/google_fonts.dart';
+import 'package:notefynd/provider/ThemeModel.dart';
 import 'package:notefynd/screens/comment_screen.dart';
 import 'package:notefynd/universal_variables.dart';
+import 'package:provider/provider.dart';
 import "package:timeago/timeago.dart" as timeago;
 import "dart:async";
 
@@ -137,7 +139,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: UniversalVariables().secondaryColor,
+        backgroundColor:
+            Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
         body: _isLoading
             ? Center(
                 child: CircularProgressIndicator(),
@@ -167,7 +170,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           username,
                           style: GoogleFonts.lato(
                             fontSize: 25,
-                            color: Colors.white,
+                            color: Provider.of<ThemeModel>(context)
+                                .currentTheme
+                                .textTheme
+                                .headline6
+                                .color,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -221,7 +228,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                     bio,
                                     style: TextStyle(
                                       fontSize: 18,
-                                      color: Colors.white,
+                                      color: Provider.of<ThemeModel>(context)
+                                          .currentTheme
+                                          .textTheme
+                                          .headline6
+                                          .color,
                                     ),
                                   ),
                                 ),
@@ -234,7 +245,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                         "Stream: ",
                                         style: GoogleFonts.lato(
                                           fontSize: 18,
-                                          color: Colors.white,
+                                          color:
+                                              Provider.of<ThemeModel>(context)
+                                                  .currentTheme
+                                                  .textTheme
+                                                  .headline6
+                                                  .color,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -242,7 +258,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                         stream,
                                         style: TextStyle(
                                           fontSize: 18,
-                                          color: Colors.white,
+                                          color:
+                                              Provider.of<ThemeModel>(context)
+                                                  .currentTheme
+                                                  .textTheme
+                                                  .headline6
+                                                  .color,
                                         ),
                                       ),
                                     ],
@@ -256,7 +277,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                         "School Name: ",
                                         style: GoogleFonts.lato(
                                           fontSize: 18,
-                                          color: Colors.white,
+                                          color:
+                                              Provider.of<ThemeModel>(context)
+                                                  .currentTheme
+                                                  .textTheme
+                                                  .headline6
+                                                  .color,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -264,7 +290,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                         schoolName,
                                         style: TextStyle(
                                           fontSize: 18,
-                                          color: Colors.white,
+                                          color:
+                                              Provider.of<ThemeModel>(context)
+                                                  .currentTheme
+                                                  .textTheme
+                                                  .headline6
+                                                  .color,
                                         ),
                                       ),
                                     ],
@@ -279,7 +310,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                         "Grade: ",
                                         style: GoogleFonts.lato(
                                           fontSize: 18,
-                                          color: Colors.white,
+                                          color:
+                                              Provider.of<ThemeModel>(context)
+                                                  .currentTheme
+                                                  .textTheme
+                                                  .headline6
+                                                  .color,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -287,7 +323,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                         grade,
                                         style: GoogleFonts.lato(
                                           fontSize: 18,
-                                          color: Colors.white,
+                                          color:
+                                              Provider.of<ThemeModel>(context)
+                                                  .currentTheme
+                                                  .textTheme
+                                                  .headline6
+                                                  .color,
                                         ),
                                       ),
                                     ],
@@ -302,7 +343,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                     elevation: 0,
                                     height: 50,
                                     onPressed: () => followUser(),
-                                    color: UniversalVariables().logoGreen,
+                                    color: Provider.of<ThemeModel>(context)
+                                        .currentTheme
+                                        .accentColor,
                                     child: Text(
                                       isFollowing == false
                                           ? "Follow"
@@ -321,7 +364,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             Text(
                               "${noOfPosts.toString()} Notes",
                               style: GoogleFonts.lato(
-                                  fontSize: 20, color: Colors.white),
+                                fontSize: 20,
+                                color: Provider.of<ThemeModel>(context)
+                                    .currentTheme
+                                    .textTheme
+                                    .headline6
+                                    .color,
+                              ),
                             ),
                             SizedBox(
                               height: 10,
@@ -351,8 +400,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                     return Container(
                                       width: MediaQuery.of(context).size.width,
                                       child: Card(
-                                        color:
-                                            UniversalVariables().primaryColor,
+                                        color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .primaryColor,
                                         child: Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.start,
@@ -370,7 +420,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                       ? PopupMenuButton<String>(
                                                           icon: Icon(
                                                             Icons.more_vert,
-                                                            color: Colors.white,
+                                                            color: Provider.of<
+                                                                        ThemeModel>(
+                                                                    context)
+                                                                .currentTheme
+                                                                .textTheme
+                                                                .headline6
+                                                                .color,
                                                           ),
                                                           onSelected:
                                                               (String choice) {
@@ -438,7 +494,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                                   String>(
                                                                 value: choice,
                                                                 child: Text(
-                                                                    choice),
+                                                                    choice,
+                                                                    style: Provider.of<ThemeModel>(
+                                                                            context,
+                                                                            listen:
+                                                                                false)
+                                                                        .currentTheme
+                                                                        .textTheme
+                                                                        .headline6),
                                                               );
                                                             }).toList();
                                                           })
@@ -452,16 +515,29 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                     Text(
                                                       posts.data()["title"],
                                                       style: GoogleFonts.lato(
-                                                        color: Colors.white,
+                                                        color: Provider.of<
+                                                                    ThemeModel>(
+                                                                context)
+                                                            .currentTheme
+                                                            .textTheme
+                                                            .headline6
+                                                            .color,
                                                         fontSize: 18,
                                                         fontWeight:
                                                             FontWeight.bold,
                                                       ),
-                                                      overflow: TextOverflow.ellipsis,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                     ),
                                                     Text(timePosted,
                                                         style: GoogleFonts.lato(
-                                                          color: Colors.grey,
+                                                          color: Provider.of<
+                                                                      ThemeModel>(
+                                                                  context)
+                                                              .currentTheme
+                                                              .textTheme
+                                                              .subtitle2
+                                                              .color,
                                                           fontSize: 12,
                                                           fontWeight:
                                                               FontWeight.bold,
@@ -484,7 +560,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                       "Grade : " +
                                                           posts.data()["grade"],
                                                       style: GoogleFonts.lato(
-                                                        color: Colors.white,
+                                                        color: Provider.of<
+                                                                    ThemeModel>(
+                                                                context)
+                                                            .currentTheme
+                                                            .textTheme
+                                                            .headline6
+                                                            .color,
                                                         fontSize: 14,
                                                       ),
                                                     ),
@@ -501,7 +583,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                           posts
                                                               .data()["stream"],
                                                       style: GoogleFonts.lato(
-                                                          color: Colors.white,
+                                                          color: Provider.of<
+                                                                      ThemeModel>(
+                                                                  context)
+                                                              .currentTheme
+                                                              .textTheme
+                                                              .headline6
+                                                              .color,
                                                           fontSize: 14),
                                                     ),
                                                   ),
@@ -514,7 +602,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                           posts.data()[
                                                               "description"],
                                                       style: GoogleFonts.lato(
-                                                          color: Colors.white,
+                                                          color: Provider.of<
+                                                                      ThemeModel>(
+                                                                  context)
+                                                              .currentTheme
+                                                              .textTheme
+                                                              .headline6
+                                                              .color,
                                                           fontSize: 14),
                                                     ),
                                                   ),
@@ -531,131 +625,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                                   "username"]
                                                           : "",
                                                       style: GoogleFonts.lato(
-                                                          color: Colors.white,
+                                                          color: Provider.of<
+                                                                      ThemeModel>(
+                                                                  context)
+                                                              .currentTheme
+                                                              .textTheme
+                                                              .headline6
+                                                              .color,
                                                           fontSize: 15),
                                                     ),
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    children: [
-                                                      IconButton(
-                                                        onPressed: () {
-                                                          if (posts
-                                                              .data()["likes"]
-                                                              .contains(
-                                                                  FirebaseAuth
-                                                                      .instance
-                                                                      .currentUser
-                                                                      .uid)) {
-                                                            FirebaseFirestore
-                                                                .instance
-                                                                .collection(
-                                                                    "pdf-posts")
-                                                                .doc(posts
-                                                                        .data()[
-                                                                    "id"])
-                                                                .update({
-                                                              "likes": FieldValue
-                                                                  .arrayRemove([
-                                                                FirebaseAuth
-                                                                    .instance
-                                                                    .currentUser
-                                                                    .uid
-                                                              ]),
-                                                            });
-                                                            setState(() {
-                                                              isLiked = false;
-                                                            });
-                                                          } else {
-                                                            FirebaseFirestore
-                                                                .instance
-                                                                .collection(
-                                                                    "pdf-posts")
-                                                                .doc(posts
-                                                                        .data()[
-                                                                    "id"])
-                                                                .update({
-                                                              "likes": FieldValue
-                                                                  .arrayUnion([
-                                                                FirebaseAuth
-                                                                    .instance
-                                                                    .currentUser
-                                                                    .uid
-                                                              ]),
-                                                            });
-                                                            setState(() {
-                                                              isLiked = true;
-                                                            });
-                                                          }
-                                                        },
-                                                        icon: isLiked
-                                                            ? Icon(
-                                                                Icons.favorite,
-                                                                color:
-                                                                    Colors.red,
-                                                                size: 30,
-                                                              )
-                                                            : Icon(
-                                                                Icons
-                                                                    .favorite_border,
-                                                                color: Colors
-                                                                    .white,
-                                                                size: 30,
-                                                              ),
-                                                      ),
-                                                      Text(
-                                                        posts
-                                                            .data()["likes"]
-                                                            .length
-                                                            .toString(),
-                                                        style: GoogleFonts.lato(
-                                                          color: Colors.white,
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                      SizedBox(
-                                                        width: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width *
-                                                            0.15,
-                                                      ),
-                                                      IconButton(
-                                                        onPressed: () =>
-                                                            Navigator.of(
-                                                                    context)
-                                                                .push(
-                                                          MaterialPageRoute(
-                                                            builder: (ctx) =>
-                                                                CommentScreen(
-                                                              id: posts
-                                                                  .data()["id"],
-                                                              fileType: "pdf",
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        icon: Icon(
-                                                          Icons.comment,
-                                                          color: Colors.white,
-                                                          size: 30,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        posts
-                                                            .data()[
-                                                                "commentCount"]
-                                                            .toString(),
-                                                        style: GoogleFonts.lato(
-                                                          color: Colors.white,
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ],
                                                   ),
                                                 ],
                                               ),
@@ -693,12 +671,24 @@ class MenuItemWidget extends StatelessWidget {
           Text(
             '$title',
             style: TextStyle(
-                color: Colors.white, fontWeight: FontWeight.w800, fontSize: 24),
+                color: Provider.of<ThemeModel>(context)
+                    .currentTheme
+                    .textTheme
+                    .headline6
+                    .color,
+                fontWeight: FontWeight.w800,
+                fontSize: 24),
           ),
           Padding(
             padding: EdgeInsets.only(top: 2),
             child: Text('$content',
-                style: TextStyle(color: Colors.white, fontSize: 16)),
+                style: TextStyle(
+                    color: Provider.of<ThemeModel>(context)
+                        .currentTheme
+                        .textTheme
+                        .headline6
+                        .color,
+                    fontSize: 16)),
           )
         ],
       ),
