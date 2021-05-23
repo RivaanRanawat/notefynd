@@ -212,7 +212,11 @@ class _NotesScreenState extends State<NotesScreen> {
       child: Container(
         width: MediaQuery.of(context).size.width,
         child: Card(
+          margin: EdgeInsets.symmetric(vertical: 4, horizontal: 12),
           color: Provider.of<ThemeModel>(context).currentTheme.primaryColor,
+          shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(9.0),
+  ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [

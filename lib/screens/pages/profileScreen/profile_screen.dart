@@ -84,17 +84,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     .color),
           ),
           actions: [
-            Builder(
-              builder: (context) => IconButton(
-                icon: Icon(Icons.settings,
-                    color: Provider.of<ThemeModel>(context)
-                        .currentTheme
-                        .textTheme
-                        .headline6
-                        .color),
-                onPressed: () => Scaffold.of(context).openEndDrawer(),
-              ),
-            )
+            PopupMenuButton<String>(
+                color: Provider.of<ThemeModel>(context)
+                    .currentTheme
+                    .backgroundColor,
+                icon: Icon(
+                  Icons.more_vert,
+                  color: Provider.of<ThemeModel>(context)
+                      .currentTheme
+                      .textTheme
+                      .headline6
+                      .color,
+                ),
+                onSelected: (String choice) {
+                  if (choice == "Light Mode") {
+                    Provider.of<ThemeModel>(context, listen: false)
+                        .toggleTheme(ThemeType.Dark);
+                  } else if (choice == "Dark Mode") {
+                    Provider.of<ThemeModel>(context, listen: false)
+                        .toggleTheme(ThemeType.Light);
+                  } else if (choice == "Default Mode") {
+                    Provider.of<ThemeModel>(context, listen: false)
+                        .toggleTheme(ThemeType.Default);
+                  }
+                },
+                itemBuilder: (BuildContext context) {
+                  return ["Light Mode", "Dark Mode", "Default Mode"]
+                      .map((String choice) {
+                    return PopupMenuItem<String>(
+                      value: choice,
+                      child: Text(
+                        choice,
+                        style: Provider.of<ThemeModel>(context, listen: false)
+                            .currentTheme
+                            .textTheme
+                            .headline6,
+                      ),
+                    );
+                  }).toList();
+                })
           ],
         ),
         backgroundColor:
