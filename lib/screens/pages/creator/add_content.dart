@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:notefynd/provider/ThemeModel.dart';
 import 'package:notefynd/screens/pages/creator/add_pdf_notes.dart';
 import 'package:notefynd/screens/pages/videos/confirm_video_screen.dart';
 import 'package:notefynd/universal_variables.dart';
 import "dart:io";
 
 import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
 
 class AddContent extends StatefulWidget {
   @override
@@ -67,7 +69,9 @@ class _AddContentState extends State<AddContent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: UniversalVariables().secondaryColor,
+      backgroundColor: Provider.of<ThemeModel>(context)
+                      .currentTheme
+                      .backgroundColor,
       body: Center(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -78,7 +82,9 @@ class _AddContentState extends State<AddContent> {
               height: 50,
               onPressed: () => Navigator.of(context)
                   .push(PageTransition(child: AddPdfNotes(), type: PageTransitionType.bottomToTop)),
-              color: Colors.blue,
+              color: Provider.of<ThemeModel>(context)
+                      .currentTheme
+                      .accentColor,
               child: Text("Add PDF"),
               textColor: Colors.white,
             ),

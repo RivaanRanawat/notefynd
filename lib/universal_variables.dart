@@ -21,6 +21,7 @@ ThemeData darkTheme = ThemeData.dark().copyWith(
     backgroundColor: Color.fromRGBO(12, 14, 18, 1),
     primaryColor: Color.fromRGBO(21, 26, 33, 1),
     accentColor: Color.fromRGBO(253, 103, 104, 1),
+    buttonColor: Color.fromRGBO(32, 35, 50, 1),
     textTheme: TextTheme(
       headline6: TextStyle(color: Colors.white),
       subtitle2: TextStyle(color: Colors.white54),
@@ -30,6 +31,7 @@ ThemeData lightTheme = ThemeData.light().copyWith(
   backgroundColor: Color.fromRGBO(255, 255, 255, 1),
   primaryColor: Color.fromRGBO(251, 251, 251, 1),
   accentColor: Color.fromRGBO(4, 86, 243, 1),
+  buttonColor: Color.fromRGBO(37,38,94,.7),
   textTheme: TextTheme(
       headline6: TextStyle(color: Colors.black),
       subtitle2: TextStyle(color: Color.fromRGBO(37,38,94,.7))),
