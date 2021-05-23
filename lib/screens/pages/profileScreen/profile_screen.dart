@@ -69,6 +69,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     if (creatorText != null)
       return Container(
+        color: Provider.of<ThemeModel>(context)
+                                          .currentTheme
+                                          .backgroundColor,
         child: Stack(
           children: [
             ClipPath(
@@ -105,7 +108,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Text(
                   username,
                   style:
-                      GoogleFonts.montserrat(fontSize: 20, color: Colors.white),
+                      GoogleFonts.montserrat(fontSize: 20, color: Provider.of<ThemeModel>(context)
+                                          .currentTheme
+                                          .textTheme.headline6.color),
                   textAlign: TextAlign.center,
                 ),
                 Padding(
