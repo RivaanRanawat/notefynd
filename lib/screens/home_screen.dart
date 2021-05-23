@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
+import 'package:notefynd/provider/ThemeModel.dart';
 import 'package:notefynd/screens/pages/creator/add_content.dart';
 import 'package:notefynd/screens/pages/articles/board_articles.dart';
 import 'package:notefynd/screens/admin/admin_screen.dart';
@@ -99,7 +100,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: universalVariables.secondaryColor,
       body: SizedBox.expand(
         child: PageView(
           controller: _pageController,
@@ -110,10 +110,12 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
+        selectedItemColor: Provider.of<ThemeModel>(context)
+                        .currentTheme
+                        .accentColor,
         type: BottomNavigationBarType.fixed,
         onTap: _onItemTapped,
-        backgroundColor: universalVariables.secondaryColor,
-        unselectedItemColor: Colors.white,
         currentIndex: pageIndex,
         items: [
           // BottomNavigationBarItem(

@@ -18,21 +18,19 @@ class UniversalVariables {
 }
 
 ThemeData darkTheme = ThemeData.dark().copyWith(
-    primaryColor: Color(0xff1f655d),
-    accentColor: Color(0xff40bf7a),
+    backgroundColor: Color.fromRGBO(12, 14, 18, 1),
+    primaryColor: Color.fromRGBO(21, 26, 33, 1),
+    accentColor: Color.fromRGBO(253, 103, 104, 1),
     textTheme: TextTheme(
-        title: TextStyle(color: Color(0xff40bf7a)),
-        subtitle: TextStyle(color: Colors.white),
-        subhead: TextStyle(color: Color(0xff40bf7a))),
-    appBarTheme: AppBarTheme(color: Color(0xff1f655d)));
+      headline6: TextStyle(color: Colors.white),
+      subtitle2: TextStyle(color: Colors.white54),
+    ));
 
 ThemeData lightTheme = ThemeData.light().copyWith(
-    primaryColor: Color(0xfff5f5f5),
-    accentColor: Color(0xff40bf7a),
-    textTheme: TextTheme(
-        title: TextStyle(color: Colors.black54),
-        subtitle: TextStyle(color: Colors.grey),
-        subhead: TextStyle(color: Colors.white)),
-    appBarTheme: AppBarTheme(
-        color: Color(0xff1f655d),
-        actionsIconTheme: IconThemeData(color: Colors.white)));
+  backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+  primaryColor: Color.fromRGBO(251, 251, 251, 1),
+  accentColor: Color.fromRGBO(4, 86, 243, 1),
+  textTheme: TextTheme(
+      headline6: TextStyle(color: Colors.black),
+      subtitle2: TextStyle(color: Color.fromRGBO(37,38,94,.7))),
+);
