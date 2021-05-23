@@ -1,10 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:google_fonts/google_fonts.dart';
-import 'package:notefynd/screens/pages/articles/board_articles.dart';
+import 'package:notefynd/provider/ThemeModel.dart';
 import 'package:notefynd/screens/admin/notes_management.dart';
+import 'package:notefynd/screens/pages/articles/board_articles.dart';
 import 'package:notefynd/screens/auth/login_screen.dart';
-import 'package:notefynd/universal_variables.dart';
+import 'package:provider/provider.dart';
 
 class AdminScreen extends StatefulWidget {
   @override
@@ -49,10 +50,10 @@ class _AdminScreenState extends State<AdminScreen> {
     ];
 
     return Scaffold(
-      backgroundColor: UniversalVariables().secondaryColor,
+      backgroundColor: Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
       body: items[pageIndex],
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: UniversalVariables().secondaryColor,
+        backgroundColor: Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
         currentIndex: pageIndex,
         onTap: (value) {
           setState(() {
@@ -65,19 +66,19 @@ class _AdminScreenState extends State<AdminScreen> {
           BottomNavigationBarItem(
               icon: Icon(
                 Icons.delete,
-                color: Colors.white,
+                color: Provider.of<ThemeModel>(context).currentTheme.textTheme.headline6.color,
               ),
               label: ""),
           BottomNavigationBarItem(
               icon: Icon(
                 Icons.dashboard,
-                color: Colors.white,
+                color: Provider.of<ThemeModel>(context).currentTheme.textTheme.headline6.color,
               ),
               label: ""),
           BottomNavigationBarItem(
               icon: Icon(
                 Icons.logout,
-                color: Colors.white,
+                color: Provider.of<ThemeModel>(context).currentTheme.textTheme.headline6.color,
               ),
               label: ""),
         ],

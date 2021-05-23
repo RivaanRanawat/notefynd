@@ -48,8 +48,10 @@ class _ViewRequestedNotesScreenState extends State<ViewRequestedNotesScreen> {
                         requestPost["topic"],
                         style: TextStyle(
                             color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .textTheme.headline6.color,
+                                .currentTheme
+                                .textTheme
+                                .headline6
+                                .color,
                             fontWeight: FontWeight.bold,
                             fontSize: 20),
                       ),
@@ -60,17 +62,23 @@ class _ViewRequestedNotesScreenState extends State<ViewRequestedNotesScreen> {
                             margin: EdgeInsets.only(bottom: 5),
                             child: Text(
                               requestPost["subject"],
-                              style:
-                                  TextStyle(color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .textTheme.headline6.color, fontSize: 16),
+                              style: TextStyle(
+                                  color: Provider.of<ThemeModel>(context)
+                                      .currentTheme
+                                      .textTheme
+                                      .headline6
+                                      .color,
+                                  fontSize: 16),
                             ),
                           ),
                           Text(
                             "Requested $timePosted",
-                            style: TextStyle(color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .textTheme.subtitle2.color),
+                            style: TextStyle(
+                                color: Provider.of<ThemeModel>(context)
+                                    .currentTheme
+                                    .textTheme
+                                    .subtitle2
+                                    .color),
                           )
                         ],
                       ),
@@ -78,8 +86,10 @@ class _ViewRequestedNotesScreenState extends State<ViewRequestedNotesScreen> {
                         requestPost["grade"],
                         style: GoogleFonts.lato(
                           color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .textTheme.headline6.color,
+                              .currentTheme
+                              .textTheme
+                              .headline6
+                              .color,
                           fontSize: 22,
                         ),
                       ),
@@ -88,19 +98,35 @@ class _ViewRequestedNotesScreenState extends State<ViewRequestedNotesScreen> {
                               icon: Icon(
                                 Icons.check,
                                 color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .textTheme.headline6.color,
+                                    .currentTheme
+                                    .textTheme
+                                    .headline6
+                                    .color,
                               ),
                               onPressed: () {
                                 return showDialog(
                                   context: context,
                                   builder: (ctx) => AlertDialog(
-                                    title: Text("Notes Confirmation"),
+                                    backgroundColor:
+                                        Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .backgroundColor,
+                                    title: Text(
+                                      "Notes Confirmation",
+                                      style: Provider.of<ThemeModel>(context)
+                                          .currentTheme
+                                          .textTheme
+                                          .headline6,
+                                    ),
                                     content: Text(
                                       "Are you sure notes of ${requestPost["topic"]} have been posted?",
-                                      style: GoogleFonts.lato(color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .textTheme.headline6.color),
+                                      style: GoogleFonts.lato(
+                                          color:
+                                              Provider.of<ThemeModel>(context)
+                                                  .currentTheme
+                                                  .textTheme
+                                                  .headline6
+                                                  .color),
                                     ),
                                     actions: [
                                       TextButton(

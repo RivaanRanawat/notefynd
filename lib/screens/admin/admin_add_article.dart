@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
+import 'package:notefynd/provider/ThemeModel.dart';
 import 'package:notefynd/screens/admin/admin_screen.dart';
-import 'package:notefynd/universal_variables.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 class AdminAddArticle extends StatefulWidget {
@@ -25,7 +26,8 @@ class _AdminAddArticleState extends State<AdminAddArticle> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: UniversalVariables().primaryColor,
+      backgroundColor:
+          Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
       body: !_isLoading
           ? SingleChildScrollView(
               child: Column(
@@ -35,8 +37,12 @@ class _AdminAddArticleState extends State<AdminAddArticle> {
                     margin: EdgeInsets.symmetric(horizontal: 10),
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
-                        color: UniversalVariables().secondaryColor,
-                        border: Border.all(color: Colors.blue)),
+                        color: Provider.of<ThemeModel>(context)
+                            .currentTheme
+                            .primaryColor,
+                        border: Border.all(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .accentColor,)),
                     child: TextFormField(
                       controller: _titleController,
                       style: TextStyle(color: Colors.white),
@@ -55,8 +61,12 @@ class _AdminAddArticleState extends State<AdminAddArticle> {
                     margin: EdgeInsets.symmetric(horizontal: 10),
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
-                        color: UniversalVariables().secondaryColor,
-                        border: Border.all(color: Colors.blue)),
+                        color: Provider.of<ThemeModel>(context)
+                            .currentTheme
+                            .primaryColor,
+                        border: Border.all(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .accentColor,)),
                     child: TextFormField(
                       controller: _contentController,
                       style: TextStyle(color: Colors.white),
@@ -104,7 +114,9 @@ class _AdminAddArticleState extends State<AdminAddArticle> {
                         ));
                       }
                     },
-                    color: UniversalVariables().logoGreen,
+                    color: Provider.of<ThemeModel>(context)
+                        .currentTheme
+                        .accentColor,
                     child: Text("Share"),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),

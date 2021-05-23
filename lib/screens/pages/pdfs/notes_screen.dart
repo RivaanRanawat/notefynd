@@ -445,7 +445,7 @@ class _NotesScreenState extends State<NotesScreen> {
                             );
                           }).toList();
                         })
-                    : Text(""),
+                    :  Text(""),
                 title: Padding(
                   padding: EdgeInsets.only(bottom: 8.0),
                   child: Wrap(

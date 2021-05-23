@@ -73,20 +73,20 @@ class _BoardArticlesState extends State<BoardArticles> {
                     width: MediaQuery.of(context).size.width,
                     child: Card(
                       color: Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .primaryColor,
+                          .currentTheme
+                          .primaryColor,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           ListTile(
                             trailing: status == "admin" && status != null
                                 ? PopupMenuButton<String>(
-                                    icon: Icon(
-                                      Icons.more_vert,
-                                      color: Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .textTheme.headline6.color
-                                    ),
+                                    icon: Icon(Icons.more_vert,
+                                        color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme
+                                            .headline6
+                                            .color),
                                     onSelected: (String choice) {
                                       if (choice == "Delete") {
                                         return showDialog(
@@ -127,9 +127,14 @@ class _BoardArticlesState extends State<BoardArticles> {
                                       return ["Delete"].map((String choice) {
                                         return PopupMenuItem<String>(
                                           value: choice,
-                                          child: Text(choice, style: Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .textTheme.headline6,),
+                                          child: Text(
+                                            choice,
+                                            style:
+                                                Provider.of<ThemeModel>(context)
+                                                    .currentTheme
+                                                    .textTheme
+                                                    .headline6,
+                                          ),
                                         );
                                       }).toList();
                                     })
@@ -305,9 +310,13 @@ class _BoardArticlesState extends State<BoardArticles> {
       ),
       floatingActionButton: status == "admin" && status != null
           ? FloatingActionButton(
-              child: Icon(Icons.add),
-              onPressed: () => Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (ctx) => AdminAddArticle())),
+              backgroundColor:
+                  Provider.of<ThemeModel>(context).currentTheme.accentColor,
+              child: Icon(
+                Icons.add,
+              ),
+              onPressed: () => Navigator.of(context)
+                  .push(MaterialPageRoute(builder: (ctx) => AdminAddArticle())),
             )
           : Container(),
     );
