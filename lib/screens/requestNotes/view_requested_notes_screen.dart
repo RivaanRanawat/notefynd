@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
 import 'package:google_fonts/google_fonts.dart';
+import 'package:notefynd/provider/ThemeModel.dart';
 import 'package:notefynd/universal_variables.dart';
+import 'package:provider/provider.dart';
 import "package:timeago/timeago.dart" as timeago;
 
 class ViewRequestedNotesScreen extends StatefulWidget {
@@ -17,7 +19,8 @@ class _ViewRequestedNotesScreenState extends State<ViewRequestedNotesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: UniversalVariables().primaryColor,
+      backgroundColor:
+          Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
       body: SingleChildScrollView(
         child: StreamBuilder(
           stream: FirebaseFirestore.instance
@@ -44,7 +47,9 @@ class _ViewRequestedNotesScreenState extends State<ViewRequestedNotesScreen> {
                       title: Text(
                         requestPost["topic"],
                         style: TextStyle(
-                            color: Colors.white,
+                            color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color,
                             fontWeight: FontWeight.bold,
                             fontSize: 20),
                       ),
@@ -56,19 +61,25 @@ class _ViewRequestedNotesScreenState extends State<ViewRequestedNotesScreen> {
                             child: Text(
                               requestPost["subject"],
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 16),
+                                  TextStyle(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color, fontSize: 16),
                             ),
                           ),
                           Text(
                             "Requested $timePosted",
-                            style: TextStyle(color: Colors.white70),
+                            style: TextStyle(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.subtitle2.color),
                           )
                         ],
                       ),
                       trailing: Text(
                         requestPost["grade"],
                         style: GoogleFonts.lato(
-                          color: Colors.white,
+                          color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color,
                           fontSize: 22,
                         ),
                       ),
@@ -76,7 +87,9 @@ class _ViewRequestedNotesScreenState extends State<ViewRequestedNotesScreen> {
                           ? IconButton(
                               icon: Icon(
                                 Icons.check,
-                                color: Colors.white,
+                                color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color,
                               ),
                               onPressed: () {
                                 return showDialog(
@@ -85,7 +98,9 @@ class _ViewRequestedNotesScreenState extends State<ViewRequestedNotesScreen> {
                                     title: Text("Notes Confirmation"),
                                     content: Text(
                                       "Are you sure notes of ${requestPost["topic"]} have been posted?",
-                                      style: GoogleFonts.lato(),
+                                      style: GoogleFonts.lato(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color),
                                     ),
                                     actions: [
                                       TextButton(

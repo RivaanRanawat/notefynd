@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:google_fonts/google_fonts.dart';
+import 'package:notefynd/provider/ThemeModel.dart';
 import 'package:notefynd/universal_variables.dart';
+import 'package:provider/provider.dart';
 import "package:timeago/timeago.dart" as Tago;
 
 class CommentScreen extends StatefulWidget {
@@ -75,7 +77,8 @@ class _CommentScreenState extends State<CommentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: UniversalVariables().secondaryColor,
+        backgroundColor:
+            Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
         body: SingleChildScrollView(
           child: Container(
             width: MediaQuery.of(context).size.width,
@@ -116,7 +119,12 @@ class _CommentScreenState extends State<CommentScreen> {
                                         "${comment.data()["username"]}",
                                         style: GoogleFonts.lato(
                                             fontSize: 16,
-                                            color: Colors.white,
+                                            color:
+                                                Provider.of<ThemeModel>(context)
+                                                    .currentTheme
+                                                    .textTheme
+                                                    .headline6
+                                                    .color,
                                             fontWeight: FontWeight.w700),
                                       ),
                                       SizedBox(
@@ -126,7 +134,12 @@ class _CommentScreenState extends State<CommentScreen> {
                                         "${comment.data()["comment"]}",
                                         style: TextStyle(
                                           fontSize: 14,
-                                          color: Colors.white,
+                                          color:
+                                              Provider.of<ThemeModel>(context)
+                                                  .currentTheme
+                                                  .textTheme
+                                                  .headline6
+                                                  .color,
                                         ),
                                       ),
                                     ],
@@ -137,7 +150,12 @@ class _CommentScreenState extends State<CommentScreen> {
                                     Text(
                                       "${Tago.format(comment.data()["time"].toDate())}",
                                       style: TextStyle(
-                                          color: Colors.grey,
+                                          color:
+                                              Provider.of<ThemeModel>(context)
+                                                  .currentTheme
+                                                  .textTheme
+                                                  .subtitle2
+                                                  .color,
                                           fontWeight: FontWeight.bold),
                                     ),
                                     SizedBox(
@@ -146,7 +164,11 @@ class _CommentScreenState extends State<CommentScreen> {
                                     Text(
                                       "${comment.data()["likes"].length} likes",
                                       style: TextStyle(
-                                          color: Colors.grey,
+                                          color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme
+                                            .subtitle2
+                                            .color,
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ],
@@ -159,7 +181,13 @@ class _CommentScreenState extends State<CommentScreen> {
                                         ? Icons.favorite
                                         : Icons.favorite_border,
                                     size: 22,
-                                    color: Colors.white,
+                                    color: comment.data()["likes"].contains(uid)
+                                        ? Colors.red
+                                        : Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme
+                                            .headline6
+                                            .color,
                                   ),
                                 ),
                               ),
@@ -173,16 +201,24 @@ class _CommentScreenState extends State<CommentScreen> {
                 ListTile(
                   title: TextFormField(
                     controller: commentsController,
-                    style: GoogleFonts.lato(fontSize: 16, color: Colors.white),
+                    style: GoogleFonts.lato(fontSize: 16, color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme
+                                            .headline6
+                                            .color),
                     decoration: InputDecoration(
                       hintText: "Comment",
                       hintStyle: GoogleFonts.lato(
-                          color: Colors.white60, fontWeight: FontWeight.w700),
+                          color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme
+                                            .subtitle2
+                                            .color, fontWeight: FontWeight.w700),
                       enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),
+                        // borderSide: BorderSide(color: Colors.red),
                       ),
                       focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.red),
+                        // borderSide: BorderSide(color: Colors.red),
                       ),
                     ),
                   ),
@@ -191,7 +227,11 @@ class _CommentScreenState extends State<CommentScreen> {
                     child: Text(
                       "Send",
                       style:
-                          GoogleFonts.lato(fontSize: 16, color: Colors.white),
+                          GoogleFonts.lato(fontSize: 16, color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme
+                                            .headline6
+                                            .color),
                     ),
                   ),
                 ),
