@@ -32,7 +32,7 @@ class _NotesScreenState extends State<NotesScreen> {
   TextEditingController _subjectController = new TextEditingController();
   TextEditingController _descriptionController = new TextEditingController();
 
-  Future<File> createFileOfPdfUrl(String url) async {
+  Future<File> createFileOfPdfUrl(String url, String title) async {
     Completer<File> completer = Completer();
     print("Start download file from internet!");
     setState(() {
@@ -57,7 +57,7 @@ class _NotesScreenState extends State<NotesScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PDFScreen(path: remotePDFpath),
+            builder: (context) => PDFScreen(path: remotePDFpath, title: title),
           ),
         );
       } else {
@@ -203,7 +203,7 @@ class _NotesScreenState extends State<NotesScreen> {
     String timePosted = timeago.format(dateTime);
     return GestureDetector(
       onTap: () {
-        createFileOfPdfUrl(posts.data()["pdfUrl"]).then((f) {
+        createFileOfPdfUrl(posts.data()["pdfUrl"], posts.data()["title"]).then((f) {
           setState(() {
             remotePDFpath = f.path;
           });
@@ -598,7 +598,7 @@ class _NotesScreenState extends State<NotesScreen> {
                           ),
                         ),
                         SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.15,
+                          width: MediaQuery.of(context).size.width * 0.1,
                         ),
                         IconButton(
                           onPressed: () => Navigator.of(context).push(
@@ -633,7 +633,7 @@ class _NotesScreenState extends State<NotesScreen> {
                           ),
                         ),
                         SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.14,
+                          width: MediaQuery.of(context).size.width * 0.1,
                         ),
                         posts.data()["isVerified"] == true
                             ? Icon(

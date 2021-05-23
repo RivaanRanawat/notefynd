@@ -1,11 +1,14 @@
 import 'dart:async';
 import "package:flutter/material.dart";
 import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:notefynd/provider/ThemeModel.dart';
+import 'package:provider/provider.dart';
 
 class PDFScreen extends StatefulWidget {
   final String path;
+  final String title;
 
-  PDFScreen({Key key, this.path}) : super(key: key);
+  PDFScreen({Key key, this.path, this.title}) : super(key: key);
 
   _PDFScreenState createState() => _PDFScreenState();
 }
@@ -22,20 +25,15 @@ class _PDFScreenState extends State<PDFScreen> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Document"),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.share),
-            onPressed: () {},
-          ),
-        ],
+        backgroundColor: Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
+        title: Text(widget.title, style: Provider.of<ThemeModel>(context).currentTheme.textTheme.headline6,),
       ),
       body: Stack(
         children: <Widget>[
           PDFView(
             filePath: widget.path,
             enableSwipe: true,
-            swipeHorizontal: true,
+            swipeHorizontal: false,
             autoSpacing: false,
             pageFling: true,
             pageSnap: true,
