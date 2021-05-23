@@ -105,6 +105,8 @@ class _NotesScreenState extends State<NotesScreen> {
             backgroundColor:
                 Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
             appBar: AppBar(
+              backgroundColor: 
+                Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
               leading: Icon(
                 Icons.search,
                 color: Provider.of<ThemeModel>(context)
@@ -181,11 +183,13 @@ class _NotesScreenState extends State<NotesScreen> {
                 SizedBox(height: 10),
                 Text(
                   "Loading The Notes. Please Wait.",
-                  style: GoogleFonts.lato(color: Provider.of<ThemeModel>(context)
+                  style: GoogleFonts.lato(
+                    color: Provider.of<ThemeModel>(context)
                         .currentTheme
                         .textTheme
                         .headline6
-                        .color,),
+                        .color,
+                  ),
                 ),
               ],
             ),
@@ -233,20 +237,26 @@ class _NotesScreenState extends State<NotesScreen> {
                         icon: Icon(
                           Icons.more_vert,
                           color: Provider.of<ThemeModel>(context)
-                        .currentTheme
-                        .textTheme
-                        .headline6
-                        .color,
+                              .currentTheme
+                              .textTheme
+                              .headline6
+                              .color,
                         ),
                         onSelected: (String choice) {
                           if (choice == "Delete") {
                             return showDialog(
                               context: context,
                               builder: (ctx) => AlertDialog(
-                                title: Text("Delete Confirmation"),
+                                title: Text("Delete Confirmation",style: Provider.of<ThemeModel>(context)
+                                .currentTheme
+                                .textTheme
+                                .headline6),
                                 content: Text(
                                   "Are you sure you want to delete Your PDF?",
-                                  style: GoogleFonts.lato(),
+                                  style: GoogleFonts.lato(color: Provider.of<ThemeModel>(context)
+                                .currentTheme
+                                .textTheme
+                                .headline6.color),
                                 ),
                                 actions: [
                                   TextButton(
@@ -285,7 +295,11 @@ class _NotesScreenState extends State<NotesScreen> {
                                     Provider.of<ThemeModel>(context)
                                         .currentTheme
                                         .backgroundColor,
-                                title: Text("Edit"),
+                                title: Text("Edit",
+                                    style: Provider.of<ThemeModel>(context)
+                                        .currentTheme
+                                        .textTheme
+                                        .headline6),
                                 content: SingleChildScrollView(
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
@@ -420,7 +434,10 @@ class _NotesScreenState extends State<NotesScreen> {
                           return ["Edit", "Delete"].map((String choice) {
                             return PopupMenuItem<String>(
                               value: choice,
-                              child: Text(choice),
+                              child: Text(choice, style: Provider.of<ThemeModel>(context, listen: false)
+                                .currentTheme
+                                .textTheme
+                                .headline6,),
                             );
                           }).toList();
                         })
