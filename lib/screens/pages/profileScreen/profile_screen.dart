@@ -9,9 +9,9 @@ import 'package:notefynd/screens/auth/login_screen.dart';
 import 'package:notefynd/screens/pages/profileScreen/edit_profile_screen.dart';
 import 'package:notefynd/provider/AuthMethods.dart';
 import 'package:notefynd/provider/Creator.dart';
-import 'package:notefynd/screens/pages/profileScreen/theme_drawer.dart';
 import 'package:notefynd/universal_variables.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -70,7 +70,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     if (creatorText != null)
       return Scaffold(
-        endDrawer: ThemeDrawer(),
         appBar: AppBar(
           backgroundColor:
               Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
@@ -96,16 +95,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       .headline6
                       .color,
                 ),
-                onSelected: (String choice) {
+                onSelected: (String choice) async {
                   if (choice == "Light Mode") {
                     Provider.of<ThemeModel>(context, listen: false)
-                        .toggleTheme(ThemeType.Dark);
+                        .toggleTheme(ThemeType.Dark,);
                   } else if (choice == "Dark Mode") {
                     Provider.of<ThemeModel>(context, listen: false)
-                        .toggleTheme(ThemeType.Light);
+                        .toggleTheme(ThemeType.Light,);
                   } else if (choice == "Default Mode") {
                     Provider.of<ThemeModel>(context, listen: false)
-                        .toggleTheme(ThemeType.Default);
+                        .toggleTheme(ThemeType.Default,);
                   }
                 },
                 itemBuilder: (BuildContext context) {

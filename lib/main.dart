@@ -14,14 +14,16 @@ import 'screens/home_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MultiProvider(
+  runApp(
+    MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => ThemeModel()),
         ChangeNotifierProvider(create: (_) => AuthMethods()),
         ChangeNotifierProvider(create: (_) => Creator()),
-        ChangeNotifierProvider(create: (_) => ThemeModel())
       ],
       child: MyApp(),
-    ),);
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -33,20 +35,23 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Notefynd',
-        debugShowCheckedModeBanner: false,
-        theme: Provider.of<ThemeModel>(context).currentTheme,
-        home: StreamBuilder(
-            stream: FirebaseAuth.instance.authStateChanges(),
-            builder: (ctx, userSnapshot) {
-              if (userSnapshot.connectionState == ConnectionState.waiting) {
-                return SplashScreen();
-              }
-              if (userSnapshot.hasData) {
-                return HomeScreen();
-              }
-              return LoginScreen();
-            }),
+      title: 'Notefynd',
+      debugShowCheckedModeBanner: false,
+      theme: Provider.of<ThemeModel>(context).currentTheme,
+      home: StreamBuilder(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (ctx, userSnapshot) {
+            if (Provider.of<ThemeModel>(context).currentTheme == null) {
+              return SplashScreen();
+            }
+            if (userSnapshot.connectionState == ConnectionState.waiting) {
+              return SplashScreen();
+            }
+            if (userSnapshot.hasData) {
+              return HomeScreen();
+            }
+            return LoginScreen();
+          }),
     );
   }
 }
