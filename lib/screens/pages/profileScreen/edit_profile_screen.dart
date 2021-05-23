@@ -197,7 +197,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         color: Provider.of<ThemeModel>(context)
                                           .currentTheme
                                           .primaryColor,
-                        border: Border.all(color: Colors.blue)),
+                        border: Border.all(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .accentColor)),
                     child: TextFormField(
                       controller: _nameController,
                       style: TextStyle(color: Provider.of<ThemeModel>(context)
@@ -230,7 +232,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         color: Provider.of<ThemeModel>(context)
                                           .currentTheme
                                           .primaryColor,
-                        border: Border.all(color: Colors.blue)),
+                        border: Border.all(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .accentColor)),
                     child: TextFormField(
                       controller: _descriptionController,
                       style: TextStyle(color: Provider.of<ThemeModel>(context)
@@ -265,7 +269,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         color: Provider.of<ThemeModel>(context)
                                           .currentTheme
                                           .primaryColor,
-                        border: Border.all(color: Colors.blue)),
+                        border: Border.all(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .accentColor)),
                     child: TextFormField(
                       controller: _schoolNameController,
                       style: TextStyle(color: Provider.of<ThemeModel>(context)
@@ -298,7 +304,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         color: Provider.of<ThemeModel>(context)
                                           .currentTheme
                                           .primaryColor,
-                        border: Border.all(color: Colors.blue)),
+                        border: Border.all(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .accentColor)),
                     child: DropdownButton<String>(
                       value: _stream,
                       icon: Icon(Icons.arrow_drop_down, color: Provider.of<ThemeModel>(context)

@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:notefynd/provider/ThemeModel.dart';
 import 'package:notefynd/screens/auth/details_screen.dart';
 import 'package:notefynd/screens/auth/signup_screen.dart';
 import 'package:notefynd/screens/home_screen.dart';
@@ -105,7 +106,9 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: _universalVariables.primaryColor,
+      backgroundColor: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .backgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -139,18 +142,26 @@ class _LoginScreenState extends State<LoginScreen> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
-                          color: _universalVariables.secondaryColor,
+                          color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .primaryColor,
                           border: Border.all(color: Colors.blue)),
                       child: TextFormField(
                         controller: _emailController,
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color),
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.symmetric(horizontal: 10),
                           labelText: "Email",
-                          labelStyle: TextStyle(color: Colors.white),
+                          labelStyle: TextStyle(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color),
                           icon: Icon(
                             Icons.email,
-                            color: Colors.white,
+                            color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color,
                           ),
                           border: InputBorder.none,
                         ),
@@ -164,19 +175,27 @@ class _LoginScreenState extends State<LoginScreen> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
-                          color: _universalVariables.secondaryColor,
+                          color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .primaryColor,
                           border: Border.all(color: Colors.blue)),
                       child: TextFormField(
                         focusNode: myFocusNode,
                         controller: _passwordController,
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color),
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.symmetric(horizontal: 10),
                           labelText: "Password",
-                          labelStyle: TextStyle(color: Colors.white),
+                          labelStyle: TextStyle(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color),
                           icon: Icon(
                             Icons.lock,
-                            color: Colors.white,
+                            color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color,
                           ),
                           border: InputBorder.none,
                         ),
@@ -239,12 +258,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                 builder: (context) => SignUpScreen(),
                               ),
                             ),
-                            child: Text('Sign Up?',
+                            child: Text('Sign Up ?',
                                 textAlign: TextAlign.center,
-                                style: GoogleFonts.openSans(
+                                style: GoogleFonts.roboto(
+                                  fontStyle: FontStyle.italic,
                                     color: Colors.white,
                                     fontSize: 20,
-                                    fontWeight: FontWeight.bold)),
+                                    fontWeight: FontWeight.bold,
+                                    )),
                           ),
                         ],
                       ),

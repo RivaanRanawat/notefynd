@@ -5,9 +5,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:notefynd/provider/ThemeModel.dart';
 import 'package:notefynd/screens/home_screen.dart';
 import 'package:notefynd/universal_variables.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:provider/provider.dart';
 
 class DetailsScreen extends StatefulWidget {
   @override
@@ -115,7 +117,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _universalVariables.primaryColor,
+      backgroundColor: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .backgroundColor,
       body: _isLoading == false
           ? SingleChildScrollView(
               child: Column(
@@ -139,7 +143,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         child: IconButton(
                           onPressed: getImage,
                           icon: Icon(Icons.add_a_photo),
-                          color: Colors.white,
+                          color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color,
                         ),
                       )
                     ]),
@@ -149,19 +155,29 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     margin: EdgeInsets.symmetric(horizontal: 15),
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
-                        color: _universalVariables.secondaryColor,
-                        border: Border.all(color: Colors.blue)),
+                        color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .primaryColor,
+                        border: Border.all(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .accentColor)),
                     child: TextFormField(
                       controller: _descriptionController,
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color),
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(horizontal: 10),
                         labelText: "Description",
                         alignLabelWithHint: true,
-                        labelStyle: TextStyle(color: Colors.white),
+                        labelStyle: TextStyle(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color),
                         icon: Icon(
                           Icons.description,
-                          color: Colors.white,
+                          color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color,
                         ),
                         border: InputBorder.none,
                       ),
@@ -176,18 +192,28 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     margin: EdgeInsets.symmetric(horizontal: 15),
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
-                        color: _universalVariables.secondaryColor,
-                        border: Border.all(color: Colors.blue)),
+                        color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .primaryColor,
+                        border: Border.all(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .accentColor)),
                     child: TextFormField(
                       controller: _schoolNameController,
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color),
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(horizontal: 10),
                         labelText: "School Name",
-                        labelStyle: TextStyle(color: Colors.white),
+                        labelStyle: TextStyle(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color),
                         icon: Icon(
                           Icons.school,
-                          color: Colors.white,
+                          color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color,
                         ),
                         border: InputBorder.none,
                       ),
@@ -201,13 +227,23 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     margin: EdgeInsets.symmetric(horizontal: 15),
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
-                        color: _universalVariables.secondaryColor,
-                        border: Border.all(color: Colors.blue)),
+                        color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .primaryColor,
+                        border: Border.all(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .accentColor)),
                     child: DropdownButton<String>(
                       value: _stream,
-                      icon: Icon(Icons.arrow_drop_down, color: Colors.white),
-                      dropdownColor: UniversalVariables().secondaryColor,
-                      style: GoogleFonts.lato(color: Colors.white),
+                      icon: Icon(Icons.arrow_drop_down, color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color),
+                      dropdownColor: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .primaryColor,
+                      style: GoogleFonts.lato(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color),
                       items: <String>['Commerce', 'Science', 'Arts']
                           .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
@@ -235,7 +271,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       children: [
                         Text("Select Class",
                             style: GoogleFonts.lato(
-                                color: Colors.white, fontSize: 14)),
+                                color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color, fontSize: 14)),
                         SizedBox(
                           height: 10,
                         ),
@@ -250,8 +288,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 height: 50,
                                 onPressed: () => handleClassButtonClick("7"),
                                 color: _grade == "7"
-                                    ? _universalVariables.logoGreen
-                                    : _universalVariables.secondaryColor,
+                                    ? Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .accentColor
+                                    : Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .buttonColor,
                                 child: Text("7"),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -268,8 +310,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 height: 50,
                                 onPressed: () => handleClassButtonClick("8"),
                                 color: _grade == "8"
-                                    ? _universalVariables.logoGreen
-                                    : _universalVariables.secondaryColor,
+                                    ? Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .accentColor
+                                    : Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .buttonColor,
                                 child: Text("8"),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -286,8 +332,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 height: 50,
                                 onPressed: () => handleClassButtonClick("9"),
                                 color: _grade == "9"
-                                    ? _universalVariables.logoGreen
-                                    : _universalVariables.secondaryColor,
+                                    ? Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .accentColor
+                                    : Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .buttonColor,
                                 child: Text("9"),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -304,8 +354,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 height: 50,
                                 onPressed: () => handleClassButtonClick("10"),
                                 color: _grade == "10"
-                                    ? _universalVariables.logoGreen
-                                    : _universalVariables.secondaryColor,
+                                    ? Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .accentColor
+                                    : Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .buttonColor,
                                 child: Text("10"),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -328,8 +382,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   height: 50,
                                   onPressed: () => handleClassButtonClick("11"),
                                   color: _grade == "11"
-                                      ? _universalVariables.logoGreen
-                                      : _universalVariables.secondaryColor,
+                                      ? Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .accentColor
+                                      : Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .buttonColor,
                                   child: Text("11"),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),
@@ -346,8 +404,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   height: 50,
                                   onPressed: () => handleClassButtonClick("12"),
                                   color: _grade == "12"
-                                      ? _universalVariables.logoGreen
-                                      : _universalVariables.secondaryColor,
+                                      ? Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .accentColor
+                                      : Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .buttonColor,
                                   child: Text("12"),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),
@@ -364,8 +426,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   height: 50,
                                   onPressed: () => handleClassButtonClick("UG"),
                                   color: _grade == "UG"
-                                      ? _universalVariables.logoGreen
-                                      : _universalVariables.secondaryColor,
+                                      ? Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .accentColor
+                                      : Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .buttonColor,
                                   child: Text("UG"),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),
@@ -382,8 +448,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   height: 50,
                                   onPressed: () => handleClassButtonClick("PG"),
                                   color: _grade == "PG"
-                                      ? _universalVariables.logoGreen
-                                      : _universalVariables.secondaryColor,
+                                      ? Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .accentColor
+                                      : Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .buttonColor,
                                   child: Text("PG"),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),
@@ -402,7 +472,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     elevation: 0,
                     height: 50,
                     onPressed: uploadDataToFirebase,
-                    color: UniversalVariables().logoGreen,
+                    color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .accentColor,
                     child: Text("Done"),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),

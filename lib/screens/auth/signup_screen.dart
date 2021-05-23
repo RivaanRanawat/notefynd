@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import 'package:google_fonts/google_fonts.dart';
+import 'package:notefynd/provider/ThemeModel.dart';
 import 'package:notefynd/screens/auth/login_screen.dart';
 import 'package:notefynd/screens/home_screen.dart';
 import 'package:notefynd/provider/AuthMethods.dart';
@@ -70,7 +71,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: _universalVariables.primaryColor,
+      backgroundColor: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .backgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -88,14 +91,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       'Sign Up To Notefynd to continue!',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.openSans(
-                          color: Colors.white, fontSize: 28),
+                          color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color, fontSize: 28),
                     ),
                     SizedBox(height: 20),
                     Text(
                       'Share. View. Earn',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.openSans(
-                          color: Colors.white, fontSize: 14),
+                          color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color, fontSize: 14),
                     ),
                     SizedBox(
                       height: 50,
@@ -104,18 +111,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
-                          color: _universalVariables.secondaryColor,
+                          color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .primaryColor,
                           border: Border.all(color: Colors.blue)),
                       child: TextFormField(
                         controller: _fullNameController,
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color),
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.symmetric(horizontal: 10),
                           labelText: "Username",
-                          labelStyle: TextStyle(color: Colors.white),
+                          labelStyle: TextStyle(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color),
                           icon: Icon(
                             Icons.person_outline,
-                            color: Colors.white,
+                            color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color,
                           ),
                           border: InputBorder.none,
                         ),
@@ -129,19 +144,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
-                          color: _universalVariables.secondaryColor,
+                          color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .primaryColor,
                           border: Border.all(color: Colors.blue)),
                       child: TextFormField(
                         focusNode: _emailFocusNode,
                         controller: _emailController,
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color),
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.symmetric(horizontal: 10),
                           labelText: "Email",
-                          labelStyle: TextStyle(color: Colors.white),
+                          labelStyle: TextStyle(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color),
                           icon: Icon(
                             Icons.email,
-                            color: Colors.white,
+                            color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color,
                           ),
                           border: InputBorder.none,
                         ),
@@ -156,19 +179,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
-                          color: _universalVariables.secondaryColor,
+                          color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .primaryColor,
                           border: Border.all(color: Colors.blue)),
                       child: TextFormField(
                         focusNode: _passwordFocusNode,
                         controller: _passwordController,
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color),
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.symmetric(horizontal: 10),
                           labelText: "Password",
-                          labelStyle: TextStyle(color: Colors.white),
+                          labelStyle: TextStyle(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color),
                           icon: Icon(
                             Icons.lock_outline,
-                            color: Colors.white,
+                            color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color,
                           ),
                           border: InputBorder.none,
                         ),
@@ -183,19 +214,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
-                          color: _universalVariables.secondaryColor,
+                          color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .primaryColor,
                           border: Border.all(color: Colors.blue)),
                       child: TextFormField(
                         focusNode: _confirmPasswordFocusNode,
                         controller: _confirmPasswordController,
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color),
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.symmetric(horizontal: 10),
                           labelText: "Confirm Password",
-                          labelStyle: TextStyle(color: Colors.white),
+                          labelStyle: TextStyle(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color),
                           icon: Icon(
                             Icons.lock_open,
-                            color: Colors.white,
+                            color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color,
                           ),
                           border: InputBorder.none,
                         ),
@@ -235,7 +274,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ));
                           }
                         },
-                        color: _universalVariables.logoGreen,
+                        color: Colors.blue,
                         child: Text(
                           'Sign Up',
                           style: TextStyle(color: Colors.white, fontSize: 16),
@@ -263,9 +302,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                             ),
                             child: Text(
-                              'Login?',
+                              'Login ?',
                               textAlign: TextAlign.center,
                               style: GoogleFonts.openSans(
+                                fontStyle: FontStyle.italic,
                                   color: Colors.white,
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold),

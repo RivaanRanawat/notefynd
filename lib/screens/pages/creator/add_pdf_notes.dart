@@ -138,7 +138,9 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
                         color: Provider.of<ThemeModel>(context)
                             .currentTheme
                             .primaryColor,
-                        border: Border.all(color: Colors.blue)),
+                        border: Border.all(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .accentColor)),
                     child: TextFormField(
                       controller: _titleController,
                       style: Provider.of<ThemeModel>(context)
@@ -165,7 +167,9 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
                         color: Provider.of<ThemeModel>(context)
                             .currentTheme
                             .primaryColor,
-                        border: Border.all(color: Colors.blue)),
+                        border: Border.all(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .accentColor)),
                     child: TextFormField(
                       controller: _descriptionController,
                       style: Provider.of<ThemeModel>(context)
@@ -192,7 +196,9 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
                         color: Provider.of<ThemeModel>(context)
                             .currentTheme
                             .primaryColor,
-                        border: Border.all(color: Colors.blue)),
+                        border: Border.all(color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .accentColor)),
                     child: TextFormField(
                       controller: _subjectController,
                       style: Provider.of<ThemeModel>(context)
