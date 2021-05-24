@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notefynd/provider/ThemeModel.dart';
+import 'package:notefynd/screens/pages/pdfs/pdf_flutter_screen.dart';
 import 'package:notefynd/screens/pages/profileScreen/user_profile_screen.dart';
 import 'package:notefynd/screens/comment_screen.dart';
 import 'package:notefynd/screens/requestNotes/notes_request_see_screen.dart';
@@ -16,6 +17,9 @@ import 'package:paginate_firestore/paginate_firestore.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import "package:timeago/timeago.dart" as timeago;
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:pdf/widgets.dart' as pw;
+import 'package:universal_html/html.dart' as html;
 
 class NotesScreen extends StatefulWidget {
   @override
@@ -105,8 +109,8 @@ class _NotesScreenState extends State<NotesScreen> {
             backgroundColor:
                 Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
             appBar: AppBar(
-              backgroundColor: 
-                Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
+              backgroundColor:
+                  Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
               leading: Icon(
                 Icons.search,
                 color: Provider.of<ThemeModel>(context)
@@ -203,11 +207,17 @@ class _NotesScreenState extends State<NotesScreen> {
     String timePosted = timeago.format(dateTime);
     return GestureDetector(
       onTap: () {
-        createFileOfPdfUrl(posts.data()["pdfUrl"], posts.data()["title"]).then((f) {
-          setState(() {
-            remotePDFpath = f.path;
+        if (kIsWeb) {
+          html.window.open(posts.data()["pdfUrl"], '_blank');
+          html.Url.revokeObjectUrl(posts.data()["pdfUrl"]);
+        } else {
+          createFileOfPdfUrl(posts.data()["pdfUrl"], posts.data()["title"])
+              .then((f) {
+            setState(() {
+              remotePDFpath = f.path;
+            });
           });
-        });
+        }
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
@@ -215,8 +225,8 @@ class _NotesScreenState extends State<NotesScreen> {
           margin: EdgeInsets.symmetric(vertical: 4, horizontal: 12),
           color: Provider.of<ThemeModel>(context).currentTheme.primaryColor,
           shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(9.0),
-  ),
+            borderRadius: BorderRadius.circular(9.0),
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -251,16 +261,19 @@ class _NotesScreenState extends State<NotesScreen> {
                             return showDialog(
                               context: context,
                               builder: (ctx) => AlertDialog(
-                                title: Text("Delete Confirmation",style: Provider.of<ThemeModel>(context)
-                                .currentTheme
-                                .textTheme
-                                .headline6),
+                                title: Text("Delete Confirmation",
+                                    style: Provider.of<ThemeModel>(context)
+                                        .currentTheme
+                                        .textTheme
+                                        .headline6),
                                 content: Text(
                                   "Are you sure you want to delete Your PDF?",
-                                  style: GoogleFonts.lato(color: Provider.of<ThemeModel>(context)
-                                .currentTheme
-                                .textTheme
-                                .headline6.color),
+                                  style: GoogleFonts.lato(
+                                      color: Provider.of<ThemeModel>(context)
+                                          .currentTheme
+                                          .textTheme
+                                          .headline6
+                                          .color),
                                 ),
                                 actions: [
                                   TextButton(
@@ -438,14 +451,18 @@ class _NotesScreenState extends State<NotesScreen> {
                           return ["Edit", "Delete"].map((String choice) {
                             return PopupMenuItem<String>(
                               value: choice,
-                              child: Text(choice, style: Provider.of<ThemeModel>(context, listen: false)
-                                .currentTheme
-                                .textTheme
-                                .headline6,),
+                              child: Text(
+                                choice,
+                                style: Provider.of<ThemeModel>(context,
+                                        listen: false)
+                                    .currentTheme
+                                    .textTheme
+                                    .headline6,
+                              ),
                             );
                           }).toList();
                         })
-                    :  Text(""),
+                    : Text(""),
                 title: Padding(
                   padding: EdgeInsets.only(bottom: 8.0),
                   child: Wrap(

@@ -14,9 +14,8 @@ import 'package:provider/provider.dart';
 import 'screens/home_screen.dart';
 
 void main() async {
-  await Firebase.initializeApp();
   WidgetsFlutterBinding.ensureInitialized();
-  
+  await Firebase.initializeApp();
   runApp(
     MultiProvider(
       providers: [
