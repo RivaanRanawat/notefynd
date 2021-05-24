@@ -7,7 +7,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notefynd/provider/ThemeModel.dart';
-import 'package:notefynd/screens/pages/pdfs/pdf_flutter_screen.dart';
 import 'package:notefynd/screens/pages/profileScreen/user_profile_screen.dart';
 import 'package:notefynd/screens/comment_screen.dart';
 import 'package:notefynd/screens/requestNotes/notes_request_see_screen.dart';
@@ -18,7 +17,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import "package:timeago/timeago.dart" as timeago;
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:pdf/widgets.dart' as pw;
 import 'package:universal_html/html.dart' as html;
 
 class NotesScreen extends StatefulWidget {

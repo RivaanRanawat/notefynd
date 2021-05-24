@@ -126,14 +126,18 @@ class _LoginScreenState extends State<LoginScreen> {
                       'Login To Notefynd and continue!',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.openSans(
-                          color: Colors.white, fontSize: 28),
+                          color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color, fontSize: 28),
                     ),
                     SizedBox(height: 20),
                     Text(
                       'Share. View. Earn',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.openSans(
-                          color: Colors.white, fontSize: 14),
+                          color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color, fontSize: 14),
                     ),
                     SizedBox(
                       height: 50,
@@ -262,7 +266,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 textAlign: TextAlign.center,
                                 style: GoogleFonts.roboto(
                                   fontStyle: FontStyle.italic,
-                                    color: Colors.white,
+                                    color: Provider.of<ThemeModel>(context)
+                                            .currentTheme
+                                            .textTheme.headline6.color,
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                     )),
