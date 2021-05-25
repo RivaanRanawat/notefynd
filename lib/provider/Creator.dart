@@ -18,48 +18,5 @@ class Creator with ChangeNotifier {
     return creator;
   }
 
-  Future<String> storePdfNotes(File _file, String _fileName, String _title,
-      String subject, String description, String grade) async {
-    String retValue = "";
-    try {
-      var reference = firebase_storage.FirebaseStorage.instance
-          .ref()
-          .child("pdf-notes")
-          .child(FirebaseAuth.instance.currentUser.uid)
-          .child(_fileName);
-
-      firebase_storage.UploadTask uploadTask = reference.putFile(
-          _file,
-          firebase_storage.SettableMetadata(
-              contentType: ContentType('application', 'pdf').toString()));
-      firebase_storage.TaskSnapshot snapshot = await uploadTask;
-      String url = await snapshot.ref.getDownloadURL();
-      DocumentSnapshot snap = await FirebaseFirestore.instance
-          .collection("users")
-          .doc(FirebaseAuth.instance.currentUser.uid)
-          .get();
-      var username = snap["username"];
-      var uniqueId = Uuid().v1();
-      FirebaseFirestore.instance.collection("pdf-posts").doc(uniqueId).set({
-        "uid": FirebaseAuth.instance.currentUser.uid,
-        "datePublished": Timestamp.now(),
-        "pdfUrl": url,
-        "title": _title,
-        "grade": grade,
-        "description": description,
-        "subject": subject,
-        "username": username,
-        "likes": [],
-        "commentCount": 0,
-        "reports": [],
-        "stream": snap["stream"],
-        "profilePic": snap["profilePhoto"],
-        "id": uniqueId
-      });
-      retValue = "success";
-    } catch (err) {
-      retValue = err;
-    }
-    return retValue;
-  }
+  
 }

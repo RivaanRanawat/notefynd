@@ -1,12 +1,17 @@
+import 'dart:typed_data';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import "package:flutter/material.dart";
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notefynd/provider/Creator.dart';
 import 'package:notefynd/provider/ThemeModel.dart';
 import 'dart:io';
-
-import 'package:notefynd/universal_variables.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class AddPdfNotes extends StatefulWidget {
   @override
@@ -15,13 +20,13 @@ class AddPdfNotes extends StatefulWidget {
 
 class _AddPdfNotesState extends State<AddPdfNotes> {
   File _file;
+  Uint8List _fileForWeb;
   String fileName;
   TextEditingController _titleController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _subjectController = TextEditingController();
   var _isLoading = false;
   String _grade = "";
-  var _universalVariables = UniversalVariables();
 
   handleClassButtonClick(String grade) {
     setState(() {
@@ -35,33 +40,68 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
       _isLoading = true;
     });
     if (_titleController.text.isNotEmpty &&
-        _descriptionController.text.isNotEmpty &&
-        _subjectController.text.isNotEmpty &&
-        _grade.isNotEmpty &&
-        _file != null) {
-      var result = await Provider.of<Creator>(context, listen: false)
-          .storePdfNotes(_file, fileName, _titleController.text,
-              _subjectController.text, _descriptionController.text, _grade);
-      setState(() {
-        _isLoading = false;
-      });
-      if (result == "success") {
+            _descriptionController.text.isNotEmpty &&
+            _subjectController.text.isNotEmpty &&
+            _grade.isNotEmpty &&
+            _file != null ||
+        _fileForWeb != null) {
+      try {
+        var reference = FirebaseStorage.instance
+            .ref()
+            .child("pdf-notes")
+            .child(FirebaseAuth.instance.currentUser.uid)
+            .child(fileName);
+        UploadTask uploadTask;
+        if (!kIsWeb) {
+          uploadTask = reference.putFile(
+              _file,
+              SettableMetadata(
+                  contentType: ContentType('application', 'pdf').toString()));
+        } else {
+          uploadTask = reference.putData(
+              _fileForWeb,
+              SettableMetadata(
+                  contentType: ContentType('application', 'pdf').toString()));
+        }
+        TaskSnapshot snapshot = await uploadTask;
+        String url = await snapshot.ref.getDownloadURL();
+        DocumentSnapshot snap = await FirebaseFirestore.instance
+            .collection("users")
+            .doc(FirebaseAuth.instance.currentUser.uid)
+            .get();
+        var username = snap["username"];
+        var uniqueId = Uuid().v1();
+        FirebaseFirestore.instance.collection("pdf-posts").doc(uniqueId).set({
+          "uid": FirebaseAuth.instance.currentUser.uid,
+          "datePublished": Timestamp.now(),
+          "pdfUrl": url,
+          "title": _titleController.text,
+          "grade": _grade.toString(),
+          "description": _descriptionController.text,
+          "subject": _subjectController.text,
+          "username": username,
+          "likes": [],
+          "commentCount": 0,
+          "reports": [],
+          "stream": snap["stream"],
+          "profilePic": snap["profilePhoto"],
+          "id": uniqueId
+        });
+
         setState(() {
           _titleController.text = "";
           _descriptionController.text = "";
           _subjectController.text = "";
           _file = null;
-        });
-        setState(() {
           _isLoading = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Posted!"),
           duration: Duration(seconds: 2),
         ));
-      } else {
+      } catch (err) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(result),
+          content: Text(err.toString()),
           duration: Duration(seconds: 2),
         ));
       }
@@ -114,12 +154,20 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
                           allowedExtensions: ['pdf'],
                         );
                         if (result != null) {
-                          File file = File(result.files.single.path);
+                          if (kIsWeb) {
+                            Uint8List uploadfile = result.files.single.bytes;
+                            setState(() {
+                              _fileForWeb = uploadfile;
+                              fileName = result.files.single.name;
+                            });
+                          } else {
+                            File file = File(result.files.single.path);
 
-                          setState(() {
-                            _file = file;
-                            fileName = result.files.single.name;
-                          });
+                            setState(() {
+                              _file = file;
+                              fileName = result.files.single.name;
+                            });
+                          }
                         } else {
                           print("in sooth ik not why i am so sad");
                         }
@@ -138,9 +186,10 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
                         color: Provider.of<ThemeModel>(context)
                             .currentTheme
                             .primaryColor,
-                        border: Border.all(color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .accentColor)),
+                        border: Border.all(
+                            color: Provider.of<ThemeModel>(context)
+                                .currentTheme
+                                .accentColor)),
                     child: TextFormField(
                       controller: _titleController,
                       style: Provider.of<ThemeModel>(context)
@@ -167,9 +216,10 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
                         color: Provider.of<ThemeModel>(context)
                             .currentTheme
                             .primaryColor,
-                        border: Border.all(color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .accentColor)),
+                        border: Border.all(
+                            color: Provider.of<ThemeModel>(context)
+                                .currentTheme
+                                .accentColor)),
                     child: TextFormField(
                       controller: _descriptionController,
                       style: Provider.of<ThemeModel>(context)
@@ -196,9 +246,10 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
                         color: Provider.of<ThemeModel>(context)
                             .currentTheme
                             .primaryColor,
-                        border: Border.all(color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .accentColor)),
+                        border: Border.all(
+                            color: Provider.of<ThemeModel>(context)
+                                .currentTheme
+                                .accentColor)),
                     child: TextFormField(
                       controller: _subjectController,
                       style: Provider.of<ThemeModel>(context)
@@ -247,8 +298,8 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
                                 onPressed: () => handleClassButtonClick("7"),
                                 color: _grade == "7"
                                     ? Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .accentColor
+                                        .currentTheme
+                                        .accentColor
                                     : Provider.of<ThemeModel>(context)
                                         .currentTheme
                                         .buttonColor,
@@ -269,11 +320,11 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
                                 onPressed: () => handleClassButtonClick("8"),
                                 color: _grade == "8"
                                     ? Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .accentColor
+                                        .currentTheme
+                                        .accentColor
                                     : Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .buttonColor,
+                                        .currentTheme
+                                        .buttonColor,
                                 child: Text("8"),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -291,11 +342,11 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
                                 onPressed: () => handleClassButtonClick("9"),
                                 color: _grade == "9"
                                     ? Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .accentColor
+                                        .currentTheme
+                                        .accentColor
                                     : Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .buttonColor,
+                                        .currentTheme
+                                        .buttonColor,
                                 child: Text("9"),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -313,11 +364,11 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
                                 onPressed: () => handleClassButtonClick("10"),
                                 color: _grade == "10"
                                     ? Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .accentColor
+                                        .currentTheme
+                                        .accentColor
                                     : Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .buttonColor,
+                                        .currentTheme
+                                        .buttonColor,
                                 child: Text("10"),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
