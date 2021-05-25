@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io' as io;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import "package:flutter/material.dart";
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,6 +11,7 @@ import 'package:notefynd/screens/home_screen.dart';
 import 'package:notefynd/universal_variables.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:provider/provider.dart';
+import 'package:universal_html/html.dart' as html;
 
 class DetailsScreen extends StatefulWidget {
   @override
@@ -27,6 +29,33 @@ class _DetailsScreenState extends State<DetailsScreen> {
   String _grade = "";
   String _stream = "Science";
   var _isLoading = false;
+
+  uploadToStorage() {
+    html.InputElement input = html.FileUploadInputElement()..accept = 'image/*';
+    firebase_storage.FirebaseStorage fs =
+        firebase_storage.FirebaseStorage.instance;
+    input.click();
+    input.onChange.listen((event) {
+      setState(() {
+        _isLoading = true;
+      });
+      final file = input.files.first;
+      final reader = html.FileReader();
+      reader.readAsDataUrl(file);
+      reader.onLoadEnd.listen((event) async {
+        var snapshot = await fs
+            .ref()
+            .child('images')
+            .child(FirebaseAuth.instance.currentUser.uid)
+            .putBlob(file);
+        String imageUrl = await snapshot.ref.getDownloadURL();
+        setState(() {
+          downloadUrl = imageUrl;
+          _isLoading = false;
+        });
+      });
+    });
+  }
 
   Future getImage() async {
     pickedFile = await picker.getImage(source: ImageSource.gallery);
@@ -117,9 +146,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .backgroundColor,
+      backgroundColor:
+          Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
       body: _isLoading == false
           ? SingleChildScrollView(
               child: Column(
@@ -132,20 +160,31 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       CircleAvatar(
                         radius: 64,
                         backgroundImage: _image == null
-                            ? NetworkImage(
-                                "https://i.stack.imgur.com/l60Hf.png",
-                              )
-                            : FileImage(_image),
+                              ? NetworkImage(
+                                  downloadUrl != null
+                                      ? downloadUrl
+                                      : "https://i.stack.imgur.com/l60Hf.png",
+                                )
+                              : FileImage(_image)
                       ),
                       Positioned(
                         bottom: -10,
                         left: 80,
                         child: IconButton(
-                          onPressed: getImage,
+                          onPressed: () {
+                            if (kIsWeb) {
+                              uploadToStorage();
+                            } else {
+                              print("yes");
+                              getImage();
+                            }
+                          },
                           icon: Icon(Icons.add_a_photo),
                           color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .textTheme.headline6.color,
+                              .currentTheme
+                              .textTheme
+                              .headline6
+                              .color,
                         ),
                       )
                     ]),
@@ -156,28 +195,37 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
                         color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .primaryColor,
-                        border: Border.all(color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .accentColor)),
+                            .currentTheme
+                            .primaryColor,
+                        border: Border.all(
+                            color: Provider.of<ThemeModel>(context)
+                                .currentTheme
+                                .accentColor)),
                     child: TextFormField(
                       controller: _descriptionController,
-                      style: TextStyle(color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .textTheme.headline6.color),
+                      style: TextStyle(
+                          color: Provider.of<ThemeModel>(context)
+                              .currentTheme
+                              .textTheme
+                              .headline6
+                              .color),
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(horizontal: 10),
                         labelText: "Description",
                         alignLabelWithHint: true,
-                        labelStyle: TextStyle(color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .textTheme.headline6.color),
+                        labelStyle: TextStyle(
+                            color: Provider.of<ThemeModel>(context)
+                                .currentTheme
+                                .textTheme
+                                .headline6
+                                .color),
                         icon: Icon(
                           Icons.description,
                           color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .textTheme.headline6.color,
+                              .currentTheme
+                              .textTheme
+                              .headline6
+                              .color,
                         ),
                         border: InputBorder.none,
                       ),
@@ -193,27 +241,36 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
                         color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .primaryColor,
-                        border: Border.all(color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .accentColor)),
+                            .currentTheme
+                            .primaryColor,
+                        border: Border.all(
+                            color: Provider.of<ThemeModel>(context)
+                                .currentTheme
+                                .accentColor)),
                     child: TextFormField(
                       controller: _schoolNameController,
-                      style: TextStyle(color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .textTheme.headline6.color),
+                      style: TextStyle(
+                          color: Provider.of<ThemeModel>(context)
+                              .currentTheme
+                              .textTheme
+                              .headline6
+                              .color),
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(horizontal: 10),
                         labelText: "School Name",
-                        labelStyle: TextStyle(color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .textTheme.headline6.color),
+                        labelStyle: TextStyle(
+                            color: Provider.of<ThemeModel>(context)
+                                .currentTheme
+                                .textTheme
+                                .headline6
+                                .color),
                         icon: Icon(
                           Icons.school,
                           color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .textTheme.headline6.color,
+                              .currentTheme
+                              .textTheme
+                              .headline6
+                              .color,
                         ),
                         border: InputBorder.none,
                       ),
@@ -228,22 +285,29 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
                         color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .primaryColor,
-                        border: Border.all(color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .accentColor)),
+                            .currentTheme
+                            .primaryColor,
+                        border: Border.all(
+                            color: Provider.of<ThemeModel>(context)
+                                .currentTheme
+                                .accentColor)),
                     child: DropdownButton<String>(
                       value: _stream,
-                      icon: Icon(Icons.arrow_drop_down, color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .textTheme.headline6.color),
+                      icon: Icon(Icons.arrow_drop_down,
+                          color: Provider.of<ThemeModel>(context)
+                              .currentTheme
+                              .textTheme
+                              .headline6
+                              .color),
                       dropdownColor: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .primaryColor,
-                      style: GoogleFonts.lato(color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .textTheme.headline6.color),
+                          .currentTheme
+                          .primaryColor,
+                      style: GoogleFonts.lato(
+                          color: Provider.of<ThemeModel>(context)
+                              .currentTheme
+                              .textTheme
+                              .headline6
+                              .color),
                       items: <String>['Commerce', 'Science', 'Arts']
                           .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
@@ -272,8 +336,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         Text("Select Class",
                             style: GoogleFonts.lato(
                                 color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .textTheme.headline6.color, fontSize: 14)),
+                                    .currentTheme
+                                    .textTheme
+                                    .headline6
+                                    .color,
+                                fontSize: 14)),
                         SizedBox(
                           height: 10,
                         ),
@@ -289,11 +356,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 onPressed: () => handleClassButtonClick("7"),
                                 color: _grade == "7"
                                     ? Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .accentColor
+                                        .currentTheme
+                                        .accentColor
                                     : Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .buttonColor,
+                                        .currentTheme
+                                        .buttonColor,
                                 child: Text("7"),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -311,11 +378,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 onPressed: () => handleClassButtonClick("8"),
                                 color: _grade == "8"
                                     ? Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .accentColor
+                                        .currentTheme
+                                        .accentColor
                                     : Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .buttonColor,
+                                        .currentTheme
+                                        .buttonColor,
                                 child: Text("8"),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -333,11 +400,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 onPressed: () => handleClassButtonClick("9"),
                                 color: _grade == "9"
                                     ? Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .accentColor
+                                        .currentTheme
+                                        .accentColor
                                     : Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .buttonColor,
+                                        .currentTheme
+                                        .buttonColor,
                                 child: Text("9"),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -355,11 +422,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                 onPressed: () => handleClassButtonClick("10"),
                                 color: _grade == "10"
                                     ? Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .accentColor
+                                        .currentTheme
+                                        .accentColor
                                     : Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .buttonColor,
+                                        .currentTheme
+                                        .buttonColor,
                                 child: Text("10"),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -383,11 +450,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   onPressed: () => handleClassButtonClick("11"),
                                   color: _grade == "11"
                                       ? Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .accentColor
+                                          .currentTheme
+                                          .accentColor
                                       : Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .buttonColor,
+                                          .currentTheme
+                                          .buttonColor,
                                   child: Text("11"),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),
@@ -405,11 +472,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   onPressed: () => handleClassButtonClick("12"),
                                   color: _grade == "12"
                                       ? Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .accentColor
+                                          .currentTheme
+                                          .accentColor
                                       : Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .buttonColor,
+                                          .currentTheme
+                                          .buttonColor,
                                   child: Text("12"),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),
@@ -427,11 +494,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   onPressed: () => handleClassButtonClick("UG"),
                                   color: _grade == "UG"
                                       ? Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .accentColor
+                                          .currentTheme
+                                          .accentColor
                                       : Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .buttonColor,
+                                          .currentTheme
+                                          .buttonColor,
                                   child: Text("UG"),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),
@@ -449,11 +516,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   onPressed: () => handleClassButtonClick("PG"),
                                   color: _grade == "PG"
                                       ? Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .accentColor
+                                          .currentTheme
+                                          .accentColor
                                       : Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .buttonColor,
+                                          .currentTheme
+                                          .buttonColor,
                                   child: Text("PG"),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),
@@ -473,8 +540,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     height: 50,
                     onPressed: uploadDataToFirebase,
                     color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .accentColor,
+                        .currentTheme
+                        .accentColor,
                     child: Text("Done"),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),

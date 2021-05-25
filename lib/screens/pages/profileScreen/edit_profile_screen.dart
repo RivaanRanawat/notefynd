@@ -46,14 +46,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   var _isLoading = false;
 
   uploadToStorage() {
-    setState(() {
-      _isLoading = true;
-    });
     html.InputElement input = html.FileUploadInputElement()..accept = 'image/*';
     firebase_storage.FirebaseStorage fs =
         firebase_storage.FirebaseStorage.instance;
     input.click();
     input.onChange.listen((event) {
+      setState(() {
+        _isLoading = true;
+      });
       final file = input.files.first;
       final reader = html.FileReader();
       reader.readAsDataUrl(file);
