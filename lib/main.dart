@@ -42,7 +42,7 @@ class _MyAppState extends State<MyApp> {
       theme: Provider.of<ThemeModel>(context).currentTheme,
       home: StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (ctx, userSnapshot) {
+          builder: (context, userSnapshot) {
             if (Provider.of<ThemeModel>(context).currentTheme == null) {
               return SplashScreen();
             }
