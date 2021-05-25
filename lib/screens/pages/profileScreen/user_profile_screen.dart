@@ -377,7 +377,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             ),
                             FutureBuilder(
                               future: myPdf,
-                              builder: (BuildContext coontext, snapshot) {
+                              builder: (BuildContext context, snapshot) {
                                 if (!snapshot.hasData) {
                                   return Center(
                                     child: CircularProgressIndicator(),

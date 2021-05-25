@@ -39,8 +39,17 @@ class _BoardArticlesState extends State<BoardArticles> {
     return Scaffold(
       backgroundColor:
           Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
+        title: Text(
+          "Articles",
+          style:
+              Provider.of<ThemeModel>(context).currentTheme.textTheme.headline6,
+        ),
+      ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection("articles").snapshots(),
+        stream: FirebaseFirestore.instance.collection("articles").orderBy("datePublished", descending: true).snapshots(),
         builder: (ctx, snapshot) {
           if (!snapshot.hasData) {
             return Center(

@@ -6,6 +6,7 @@ import 'package:flutter_gradient_colors/flutter_gradient_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notefynd/provider/ThemeModel.dart';
 import 'package:notefynd/screens/auth/login_screen.dart';
+import 'package:notefynd/screens/pages/creator/creator_studio_screen.dart';
 import 'package:notefynd/screens/pages/profileScreen/edit_profile_screen.dart';
 import 'package:notefynd/provider/AuthMethods.dart';
 import 'package:notefynd/provider/Creator.dart';
@@ -97,14 +98,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 onSelected: (String choice) async {
                   if (choice == "Light Mode") {
-                    Provider.of<ThemeModel>(context, listen: false)
-                        .toggleTheme(ThemeType.Dark,);
+                    Provider.of<ThemeModel>(context, listen: false).toggleTheme(
+                      ThemeType.Dark,
+                    );
                   } else if (choice == "Dark Mode") {
-                    Provider.of<ThemeModel>(context, listen: false)
-                        .toggleTheme(ThemeType.Light,);
+                    Provider.of<ThemeModel>(context, listen: false).toggleTheme(
+                      ThemeType.Light,
+                    );
                   } else if (choice == "Default Mode") {
-                    Provider.of<ThemeModel>(context, listen: false)
-                        .toggleTheme(ThemeType.Default,);
+                    Provider.of<ThemeModel>(context, listen: false).toggleTheme(
+                      ThemeType.Default,
+                    );
                   }
                 },
                 itemBuilder: (BuildContext context) {
@@ -211,7 +215,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   .update({"status": "creator"});
                               setState(() {});
                             } else {
-                              // creator studio
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => CreatorStudioScreen()));
                             }
                           },
                           color: Colors.blue,
