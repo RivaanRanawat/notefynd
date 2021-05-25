@@ -38,10 +38,10 @@ dependencies:
   google_fonts: ^2.0.0
   google_sign_in: ^5.0.1
   image_picker: ^0.7.3
-  image_picker_web: ^2.0.2
+  image_picker_for_web: ^2.0.0
   page_transition: ^2.0.2
   paginate_firestore: null
-  pdf: ^3.3.0
+  path: ^1.8.0
   provider: ^5.0.0
   shared_preferences: ^2.0.5
   timeago: ^3.0.2

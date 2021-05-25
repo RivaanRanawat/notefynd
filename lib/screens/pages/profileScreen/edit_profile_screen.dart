@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io' as io;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import "package:flutter/material.dart";
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,6 +11,7 @@ import 'package:notefynd/screens/home_screen.dart';
 import 'package:notefynd/universal_variables.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:provider/provider.dart';
+import 'package:universal_html/html.dart' as html;
 
 class EditProfileScreen extends StatefulWidget {
   final description;
@@ -42,6 +44,33 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   String _grade = "";
   String _stream = "Science";
   var _isLoading = false;
+
+  uploadToStorage() {
+    setState(() {
+      _isLoading = true;
+    });
+    html.InputElement input = html.FileUploadInputElement()..accept = 'image/*';
+    firebase_storage.FirebaseStorage fs =
+        firebase_storage.FirebaseStorage.instance;
+    input.click();
+    input.onChange.listen((event) {
+      final file = input.files.first;
+      final reader = html.FileReader();
+      reader.readAsDataUrl(file);
+      reader.onLoadEnd.listen((event) async {
+        var snapshot = await fs
+            .ref()
+            .child('images')
+            .child(FirebaseAuth.instance.currentUser.uid)
+            .putBlob(file);
+        String imageUrl = await snapshot.ref.getDownloadURL();
+        setState(() {
+          downloadUrl = imageUrl;
+          _isLoading = false;
+        });
+      });
+    });
+  }
 
   Future getImage() async {
     pickedFile = await picker.getImage(source: ImageSource.gallery);
@@ -97,7 +126,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             .doc(FirebaseAuth.instance.currentUser.uid)
             .update({
           "bio": _descriptionController.text,
-          "profilePhoto": _image != null
+          "profilePhoto": downloadUrl != ""
               ? downloadUrl
               : "https://i.stack.imgur.com/l60Hf.png",
           "schoolName": _schoolNameController.text,
@@ -141,9 +170,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .backgroundColor,
+      backgroundColor:
+          Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
       body: _isLoading == false
           ? SingleChildScrollView(
               child: Column(
@@ -154,24 +182,32 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   Container(
                     child: Stack(children: [
                       CircleAvatar(
-                        radius: 64,
-                        backgroundImage: _image == null
-                            ? NetworkImage(
-                                downloadUrl != ""
-                                    ? downloadUrl
-                                    : "https://i.stack.imgur.com/l60Hf.png",
-                              )
-                            : FileImage(_image),
-                      ),
+                          radius: 64,
+                          backgroundImage: _image == null
+                              ? NetworkImage(
+                                  downloadUrl != ""
+                                      ? downloadUrl
+                                      : "https://i.stack.imgur.com/l60Hf.png",
+                                )
+                              : FileImage(_image)),
                       Positioned(
                         bottom: -10,
                         left: 80,
                         child: IconButton(
-                          onPressed: getImage,
+                          onPressed: () {
+                            if (kIsWeb) {
+                              uploadToStorage();
+                            } else {
+                              print("yes");
+                              getImage();
+                            }
+                          },
                           icon: Icon(Icons.add_a_photo),
                           color: Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .textTheme.headline6.color,
+                              .currentTheme
+                              .textTheme
+                              .headline6
+                              .color,
                         ),
                       ),
                       Positioned(
@@ -195,28 +231,37 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
                         color: Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .primaryColor,
-                        border: Border.all(color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .accentColor)),
+                            .currentTheme
+                            .primaryColor,
+                        border: Border.all(
+                            color: Provider.of<ThemeModel>(context)
+                                .currentTheme
+                                .accentColor)),
                     child: TextFormField(
                       controller: _nameController,
-                      style: TextStyle(color: Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .textTheme.headline6.color),
+                      style: TextStyle(
+                          color: Provider.of<ThemeModel>(context)
+                              .currentTheme
+                              .textTheme
+                              .headline6
+                              .color),
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(horizontal: 10),
                         labelText: "Username",
                         alignLabelWithHint: true,
-                        labelStyle: TextStyle(color: Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .textTheme.headline6.color),
+                        labelStyle: TextStyle(
+                            color: Provider.of<ThemeModel>(context)
+                                .currentTheme
+                                .textTheme
+                                .headline6
+                                .color),
                         icon: Icon(
                           Icons.person,
                           color: Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .textTheme.headline6.color,
+                              .currentTheme
+                              .textTheme
+                              .headline6
+                              .color,
                         ),
                         border: InputBorder.none,
                       ),
@@ -230,28 +275,37 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
                         color: Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .primaryColor,
-                        border: Border.all(color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .accentColor)),
+                            .currentTheme
+                            .primaryColor,
+                        border: Border.all(
+                            color: Provider.of<ThemeModel>(context)
+                                .currentTheme
+                                .accentColor)),
                     child: TextFormField(
                       controller: _descriptionController,
-                      style: TextStyle(color: Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .textTheme.headline6.color),
+                      style: TextStyle(
+                          color: Provider.of<ThemeModel>(context)
+                              .currentTheme
+                              .textTheme
+                              .headline6
+                              .color),
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(horizontal: 10),
                         labelText: "Description",
                         alignLabelWithHint: true,
-                        labelStyle: TextStyle(color: Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .textTheme.headline6.color),
+                        labelStyle: TextStyle(
+                            color: Provider.of<ThemeModel>(context)
+                                .currentTheme
+                                .textTheme
+                                .headline6
+                                .color),
                         icon: Icon(
                           Icons.description,
                           color: Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .textTheme.headline6.color,
+                              .currentTheme
+                              .textTheme
+                              .headline6
+                              .color,
                         ),
                         border: InputBorder.none,
                       ),
@@ -267,27 +321,36 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
                         color: Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .primaryColor,
-                        border: Border.all(color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .accentColor)),
+                            .currentTheme
+                            .primaryColor,
+                        border: Border.all(
+                            color: Provider.of<ThemeModel>(context)
+                                .currentTheme
+                                .accentColor)),
                     child: TextFormField(
                       controller: _schoolNameController,
-                      style: TextStyle(color: Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .textTheme.headline6.color),
+                      style: TextStyle(
+                          color: Provider.of<ThemeModel>(context)
+                              .currentTheme
+                              .textTheme
+                              .headline6
+                              .color),
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(horizontal: 10),
                         labelText: "School Name",
-                        labelStyle: TextStyle(color: Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .textTheme.headline6.color),
+                        labelStyle: TextStyle(
+                            color: Provider.of<ThemeModel>(context)
+                                .currentTheme
+                                .textTheme
+                                .headline6
+                                .color),
                         icon: Icon(
                           Icons.school,
                           color: Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .textTheme.headline6.color,
+                              .currentTheme
+                              .textTheme
+                              .headline6
+                              .color,
                         ),
                         border: InputBorder.none,
                       ),
@@ -302,22 +365,29 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
                         color: Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .primaryColor,
-                        border: Border.all(color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .accentColor)),
+                            .currentTheme
+                            .primaryColor,
+                        border: Border.all(
+                            color: Provider.of<ThemeModel>(context)
+                                .currentTheme
+                                .accentColor)),
                     child: DropdownButton<String>(
                       value: _stream,
-                      icon: Icon(Icons.arrow_drop_down, color: Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .textTheme.headline6.color),
+                      icon: Icon(Icons.arrow_drop_down,
+                          color: Provider.of<ThemeModel>(context)
+                              .currentTheme
+                              .textTheme
+                              .headline6
+                              .color),
                       dropdownColor: Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .primaryColor,
-                      style: GoogleFonts.lato(color: Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .textTheme.headline6.color),
+                          .currentTheme
+                          .primaryColor,
+                      style: GoogleFonts.lato(
+                          color: Provider.of<ThemeModel>(context)
+                              .currentTheme
+                              .textTheme
+                              .headline6
+                              .color),
                       items: <String>['Commerce', 'Science', 'Arts']
                           .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
@@ -325,9 +395,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           child: Padding(
                             padding: EdgeInsets.only(
                                 left: MediaQuery.of(context).size.width * 0.1),
-                            child: Text(value, style: Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .textTheme.headline6,),
+                            child: Text(
+                              value,
+                              style: Provider.of<ThemeModel>(context)
+                                  .currentTheme
+                                  .textTheme
+                                  .headline6,
+                            ),
                           ),
                         );
                       }).toList(),
@@ -348,8 +422,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         Text("Select Class",
                             style: GoogleFonts.lato(
                                 color: Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .textTheme.headline6.color, fontSize: 14)),
+                                    .currentTheme
+                                    .textTheme
+                                    .headline6
+                                    .color,
+                                fontSize: 14)),
                         SizedBox(
                           height: 10,
                         ),
@@ -365,11 +442,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 onPressed: () => handleClassButtonClick("7"),
                                 color: _grade == "7"
                                     ? Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .accentColor
+                                        .currentTheme
+                                        .accentColor
                                     : Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .buttonColor,
+                                        .currentTheme
+                                        .buttonColor,
                                 child: Text("7"),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -387,11 +464,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 onPressed: () => handleClassButtonClick("8"),
                                 color: _grade == "8"
                                     ? Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .accentColor
-                                    :  Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .buttonColor,
+                                        .currentTheme
+                                        .accentColor
+                                    : Provider.of<ThemeModel>(context)
+                                        .currentTheme
+                                        .buttonColor,
                                 child: Text("8"),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -409,11 +486,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 onPressed: () => handleClassButtonClick("9"),
                                 color: _grade == "9"
                                     ? Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .accentColor
-                                    :  Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .buttonColor,
+                                        .currentTheme
+                                        .accentColor
+                                    : Provider.of<ThemeModel>(context)
+                                        .currentTheme
+                                        .buttonColor,
                                 child: Text("9"),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -431,11 +508,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 onPressed: () => handleClassButtonClick("10"),
                                 color: _grade == "10"
                                     ? Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .accentColor
-                                    :  Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .buttonColor,
+                                        .currentTheme
+                                        .accentColor
+                                    : Provider.of<ThemeModel>(context)
+                                        .currentTheme
+                                        .buttonColor,
                                 child: Text("10"),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -461,7 +538,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       ? Provider.of<ThemeModel>(context)
                                           .currentTheme
                                           .accentColor
-                                      :  Provider.of<ThemeModel>(context)
+                                      : Provider.of<ThemeModel>(context)
                                           .currentTheme
                                           .buttonColor,
                                   child: Text("11"),
@@ -483,7 +560,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       ? Provider.of<ThemeModel>(context)
                                           .currentTheme
                                           .accentColor
-                                      :  Provider.of<ThemeModel>(context)
+                                      : Provider.of<ThemeModel>(context)
                                           .currentTheme
                                           .buttonColor,
                                   child: Text("12"),
@@ -505,7 +582,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       ? Provider.of<ThemeModel>(context)
                                           .currentTheme
                                           .accentColor
-                                      :  Provider.of<ThemeModel>(context)
+                                      : Provider.of<ThemeModel>(context)
                                           .currentTheme
                                           .buttonColor,
                                   child: Text("UG"),
@@ -527,7 +604,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                       ? Provider.of<ThemeModel>(context)
                                           .currentTheme
                                           .accentColor
-                                      :  Provider.of<ThemeModel>(context)
+                                      : Provider.of<ThemeModel>(context)
                                           .currentTheme
                                           .buttonColor,
                                   child: Text("PG"),
@@ -549,8 +626,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     height: 50,
                     onPressed: uploadDataToFirebase,
                     color: Provider.of<ThemeModel>(context)
-                                          .currentTheme
-                                          .accentColor,
+                        .currentTheme
+                        .accentColor,
                     child: Text("Update"),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),

@@ -22,13 +22,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.5.0"
-  barcode:
-    dependency: transitive
-    description:
-      name: barcode
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.1.0"
   bloc:
     dependency: transitive
     description:
@@ -346,7 +339,7 @@ packages:
     source: hosted
     version: "0.7.3"
   image_picker_for_web:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: image_picker_for_web
       url: "https://pub.dartlang.org"
@@ -359,13 +352,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
-  image_picker_web:
-    dependency: "direct main"
-    description:
-      name: image_picker_web
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.2"
   intl:
     dependency: transitive
     description:
@@ -416,19 +402,12 @@ packages:
     source: hosted
     version: "1.0.0-nullsafety.0"
   path:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.0"
-  path_parsing:
-    dependency: transitive
-    description:
-      name: path_parsing
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.1"
   path_provider:
     dependency: transitive
     description:
@@ -464,13 +443,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
-  pdf:
-    dependency: "direct main"
-    description:
-      name: pdf
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.3.0"
   pedantic:
     dependency: transitive
     description:
@@ -513,13 +485,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.0.0"
-  qr:
-    dependency: transitive
-    description:
-      name: qr
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
   quiver:
     dependency: transitive
     description:
