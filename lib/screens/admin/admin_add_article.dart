@@ -40,9 +40,11 @@ class _AdminAddArticleState extends State<AdminAddArticle> {
                         color: Provider.of<ThemeModel>(context)
                             .currentTheme
                             .primaryColor,
-                        border: Border.all(color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .accentColor,)),
+                        border: Border.all(
+                          color: Provider.of<ThemeModel>(context)
+                              .currentTheme
+                              .accentColor,
+                        )),
                     child: TextFormField(
                       controller: _titleController,
                       style: TextStyle(color: Colors.white),
@@ -64,9 +66,11 @@ class _AdminAddArticleState extends State<AdminAddArticle> {
                         color: Provider.of<ThemeModel>(context)
                             .currentTheme
                             .primaryColor,
-                        border: Border.all(color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .accentColor,)),
+                        border: Border.all(
+                          color: Provider.of<ThemeModel>(context)
+                              .currentTheme
+                              .accentColor,
+                        )),
                     child: TextFormField(
                       controller: _contentController,
                       style: TextStyle(color: Colors.white),
@@ -109,6 +113,9 @@ class _AdminAddArticleState extends State<AdminAddArticle> {
                         Navigator.of(context).pushReplacement(
                             MaterialPageRoute(builder: (ctx) => AdminScreen()));
                       } else {
+                        setState(() {
+                          _isLoading = false;
+                        });
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text("Enter Title and Content of Article.."),
                         ));

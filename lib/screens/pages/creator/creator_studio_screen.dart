@@ -72,6 +72,7 @@ class _CreatorStudioScreenState extends State<CreatorStudioScreen> {
               child: Column(
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Container(
                         width: MediaQuery.of(context).size.width / 2.2,
