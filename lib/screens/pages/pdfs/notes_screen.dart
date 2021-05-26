@@ -18,6 +18,7 @@ import 'package:provider/provider.dart';
 import "package:timeago/timeago.dart" as timeago;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:universal_html/html.dart' as html;
+import 'package:url_launcher/url_launcher.dart';
 
 class NotesScreen extends StatefulWidget {
   @override
@@ -543,6 +544,31 @@ class _NotesScreenState extends State<NotesScreen> {
                             fontSize: 14),
                       ),
                     ),
+                    posts.data()["videoUrl"] != ""
+                        ? Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: InkWell(
+                              onTap: () async {
+                                await canLaunch(posts.data()["videoUrl"])
+                                    ? await launch(posts.data()["videoUrl"])
+                                    : ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                        content: Text("Could not launch url."),
+                                      ));
+                              },
+                              child: Text(
+                                "Video: " + posts.data()["videoUrl"],
+                                style: GoogleFonts.lato(
+                                    color: Provider.of<ThemeModel>(context)
+                                        .currentTheme
+                                        .textTheme
+                                        .headline6
+                                        .color,
+                                    fontSize: 14),
+                              ),
+                            ),
+                          )
+                        : Container(),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Text(

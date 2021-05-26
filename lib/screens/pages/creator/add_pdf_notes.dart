@@ -12,6 +12,7 @@ import 'package:notefynd/provider/ThemeModel.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
+import 'package:validators/validators.dart';
 
 class AddPdfNotes extends StatefulWidget {
   @override
@@ -25,6 +26,8 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
   TextEditingController _titleController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _subjectController = TextEditingController();
+  TextEditingController _videoUrlController = TextEditingController();
+
   var _isLoading = false;
   String _grade = "";
 
@@ -71,6 +74,18 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
             .get();
         var username = snap["username"];
         var uniqueId = Uuid().v1();
+        var videoUrl = "";
+        if (_videoUrlController.text.isNotEmpty) {
+          var isValidUrl = isURL(_videoUrlController.text);
+          if(isValidUrl) {
+            videoUrl = _videoUrlController.text;
+          } else {
+            setState(() {
+              _isLoading = false;
+            });
+            return ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please enter a valid url."),));
+          }
+        }
         FirebaseFirestore.instance.collection("pdf-posts").doc(uniqueId).set({
           "uid": FirebaseAuth.instance.currentUser.uid,
           "datePublished": Timestamp.now(),
@@ -83,6 +98,7 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
           "likes": [],
           "commentCount": 0,
           "reports": [],
+          "videoUrl": videoUrl,
           "stream": snap["stream"],
           "profilePic": snap["profilePhoto"],
           "id": uniqueId
@@ -94,6 +110,7 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
           _subjectController.text = "";
           _file = null;
           _isLoading = false;
+          _videoUrlController.text = "";
         });
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Posted!"),
@@ -259,6 +276,36 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(horizontal: 10),
                         labelText: "Subject",
+                        labelStyle: TextStyle(
+                            color: Provider.of<ThemeModel>(context)
+                                .currentTheme
+                                .textTheme
+                                .headline6
+                                .color),
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(10),
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                        color: Provider.of<ThemeModel>(context)
+                            .currentTheme
+                            .primaryColor,
+                        border: Border.all(
+                            color: Provider.of<ThemeModel>(context)
+                                .currentTheme
+                                .accentColor)),
+                    child: TextFormField(
+                      controller: _videoUrlController,
+                      style: Provider.of<ThemeModel>(context)
+                          .currentTheme
+                          .textTheme
+                          .headline6,
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                        labelText: "Video URL(Optional)",
                         labelStyle: TextStyle(
                             color: Provider.of<ThemeModel>(context)
                                 .currentTheme
