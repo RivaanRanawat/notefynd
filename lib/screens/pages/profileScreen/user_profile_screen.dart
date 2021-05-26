@@ -4,8 +4,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import "package:flutter/material.dart";
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notefynd/provider/ThemeModel.dart';
-import 'package:notefynd/screens/comment_screen.dart';
-import 'package:notefynd/universal_variables.dart';
 import 'package:provider/provider.dart';
 import "package:timeago/timeago.dart" as timeago;
 import "dart:async";

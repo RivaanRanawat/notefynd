@@ -4,7 +4,6 @@ import "package:flutter/material.dart";
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notefynd/provider/ThemeModel.dart';
 import 'package:notefynd/screens/home_screen.dart';
-import 'package:notefynd/universal_variables.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -17,7 +16,6 @@ class RequestNewNotes extends StatefulWidget {
 class _RequestNewNotesState extends State<RequestNewNotes> {
   TextEditingController _topicNameController = TextEditingController();
   TextEditingController _subjectController = TextEditingController();
-  var _universalVariables = UniversalVariables();
   String _grade = "";
 
   handleClassButtonClick(String grade) {

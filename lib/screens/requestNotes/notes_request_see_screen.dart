@@ -4,7 +4,6 @@ import "package:flutter/material.dart";
 import 'package:notefynd/provider/ThemeModel.dart';
 import 'package:notefynd/screens/requestNotes/request_new_notes_screen.dart';
 import 'package:notefynd/screens/requestNotes/view_requested_notes_screen.dart';
-import 'package:notefynd/universal_variables.dart';
 import 'package:provider/provider.dart';
 
 class NotesRequestSeeScreen extends StatefulWidget {

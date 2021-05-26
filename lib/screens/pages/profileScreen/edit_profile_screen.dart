@@ -8,7 +8,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:notefynd/provider/ThemeModel.dart';
 import 'package:notefynd/screens/home_screen.dart';
-import 'package:notefynd/universal_variables.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:provider/provider.dart';
 import 'package:universal_html/html.dart' as html;
@@ -33,7 +32,6 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  UniversalVariables _universalVariables = UniversalVariables();
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _schoolNameController = TextEditingController();
   TextEditingController _nameController = TextEditingController();

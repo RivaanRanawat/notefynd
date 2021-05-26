@@ -8,7 +8,6 @@ import 'package:notefynd/provider/ThemeModel.dart';
 import 'package:notefynd/screens/pages/profileScreen/user_profile_screen.dart';
 import 'package:notefynd/screens/requestNotes/notes_request_see_screen.dart';
 import 'package:notefynd/screens/pages/pdfs/pdf_screen.dart';
-import 'package:notefynd/universal_variables.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:paginate_firestore/paginate_firestore.dart';
 import "dart:async";

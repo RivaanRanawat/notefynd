@@ -4,7 +4,6 @@ import 'package:notefynd/provider/ThemeModel.dart';
 import 'package:notefynd/screens/auth/login_screen.dart';
 import 'package:notefynd/screens/home_screen.dart';
 import 'package:notefynd/provider/AuthMethods.dart';
-import 'package:notefynd/universal_variables.dart';
 import 'package:provider/provider.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -24,8 +23,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   FocusNode _emailFocusNode;
   FocusNode _passwordFocusNode;
   FocusNode _confirmPasswordFocusNode;
-
-  UniversalVariables _universalVariables = UniversalVariables();
   void _signUpUser(String email, String password, BuildContext context,
       String fullName) async {
     try {

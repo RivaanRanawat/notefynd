@@ -4,7 +4,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:notefynd/provider/ThemeModel.dart';
 import 'package:notefynd/screens/pages/creator/add_pdf_notes.dart';
 import 'package:notefynd/screens/pages/videos/confirm_video_screen.dart';
-import 'package:notefynd/universal_variables.dart';
 import "dart:io";
 
 import 'package:page_transition/page_transition.dart';

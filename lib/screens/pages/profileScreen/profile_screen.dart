@@ -12,7 +12,6 @@ import 'package:notefynd/provider/AuthMethods.dart';
 import 'package:notefynd/provider/Creator.dart';
 import 'package:notefynd/universal_variables.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
