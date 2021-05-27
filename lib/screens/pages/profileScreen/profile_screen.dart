@@ -43,16 +43,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    getCreatorButton();
-  }
-
-  void getCreatorButton() async {
-    String status = await Provider.of<Creator>(context).getCreatorStatus();
+  void getCreatorButton() {
+    String status = Provider.of<Creator>(context, listen: false).getStatus();
     print(status);
-    if (status == "user") {
+    if (status == "user" || status == "admin") {
       creatorText = "Creator";
     } else {
       creatorText = "Creator Studio";
@@ -64,6 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     getData();
+    getCreatorButton();
   }
 
   @override
@@ -208,11 +203,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           height: 50,
                           onPressed: () {
                             if (creatorText == "Creator") {
-                              FirebaseFirestore.instance
-                                  .collection("users")
-                                  .doc(FirebaseAuth.instance.currentUser.uid)
-                                  .update({"status": "creator"});
-                              setState(() {});
+                              Provider.of<Creator>(context, listen: false).updateToCreatorStatus();
                             } else {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => CreatorStudioScreen()));

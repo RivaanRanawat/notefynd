@@ -4,14 +4,28 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class Creator with ChangeNotifier {
-  Future<String> getCreatorStatus() async {
-    String creator;
+  String status;
+  Creator() {
+    getCreatorsStatus();
+  }
+
+  String getStatus() => status;
+
+  getCreatorsStatus() async {
     DocumentSnapshot snapshot = await FirebaseFirestore.instance
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser.uid)
         .get();
-    creator = snapshot["status"];
+    status = snapshot["status"];
     notifyListeners();
-    return creator;
+  }
+
+  updateToCreatorStatus() async {
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .update({"status": "creator"});
+    status = "creator";
+    notifyListeners();
   }
 }

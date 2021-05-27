@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -64,6 +65,29 @@ class _AddContentState extends State<AddContent> {
           );
         });
   }
+
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   super.initState();
+  //   setData();
+  // }
+
+  // setData() async {
+  //   var post = await FirebaseFirestore.instance.collection("pdf-posts").get();
+  //   post.docs.map((e) async {
+  //     await FirebaseFirestore.instance.collection("pdf-posts").doc(e.data()["id"]).update({
+  //       "videoUrl": ""
+  //     });
+  //   }).toList();
+
+  //   var user = await FirebaseFirestore.instance.collection("users").get();
+  //   user.docs.map((e) async {
+  //     await FirebaseFirestore.instance.collection("users").doc(e.data()["uid"]).update({
+  //       "username": e.data()["username"].replaceAll(" ", "").toLowerCase().trim()
+  //     });
+  //   }).toList();
+  // }
 
   @override
   Widget build(BuildContext context) {

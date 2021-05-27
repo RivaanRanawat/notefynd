@@ -23,14 +23,6 @@ class _HomeScreenState extends State<HomeScreen> {
   UniversalVariables universalVariables = UniversalVariables();
   int pageIndex = 0;
   PageController _pageController;
-  String status;
-
-  getUserStatus() async {
-    String tempStatus = await Provider.of<Creator>(context).getCreatorStatus();
-    setState(() {
-      status = tempStatus;
-    });
-  }
 
   List<Widget> pageOptions = [
     // VideoScreen(),
@@ -47,13 +39,6 @@ class _HomeScreenState extends State<HomeScreen> {
     BoardArticles(),
     ProfileScreen(),
   ];
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    getUserStatus();
-  }
-
   @override
   void initState() {
     super.initState();
@@ -99,6 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final status = Provider.of<Creator>(context).getStatus();
     return Scaffold(
       body: SizedBox.expand(
         child: PageView(
