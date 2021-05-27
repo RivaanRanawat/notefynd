@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
 import 'package:google_fonts/google_fonts.dart';
+import 'package:notefynd/provider/Creator.dart';
 import 'package:notefynd/provider/ThemeModel.dart';
 import 'package:notefynd/screens/admin/admin_add_article.dart';
 import 'package:notefynd/screens/pages/articles/detail_article.dart';
@@ -16,25 +17,10 @@ class BoardArticles extends StatefulWidget {
 }
 
 class _BoardArticlesState extends State<BoardArticles> {
-  String status;
-  @override
-  void initState() {
-    super.initState();
-    getUserStatus();
-  }
-
-  getUserStatus() async {
-    DocumentSnapshot snap = await FirebaseFirestore.instance
-        .collection("users")
-        .doc(FirebaseAuth.instance.currentUser.uid)
-        .get();
-    setState(() {
-      status = snap["status"];
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
+    final status = Provider.of<Creator>(context).getStatus();
     return Scaffold(
       backgroundColor:
           Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
