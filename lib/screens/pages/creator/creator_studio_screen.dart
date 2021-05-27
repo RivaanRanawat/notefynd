@@ -38,7 +38,7 @@ class _CreatorStudioScreenState extends State<CreatorStudioScreen> {
       followers = userFollowerDoc.docs.length.toString();
     } else if (userFollowerDoc.docs.length > 999) {
       int noOfFollowers = (userFollowerDoc.docs.length / 1000) as int;
-      followers = noOfFollowers.toString();
+      followers = noOfFollowers.toString() + "K";
     }
     print(followers);
     print(postsNo);

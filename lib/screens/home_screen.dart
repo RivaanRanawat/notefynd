@@ -61,6 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
         .get();
     bio = snapshot["bio"];
     status = snapshot["status"];
+    print(status);
     if (bio == "") {
       Navigator.pushReplacement(
           context,

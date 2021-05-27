@@ -34,7 +34,6 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
     setState(() {
       _grade = grade;
     });
-    print(_grade);
   }
 
   uploadPdftoFirebase() async {
@@ -184,8 +183,6 @@ class _AddPdfNotesState extends State<AddPdfNotes> {
                               fileName = result.files.single.name;
                             });
                           }
-                        } else {
-                          print("in sooth ik not why i am so sad");
                         }
                       },
                       child: Text(

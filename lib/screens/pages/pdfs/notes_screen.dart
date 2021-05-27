@@ -152,6 +152,7 @@ class _NotesScreenState extends State<NotesScreen> {
             ),
             body: !isSeacrh
                 ? PaginateFirestore(
+                  itemsPerPage: 5,
                     query: FirebaseFirestore.instance
                         .collection("pdf-posts")
                         .orderBy("datePublished", descending: true),
@@ -544,7 +545,7 @@ class _NotesScreenState extends State<NotesScreen> {
                             fontSize: 14),
                       ),
                     ),
-                    posts.data()["videoUrl"] != ""
+                    posts.data()["videoUrl"] != "" && posts.data()["videoUrl"]!=null
                         ? Padding(
                             padding: const EdgeInsets.only(bottom: 8.0),
                             child: InkWell(
