@@ -17,8 +17,6 @@ class BoardArticles extends StatefulWidget {
 
 class _BoardArticlesState extends State<BoardArticles> {
   String status;
-  String postsNo;
-  String usersNo;
   @override
   void initState() {
     super.initState();
@@ -26,19 +24,13 @@ class _BoardArticlesState extends State<BoardArticles> {
   }
 
   getUserStatus() async {
-    QuerySnapshot userSnap =
-        await FirebaseFirestore.instance.collection("users").get();
     DocumentSnapshot snap = await FirebaseFirestore.instance
         .collection("users")
         .doc(FirebaseAuth.instance.currentUser.uid)
         .get();
-    var posts = await FirebaseFirestore.instance.collection("pdf-posts").get();
     setState(() {
       status = snap["status"];
-      postsNo = posts.docs.length.toString();
-      usersNo = userSnap.docs.length.toString();
     });
-    print(status);
   }
 
   @override
@@ -69,115 +61,6 @@ class _BoardArticlesState extends State<BoardArticles> {
           }
           return Column(
             children: [
-              status == "admin" && status != null
-                  ? Container(
-                      margin: EdgeInsets.only(top: 20),
-                      padding: EdgeInsets.all(12.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width / 2.2,
-                            child: Card(
-                              clipBehavior: Clip.antiAlias,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20)),
-                              elevation: 16,
-                              color: Provider.of<ThemeModel>(context)
-                                  .currentTheme
-                                  .primaryColor,
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 30.0,
-                                        right: 30,
-                                        top: 20,
-                                        bottom: 10),
-                                    child: Text(
-                                      postsNo != null ? postsNo : "0",
-                                      style: TextStyle(
-                                        color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .textTheme
-                                            .headline6
-                                            .color,
-                                        fontSize: 65,
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.only(bottom: 20.0),
-                                    child: Text(
-                                      "Posts",
-                                      style: TextStyle(
-                                          color:
-                                              Provider.of<ThemeModel>(context)
-                                                  .currentTheme
-                                                  .textTheme
-                                                  .subtitle2
-                                                  .color,
-                                          fontSize: 20),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width / 2.2,
-                            child: Card(
-                              clipBehavior: Clip.antiAlias,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20)),
-                              elevation: 16,
-                              color: Provider.of<ThemeModel>(context)
-                                  .currentTheme
-                                  .primaryColor,
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 30.0,
-                                        right: 30,
-                                        top: 20,
-                                        bottom: 10),
-                                    child: Text(
-                                      usersNo != null ? usersNo : "0",
-                                      style: TextStyle(
-                                        color: Provider.of<ThemeModel>(context)
-                                            .currentTheme
-                                            .textTheme
-                                            .headline6
-                                            .color,
-                                        fontSize: 65,
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.only(bottom: 20.0),
-                                    child: Text(
-                                      "Users",
-                                      style: TextStyle(
-                                          color:
-                                              Provider.of<ThemeModel>(context)
-                                                  .currentTheme
-                                                  .textTheme
-                                                  .subtitle2
-                                                  .color,
-                                          fontSize: 20),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : Container(),
               ListView.builder(
                   shrinkWrap: true,
                   itemCount: snapshot.data.docs.length,

@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:flutter/material.dart";
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notefynd/provider/ThemeModel.dart';
 import 'package:notefynd/screens/admin/notes_management.dart';
+import 'package:notefynd/screens/admin/statistics_screen.dart';
 import 'package:notefynd/screens/pages/articles/board_articles.dart';
 import 'package:notefynd/screens/auth/login_screen.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +22,7 @@ class _AdminScreenState extends State<AdminScreen> {
     var items = [
       NotesManagement(),
       BoardArticles(),
+      StatsScreen(),
       AlertDialog(
         title: Text("Log Out Confirmation"),
         content: Text(
@@ -50,10 +53,12 @@ class _AdminScreenState extends State<AdminScreen> {
     ];
 
     return Scaffold(
-      backgroundColor: Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
+      backgroundColor:
+          Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
       body: items[pageIndex],
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
+        backgroundColor:
+            Provider.of<ThemeModel>(context).currentTheme.backgroundColor,
         currentIndex: pageIndex,
         onTap: (value) {
           setState(() {
@@ -66,19 +71,41 @@ class _AdminScreenState extends State<AdminScreen> {
           BottomNavigationBarItem(
               icon: Icon(
                 Icons.delete,
-                color: Provider.of<ThemeModel>(context).currentTheme.textTheme.headline6.color,
+                color: Provider.of<ThemeModel>(context)
+                    .currentTheme
+                    .textTheme
+                    .headline6
+                    .color,
               ),
               label: ""),
           BottomNavigationBarItem(
               icon: Icon(
                 Icons.dashboard,
-                color: Provider.of<ThemeModel>(context).currentTheme.textTheme.headline6.color,
+                color: Provider.of<ThemeModel>(context)
+                    .currentTheme
+                    .textTheme
+                    .headline6
+                    .color,
+              ),
+              label: ""),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.bar_chart,
+                color: Provider.of<ThemeModel>(context)
+                    .currentTheme
+                    .textTheme
+                    .headline6
+                    .color,
               ),
               label: ""),
           BottomNavigationBarItem(
               icon: Icon(
                 Icons.logout,
-                color: Provider.of<ThemeModel>(context).currentTheme.textTheme.headline6.color,
+                color: Provider.of<ThemeModel>(context)
+                    .currentTheme
+                    .textTheme
+                    .headline6
+                    .color,
               ),
               label: ""),
         ],
