@@ -42,7 +42,9 @@ class _MyAppState extends State<MyApp> {
 
   getPackageInfo() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    version = packageInfo.version;
+    setState(() {
+      version = packageInfo.version;
+    });
     print(packageInfo.version);
   }
 
